@@ -7,17 +7,37 @@
 <meta name="description" content="One system for your whole transport company. Everyone records once. You see it ranked. For transport companies with 10 to 50 trucks.">
 <!-- Preview build: placeholders and {TBD} facts are on the page. Remove noindex at launch (07-TECH-AND-BUILD-PLAN.md §10, §11). -->
 <meta name="robots" content="noindex, nofollow">
+<!-- Share card (brand/src/build_og.cjs). Make og:image absolute once the domain is set (OD14). -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FleetPartner">
+<meta property="og:title" content="FleetPartner · Know where the fire is">
+<meta property="og:description" content="One system for your whole transport company. Everyone records once. You see it ranked. For transport companies with 10 to 50 trucks.">
+<meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="FleetPartner. Know where the fire is. Without phoning anyone.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Mono:wght@500&family=Public+Sans:wght@400;500;600&display=swap">
-<script>(function(){var d=document.documentElement,t=null;d.classList.replace("no-js","js");try{t=new URLSearchParams(location.search).get("theme")||localStorage.getItem("fp-theme")}catch(e){}d.dataset.theme=t==="dark"?"dark":"light";if(t==="dark")document.querySelector('meta[name="theme-color"]').content="#021A31"})();</script>
+<link rel="preload" href="fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>(function(){var d=document.documentElement,t=null;d.classList.replace("no-js","js");try{t=new URLSearchParams(location.search).get("theme")||localStorage.getItem("fp-theme")}catch(e){}if(t!=="dark"&&t!=="light")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.dataset.theme=t;if(t==="dark")document.querySelector('meta[name="theme-color"]').content="#021A31"})();</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"FleetPartner","applicationCategory":"BusinessApplication","operatingSystem":"Web, Android"}
 </script>
 <style>
+/* Self-hosted fonts (OFL-1.1), built by brand/src/build_fonts.py. Polish letters live in the latin-ext files. */
+@font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:500 900;font-stretch:100% 125%;src:url(fonts/archivo-latin-ext-wdth-normal.woff2) format("woff2-variations"),url(fonts/archivo-latin-ext-wdth-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Archivo";font-style:normal;font-display:swap;font-weight:500 900;font-stretch:100% 125%;src:url(fonts/archivo-latin-wdth-normal.woff2) format("woff2-variations"),url(fonts/archivo-latin-wdth-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Public Sans";font-style:normal;font-display:swap;font-weight:400;src:url(fonts/public-sans-latin-ext-400-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Public Sans";font-style:normal;font-display:swap;font-weight:400;src:url(fonts/public-sans-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Public Sans";font-style:normal;font-display:swap;font-weight:500;src:url(fonts/public-sans-latin-ext-500-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Public Sans";font-style:normal;font-display:swap;font-weight:500;src:url(fonts/public-sans-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Public Sans";font-style:normal;font-display:swap;font-weight:600;src:url(fonts/public-sans-latin-ext-600-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Public Sans";font-style:normal;font-display:swap;font-weight:600;src:url(fonts/public-sans-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-display:swap;font-weight:500;src:url(fonts/ibm-plex-mono-latin-ext-500-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-display:swap;font-weight:500;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
 /* FleetPartner brand tokens. Generated by brand/src/build_brand.py: edit there, not here. */
 :root {
   --fp-navy-25: #F8FBFF;
@@ -178,7 +198,7 @@ body{margin:0;background:var(--fp-bg);color:var(--fp-text);font:400 17px/1.55 va
 img,svg{display:block;max-width:100%}
 a{color:inherit}
 button,input,select{font:inherit;color:inherit}
-p{margin:0}
+p{margin:0;text-wrap:pretty}
 ul,ol{margin:0;padding:0;list-style:none}
 figure{margin:0}
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -321,16 +341,22 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
 .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:0;background:transparent;cursor:pointer;text-decoration:none;color:var(--fp-heading);transition:transform var(--t-press) var(--ease-out)}
 .icon-btn:active:not([aria-disabled="true"]){transform:scale(.95)}
 .icon-btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.burger path{transform-box:fill-box;transform-origin:center;transition:transform var(--t-ui) var(--ease-out),opacity var(--t-ui) var(--ease-out)}
+[aria-expanded="true"] > .burger path:nth-child(1){transform:translateY(6px) rotate(45deg)}
+[aria-expanded="true"] > .burger path:nth-child(2){opacity:0;transform:scaleX(.3)}
+[aria-expanded="true"] > .burger path:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 /* The phone menu drops from the header in 200 ms and leaves faster, in 150 ms */
 .menu{position:absolute;top:100%;left:0;right:0;padding:12px var(--pad-r) 20px var(--pad-l);background:var(--fp-bg);border-bottom:1px solid var(--fp-line);display:grid;gap:4px;transition:opacity var(--t-ui) var(--ease-out),transform var(--t-ui) var(--ease-out),display var(--t-ui) allow-discrete}
 .menu[hidden]{display:none;opacity:0;transform:translateY(-8px);transition-duration:var(--t-exit)}
 @starting-style{.menu:not([hidden]){opacity:0;transform:translateY(-8px)}}
 .menu a:not(.btn){display:block;padding:12px 4px;color:var(--fp-heading);text-decoration:none;font-size:18px;border-bottom:1px solid var(--fp-line)}
 .menu .btn{margin-top:12px}
+.menu a[aria-current]:not(.btn){text-decoration:underline 2px var(--fp-accent);text-underline-offset:8px}
 @media (min-width:900px){
   .nav{display:flex;gap:26px;margin-right:auto}
   .nav a{text-decoration:none;font-size:15px;color:var(--fp-text-2)}
-  .nav a{transition:color var(--t-ui) ease}
+  .nav a{transition:color var(--t-ui) ease,text-decoration-color var(--t-ui) ease;text-decoration:underline 2px transparent;text-underline-offset:8px}
+  .nav a[aria-current]{color:var(--fp-heading);text-decoration-color:var(--fp-accent)}
   .hdr-call{display:inline-flex;align-items:center;gap:8px;font:500 13px/1 var(--f-mono);letter-spacing:.04em;color:var(--fp-text-2)}
   .hdr .btn-primary{display:inline-flex}
   .hdr .icon-btn,.menu{display:none!important}
@@ -366,15 +392,14 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
 .roads{position:absolute;inset:auto 0 0 0;width:100%;height:62%;opacity:.9;pointer-events:none}
 .hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:36px}
 .hero-copy{display:grid;gap:18px;align-content:start}
-.kicker{font-weight:600;font-size:15px;color:var(--fp-text-2);display:flex;gap:10px;align-items:center}
-.kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--fp-accent);box-shadow:0 0 12px var(--fp-accent)}
-.hero .display{font-size:clamp(42px,5.4vw,88px);font-stretch:112%}
+.kicker{font-weight:600;font-size:15px;color:var(--fp-text-2)}
+.hero .display{font-size:clamp(42px,5.3vw,70px);font-stretch:112%}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:flex-start;margin-top:8px}
 .cta-main{display:grid;gap:10px}
 .under{color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .hero-links{font-size:15px;color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.proof-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;padding-top:18px;border-top:1px solid var(--fp-line)}
-.proof-strip li{font:500 11.5px/1.45 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fp-text-2)}
+.proof-strip{display:flex;flex-wrap:wrap;gap:10px 28px;padding-top:18px;border-top:1px solid var(--fp-line)}
+.proof-strip li{text-wrap:balance;font:500 11.5px/1.45 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fp-text-2)}
 .hero-vis{position:relative}
 .hv-3d{position:relative;perspective:1600px;--rx:0deg;--ry:0deg}
 .slab{position:relative;transform-style:preserve-3d}
@@ -400,7 +425,7 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
   .hero-grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:center;gap:36px 40px}
   .hero-copy{grid-column:1;grid-row:1}
   .hero-vis{grid-column:2;grid-row:1 / span 2}
-  .proof-strip{grid-column:1;grid-row:2;grid-template-columns:repeat(4,1fr)}
+  .proof-strip{grid-column:1;grid-row:2}
   .hv-3d{height:460px}
   .slab-web{display:block;position:absolute;left:-6%;top:40px;width:118%;transform:rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform var(--t-reveal) var(--ease-out)}
   .slab-phone{position:absolute;right:-4%;bottom:0;width:32%;margin:0;transform:translateZ(90px) rotateX(calc(6deg + var(--rx))) rotateY(calc(-12deg + var(--ry)));transition:transform var(--t-reveal) var(--ease-out)}
@@ -500,8 +525,7 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .beat-text{display:grid;gap:8px}
 .beat-text p{color:var(--lead)}
 .beat-n{color:var(--fp-accent-text)}
-.s5-cond{margin-top:18px;font-size:15px;color:var(--fp-text-2);display:flex;gap:10px;align-items:flex-start}
-.s5-cond::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--fp-accent)}
+.s5-cond{margin-top:18px;font-size:15px;color:var(--fp-text-2)}
 .beat-vis{position:relative;min-height:230px;display:grid;place-items:center}
 /* beat 1 */
 .v1{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;width:100%;max-width:520px}
@@ -522,7 +546,7 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 /* beat 2 */
 .v2{display:grid;gap:18px;width:100%;max-width:560px;justify-items:center}
 .planes{position:relative;width:100%;height:190px}
-.plane{position:absolute;top:10px;bottom:10px;width:64px;border-radius:12px;background:var(--glass);border:1px solid var(--fp-line-strong);transform:skewY(-8deg);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.plane{position:absolute;top:10px;bottom:10px;width:64px;border-radius:12px;background:var(--glass);border:1px solid var(--fp-line-strong);transform:skewY(-8deg)}
 .plane span{position:absolute;top:-24px;left:50%;transform:translateX(-50%) skewY(8deg);white-space:nowrap;color:var(--fp-text-2)}
 .plane.p1{left:32%}
 .plane.p2{left:calc(32% + 80px)}
@@ -648,7 +672,11 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .fcard{display:grid;gap:14px;align-content:start;padding:20px;border-radius:var(--r-card);background:var(--fp-surface);border:1px solid var(--fp-line)}
 .fcard .cf-phone{width:min(46%,170px);justify-self:center}
 .fcard p{color:var(--fp-text-2)}
-@media (min-width:900px){.s7-cards{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:900px){
+  .s7-cards{grid-template-columns:repeat(3,1fr)}
+  .fcard{grid-row:span 3;grid-template-rows:subgrid;row-gap:14px}
+  .fcard > .cf{align-self:end}
+}
 html:not(.stages) .s7 .stage-pin{padding-top:0}
 
 /* S8 Pillar 3: bento of five checks */
@@ -963,6 +991,12 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .foot-note{margin-top:40px;padding-top:20px;border-top:1px solid var(--fp-line);color:var(--fp-slate-400);font:500 11px/1.5 var(--f-mono);letter-spacing:.04em}
 @media (min-width:900px){.foot{padding-bottom:64px}.foot-grid{grid-template-columns:4fr 8fr}.foot dl{grid-template-columns:repeat(3,1fr);gap:24px}}
 
+/* Reduced transparency: solid header and phone bar, no blur */
+@media (prefers-reduced-transparency:reduce){
+  :root{--header-bg:var(--fp-bg)}
+  .hdr.solid,.sticky-bar{-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
 /* ============================================================
    Theme switch: the new theme opens in a circle from the switch (the script
    drives it, tier A). At tier C it is a short crossfade. Without View
@@ -1043,7 +1077,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg><span class="knob"></span></button>
     <a class="btn btn-primary btn-sm" data-cta="check" href="#check-tbd">Check where your fire is</a>
     <a class="icon-btn" data-cta="call" aria-disabled="true" aria-label="Call us (number to come)"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
-    <button class="icon-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    <button class="icon-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg class="ic burger" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button>
   </div>
   <nav class="menu" id="menu" aria-label="Menu" hidden>
     <a href="#how">How it works</a>
@@ -1069,7 +1103,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="kicker" id="kicker">For transport companies with 10 to 50 trucks.</p>
-      <h1 id="hero-h" class="display">Know where the fire is. Without phoning anyone.</h1>
+      <h1 id="hero-h" class="display">Know where the&nbsp;fire is. Without phoning anyone.</h1>
       <p class="lead">One system for your whole company. Everyone records once. You see it ranked.</p>
       <div class="cta-row">
         <div class="cta-main">
@@ -1930,8 +1964,9 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   }
   // The switch: the whole page changes in one View Transition. Tier A opens the new theme in a circle
   // from the switch (400 ms); tier C crossfades (200 ms, in the CSS); without View Transitions it is instant.
-  let themeVT = null;
+  let themeVT = null, themePicked = false;
   function switchTheme(b) {
+    themePicked = true;
     const next = html.dataset.theme === "dark" ? "light" : "dark";
     if (!document.startViewTransition) return applyTheme(next, true);
     const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
@@ -1947,6 +1982,11 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   }
   $$(".theme-toggle").forEach((b) => b.addEventListener("click", () => switchTheme(b)));
   applyTheme(html.dataset.theme === "dark" ? "dark" : "light", false);
+  // Until the visitor picks a theme, the page follows the phone's own setting, even as it changes.
+  const stored = () => { try { return !!localStorage.getItem("fp-theme"); } catch (e) { return false; } };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+    if (!themePicked && !params.has("theme") && !stored()) applyTheme(e.matches ? "dark" : "light", false);
+  });
 
   /* ---------- Facts into the page ---------- */
   const passThrough = ["src", "p", "e", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
@@ -2207,12 +2247,20 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   menuBtn.addEventListener("click", () => {
     const open = menu.hidden;
     menu.hidden = !open;
-    menuBtn.setAttribute("aria-expanded", String(open));
-    menuBtn.innerHTML = `<svg class="ic" aria-hidden="true"><use href="#i-${open ? "x" : "menu"}"/></svg>`;
+    menuBtn.setAttribute("aria-expanded", String(open));   // the icon folds into a cross in CSS
     headerUpdate();
   });
-  $$("a", menu).forEach((a) => a.addEventListener("click", () => { menu.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); menuBtn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>'; }));
+  $$("a", menu).forEach((a) => a.addEventListener("click", () => { menu.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); }));
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { menuBtn.click(); menuBtn.focus(); } });
+
+  /* ---------- The menu marks the part of the page you are in ---------- */
+  const navLinks = $$('.nav a[href^="#"], .menu a[href^="#"]:not(.btn)');
+  const navIO = new IntersectionObserver((entries) => {
+    entries.forEach((e) => navLinks.forEach((a) => {
+      if (a.hash === "#" + e.target.id) e.isIntersecting ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current");
+    }));
+  }, { rootMargin: "-45% 0px -54% 0px" });   // a thin band across the middle of the screen
+  [...new Set(navLinks.map((a) => a.hash))].forEach((id) => { const sec = $(id); if (sec) navIO.observe(sec); });
 
   /* ---------- In-page links: a long jump is instant; within about a screen it glides ---------- */
   document.addEventListener("click", (e) => {
