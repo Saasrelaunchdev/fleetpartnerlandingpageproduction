@@ -1,0 +1,2151 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FleetPartner · Know where the fire is</title>
+<meta name="description" content="One system for your whole transport company. Everyone records once. You see it ranked. For transport companies with 10 to 50 trucks.">
+<!-- Preview build: placeholders and {TBD} facts are on the page. Remove noindex at launch (07-TECH-AND-BUILD-PLAN.md §10, §11). -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B1626">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B1626'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F2B441'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Mono:wght@500&family=Public+Sans:wght@400;500;600&display=swap">
+<script>document.documentElement.classList.replace("no-js", "js");</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FleetPartner","applicationCategory":"BusinessApplication","operatingSystem":"Web, Android"}
+</script>
+<style>
+/* ============================================================
+   Tokens (handover/05-DESIGN-DIRECTION.md §3). No colour outside this block.
+   ============================================================ */
+:root{
+  --night-950:#070F1A;
+  --night-900:#0B1626;
+  --night-800:#11203A;
+  --navy-700:#152A45;
+  --blue-600:#25549B;
+  --teal-400:#66BEB3;
+  --teal-700:#1F7268;
+  --amber-400:#F2B441;
+  --amber-700:#9A5B07;
+  --paper-50:#F7F7F4;
+  --paper-100:#EEF0EC;
+  --line-200:#D8DCD6;
+  --ink-900:#101820;
+  --ink-500:#5A636D;
+  --fog-200:#C9D3DF;
+  --fog-400:#8A98AA;
+  --dusk:#18304F;            /* S5 beat 2: the night lifting */
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --f-display:"Archivo",system-ui,sans-serif;
+  --f-text:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gutter:20px;
+  --header-h:60px;
+  --r-card:20px;
+  --r-screen:28px;
+  --bar:14px;
+}
+@media (min-width:900px){:root{--gutter:24px;--header-h:68px}}
+
+/* ============================================================
+   Base
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html.js:not(.tier-c){scroll-behavior:smooth}
+body{margin:0;background:var(--night-900);color:var(--ink-900);font:400 17px/1.55 var(--f-text);-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+figure{margin:0}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding:0 var(--gutter)}
+.ic{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* Registers: night (story) and day (proof) */
+.night{background-color:var(--night-900);color:var(--fog-200);--fg:var(--paper-50);--fg-2:var(--fog-400);--lead:var(--fog-200);--line:color-mix(in srgb,var(--fog-400) 24%,transparent);--focus:var(--amber-400);--tag:var(--amber-400);--surface:var(--night-800)}
+.day{background-color:var(--paper-50);color:var(--ink-900);--fg:var(--navy-700);--fg-2:var(--ink-500);--lead:var(--ink-500);--line:var(--line-200);--focus:var(--blue-600);--tag:var(--amber-700);--surface:var(--paper-100)}
+:focus-visible{outline:2px solid var(--focus,var(--blue-600));outline-offset:3px;border-radius:6px}
+
+/* Type */
+h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fg);letter-spacing:-.012em;font-stretch:116%;text-wrap:balance}
+.display{font-size:clamp(42px,7.2vw,104px);line-height:.95;font-weight:800}
+.h2{font-size:clamp(34px,4.8vw,68px);line-height:1;font-weight:800}
+.h3{font-size:clamp(22px,2.2vw,30px);line-height:1.15;font-weight:700;font-stretch:106%}
+.lead{font-size:clamp(18px,1.6vw,22px);line-height:1.4;color:var(--lead);text-wrap:pretty}
+.mono{font-family:var(--f-mono);font-weight:500;font-size:12.5px;line-height:1.3;letter-spacing:.06em;text-transform:uppercase}
+.eyebrow{color:var(--fg-2)}
+@media (max-width:599px){h1,h2{font-stretch:106%}}
+
+/* Buttons and chips */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:12px;border:0;font:600 17px/1.2 var(--f-text);text-decoration:none;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s var(--ease),background-color .2s}
+.btn-fire{background:var(--amber-400);color:var(--night-900)}
+.btn-fire:hover{transform:translateY(-1px);box-shadow:0 10px 30px -10px color-mix(in srgb,var(--amber-400) 80%,transparent)}
+.btn-line{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px currentColor}
+.btn-line:hover{background:color-mix(in srgb,currentColor 8%,transparent)}
+.btn-sm{min-height:44px;padding:0 16px;font-size:15px;border-radius:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);font:500 12px/1.2 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+
+/* {TBD}: a fact still to come, visible in previews (04-CLAIM-RULES.md §6) */
+.tbd{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;border:1px dashed color-mix(in srgb,var(--amber-400) 75%,transparent);background:color-mix(in srgb,var(--amber-400) 14%,transparent);color:var(--tag,var(--amber-700));font:500 11.5px/1.3 var(--f-mono);letter-spacing:.04em;text-transform:none;white-space:nowrap;vertical-align:middle}
+.is-launch [data-tbd]{display:none!important}
+
+/* Placeholder tag: where a proof chip will sit once the capture is real (05 §6) */
+.ph-tag{display:block;margin-top:10px;font:500 11px/1.35 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--tag,var(--amber-700))}
+.ph-tag::before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:2px;background:var(--amber-400);vertical-align:1px}
+
+/* ============================================================
+   Capture frames: device frame + neutral silhouette until the capture is real
+   (08-ASSETS-AND-CAPTURES.md §2, §6)
+   ============================================================ */
+.cf{position:relative;display:block}
+.dev{position:relative;overflow:hidden}
+.dev-web{border-radius:16px;background:var(--paper-100);box-shadow:0 1px 0 var(--line-200),0 24px 60px -28px color-mix(in srgb,var(--night-950) 55%,transparent);padding-top:var(--bar)}
+.night .dev-web{box-shadow:0 0 0 1px color-mix(in srgb,var(--fog-400) 22%,transparent),0 30px 80px -30px color-mix(in srgb,var(--teal-400) 30%,transparent)}
+.dev-web .bar{position:absolute;top:0;left:0;right:0;height:var(--bar);display:flex;gap:5px;align-items:center;padding-left:10px}
+.dev-web .bar i{width:6px;height:6px;border-radius:50%;background:var(--line-200)}
+.dev-web .scr-box{position:relative;aspect-ratio:16/10}
+.dev-phone{border-radius:calc(var(--r-screen) + 6px);background:var(--night-950);padding:6px;box-shadow:0 0 0 1px color-mix(in srgb,var(--fog-400) 30%,transparent),0 30px 60px -28px color-mix(in srgb,var(--night-950) 70%,transparent)}
+.day .dev-phone{box-shadow:0 0 0 1px color-mix(in srgb,var(--fog-400) 30%,transparent),0 18px 34px -22px color-mix(in srgb,var(--night-950) 45%,transparent)}
+.dev-phone .scr-box{position:relative;aspect-ratio:9/20;border-radius:var(--r-screen);overflow:hidden}
+.dev-phone .cam{position:absolute;z-index:3;top:12px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--night-950)}
+.dev-crop{border-radius:14px;box-shadow:0 0 0 1px var(--line-200),0 16px 40px -24px color-mix(in srgb,var(--night-950) 45%,transparent)}
+.dev-crop .scr-box{position:relative;aspect-ratio:var(--ar,2/1)}
+.scr{position:absolute;inset:0;overflow:hidden;background:var(--paper-50);container-type:inline-size}
+.scr img{width:100%;height:100%;object-fit:cover;object-position:top}
+.s{position:absolute;display:block;background:var(--paper-100);border:1px solid var(--line-200);border-radius:.7cqw}
+.s.side{border-width:0 1px 0 0;border-radius:0}
+.s.topbar{border-width:0 0 1px;border-radius:0;background:var(--paper-50)}
+.s.t{background:var(--line-200);border:0;border-radius:99px}
+.s.t2{background:color-mix(in srgb,var(--line-200) 70%,var(--fog-400))}
+.s.qh{border-radius:.7cqw .7cqw 0 0;background:color-mix(in srgb,var(--line-200) 60%,var(--paper-100))}
+.s.ring{background:transparent;border:1.3cqw solid var(--line-200);border-radius:50%}
+.s.risk{border-color:color-mix(in srgb,var(--amber-400) 80%,transparent);background:color-mix(in srgb,var(--amber-400) 9%,var(--paper-50))}
+.s.amber{background:color-mix(in srgb,var(--amber-400) 70%,transparent)}
+.s.tick{width:1.6%;height:auto;aspect-ratio:1;border:0;border-radius:50%;background:var(--teal-400)}
+.s.btn{background:var(--line-200);border:0}
+.s.photo{background:repeating-linear-gradient(135deg,var(--paper-100) 0 8px,var(--paper-50) 8px 16px)}
+.s.lockbg{border:0;border-radius:0;background:var(--navy-700)}
+.s.lockt{background:color-mix(in srgb,var(--fog-400) 45%,transparent)}
+.s.notif{background:var(--paper-50);border:0;border-radius:3cqw}
+.s.map{background:repeating-linear-gradient(0deg,var(--paper-100) 0 10%,var(--paper-50) 10% 20%)}
+.s.meter{border:0;background:var(--line-200)}
+.shim{position:absolute;inset:0;z-index:2;background:linear-gradient(100deg,transparent 30%,color-mix(in srgb,var(--paper-50) 70%,transparent) 50%,transparent 70%);transform:translateX(-100%)}
+.run .shim,.shim.run{animation:shim 2.4s var(--ease) 2}
+@keyframes shim{to{transform:translateX(100%)}}
+.run .s.notif.drop,.drop.run{animation:drop .7s var(--ease) both}
+@keyframes drop{from{transform:translateY(-140%);opacity:0}to{transform:none;opacity:1}}
+
+/* The fire: amber glow breathing, only on the biggest-risk element (05 §5) */
+.fire-glow{box-shadow:0 0 0 2px var(--amber-400),0 0 32px 4px color-mix(in srgb,var(--amber-400) 45%,transparent)}
+.run.fire-glow,.run .fire-glow{animation:fire 2.4s ease-in-out 2}
+@keyframes fire{50%{box-shadow:0 0 0 2px var(--amber-400),0 0 52px 12px color-mix(in srgb,var(--amber-400) 60%,transparent)}}
+
+/* Motion reveal (only with JS, never at tier C) */
+.js:not(.tier-c) [data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js:not(.tier-c) [data-reveal].in{opacity:1;transform:none}
+
+/* ============================================================
+   S1 Header, preview bar, phone sticky bar
+   ============================================================ */
+.skip-link{position:absolute;left:12px;top:-80px;z-index:100;padding:12px 16px;border-radius:10px;background:var(--amber-400);color:var(--night-900);font-weight:600;text-decoration:none}
+.skip-link:focus{top:12px}
+.preview-bar{position:relative;z-index:60;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 14px;padding:7px var(--gutter);background:var(--night-950);color:var(--fog-400);font:500 11px/1.4 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;text-align:center;border-bottom:1px solid color-mix(in srgb,var(--fog-400) 18%,transparent)}
+.preview-bar a{color:var(--amber-400)}
+@media (max-width:699px){.pv-long{display:none}}
+.preview-bar .launch-only{display:none}
+.is-launch .preview-bar .preview-only{display:none}
+.is-launch .preview-bar .launch-only{display:inline}
+.hdr{position:sticky;top:0;z-index:50;height:var(--header-h);color:var(--paper-50);--focus:var(--amber-400);--tag:var(--amber-400);transition:transform .3s var(--ease),background-color .3s,color .3s,box-shadow .3s}
+.hdr-in{height:100%;display:flex;align-items:center;gap:12px}
+.hdr.solid{background:color-mix(in srgb,var(--night-900) 94%,transparent);box-shadow:0 1px 0 color-mix(in srgb,var(--fog-400) 18%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.hdr.solid[data-register="day"]{background:color-mix(in srgb,var(--paper-50) 94%,transparent);color:var(--navy-700);--focus:var(--blue-600);--tag:var(--amber-700);box-shadow:0 1px 0 var(--line-200)}
+.hdr.hide{transform:translateY(-100%)}
+.wordmark{font:800 21px/1 var(--f-display);font-stretch:116%;letter-spacing:-.01em;text-decoration:none;margin-right:auto}
+.nav{display:none}
+.hdr-call{display:none}
+.hdr .btn-fire{display:none}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:0;background:transparent;cursor:pointer;text-decoration:none}
+.icon-btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.menu{position:absolute;top:100%;left:0;right:0;padding:12px var(--gutter) 20px;background:var(--night-900);border-bottom:1px solid color-mix(in srgb,var(--fog-400) 18%,transparent);display:grid;gap:4px}
+.menu[hidden]{display:none}
+.menu a:not(.btn){display:block;padding:12px 4px;color:var(--paper-50);text-decoration:none;font-size:18px;border-bottom:1px solid color-mix(in srgb,var(--fog-400) 14%,transparent)}
+.menu .btn{margin-top:12px}
+@media (min-width:900px){
+  .wordmark{margin-right:28px}
+  .nav{display:flex;gap:26px;margin-right:auto}
+  .nav a{text-decoration:none;font-size:15px;opacity:.85}
+  .nav a:hover{opacity:1}
+  .hdr-call{display:inline-flex;align-items:center;gap:8px;font:500 13px/1 var(--f-mono);letter-spacing:.04em}
+  .hdr .btn-fire{display:inline-flex}
+  .hdr .icon-btn,.menu{display:none!important}
+}
+.sticky-bar{position:fixed;z-index:45;left:0;right:0;bottom:0;display:flex;gap:10px;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--night-950) 94%,transparent);border-top:1px solid color-mix(in srgb,var(--fog-400) 18%,transparent);transform:translateY(110%);transition:transform .3s var(--ease);--focus:var(--amber-400);color:var(--paper-50)}
+.sticky-bar .btn{flex:1}
+.sticky-bar.show{transform:none}
+@media (min-width:900px){.sticky-bar{display:none}}
+
+/* ============================================================
+   Stages: pinned, scroll-scrubbed on desktop; stacked on phones and at tier C
+   ============================================================ */
+.stage-ui{display:none}
+.stages .stage{height:var(--stage-h,260vh)}
+.stages .stage-pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;align-items:center;overflow:hidden;padding-top:var(--header-h)}
+.stages .stage-ui{display:flex;position:absolute;left:var(--gutter);right:var(--gutter);bottom:22px;align-items:center;gap:16px;max-width:1232px;margin:0 auto}
+.stage-line{flex:1;height:2px;border-radius:2px;background:var(--line);overflow:hidden}
+.stage-line i{display:block;height:100%;background:currentColor;transform-origin:left;transform:scaleX(var(--p,0))}
+.stage-skip{font:500 12px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:10px 4px;color:var(--fg-2)}
+
+.sec{padding:88px 0}
+@media (min-width:900px){.sec{padding:128px 0}}
+.sec-head{display:grid;gap:18px;max-width:780px;margin-bottom:48px}
+@media (min-width:900px){.sec-head{margin-bottom:64px}}
+
+/* ============================================================
+   S2 Hero (night)
+   ============================================================ */
+.hero{position:relative;margin-top:calc(-1 * var(--header-h));padding:calc(var(--header-h) + 28px) 0 40px;background:radial-gradient(120% 90% at 78% 30%,var(--night-800) 0%,var(--night-900) 55%,var(--night-950) 100%);overflow:hidden}
+.roads{position:absolute;inset:auto 0 0 0;width:100%;height:62%;opacity:.9;pointer-events:none}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:36px}
+.hero-copy{display:grid;gap:18px;align-content:start}
+.kicker{font-weight:600;font-size:15px;color:var(--fog-200);display:flex;gap:10px;align-items:center}
+.kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--teal-400);box-shadow:0 0 12px var(--teal-400)}
+.hero .display{font-size:clamp(42px,5.4vw,88px);font-stretch:112%}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:flex-start;margin-top:8px}
+.cta-main{display:grid;gap:10px}
+.under{color:var(--fog-400);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.hero-links{font-size:15px;color:var(--fog-400);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.proof-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;padding-top:18px;border-top:1px solid var(--line)}
+.proof-strip li{font:500 11.5px/1.45 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fog-200)}
+.hero-vis{position:relative}
+.hv-3d{position:relative;perspective:1600px;--rx:0deg;--ry:0deg}
+.slab{position:relative;transform-style:preserve-3d}
+.slab-web{display:none}
+.slab-phone{width:min(62%,250px);margin:0 auto;transform:rotateX(calc(4deg + var(--rx))) rotateY(calc(-8deg + var(--ry)))}
+.risk-lift{position:absolute;z-index:4;left:50%;width:min(76%,300px);top:26%;transform:translateX(-50%)}
+.risk-lift .dev-crop{border-radius:12px}
+.risk-lift.web-only{display:none}
+.drift{position:absolute;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:color-mix(in srgb,var(--night-800) 85%,transparent);border:1px solid color-mix(in srgb,var(--fog-400) 25%,transparent);color:var(--fog-400);opacity:0}
+.drift.d1{left:4%;top:12%}
+.drift.d2{right:2%;top:46%}
+.drift.d3{left:10%;bottom:6%}
+.js:not(.tier-c) .hero .run .drift{animation:drift 3.2s var(--ease) 1.2s both}
+@keyframes drift{0%{opacity:0;transform:none}25%{opacity:.9}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.8)}}
+.drift.d1{--dx:-60px;--dy:-40px}.drift.d2{--dx:70px;--dy:-20px}.drift.d3{--dx:-50px;--dy:50px}
+.js:not(.tier-c) .hv-3d .slab-phone,.js:not(.tier-c) .hv-3d .slab-web{animation:rise .9s var(--ease) both}
+.js:not(.tier-c) .risk-lift{animation:lift .6s var(--ease) .9s both}
+@keyframes rise{from{opacity:0;translate:0 40px}to{opacity:1;translate:0 0}}
+@keyframes lift{from{opacity:0;translate:0 14px;scale:.96}to{opacity:1;translate:0 0;scale:1}}
+.hero .ph-tag{text-align:center}
+@media (min-width:900px){
+  .hero{padding:calc(var(--header-h) + 40px) 0 48px;min-height:min(100vh,980px)}
+  .hero-grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:center;gap:36px 40px}
+  .hero-copy{grid-column:1;grid-row:1}
+  .hero-vis{grid-column:2;grid-row:1 / span 2}
+  .proof-strip{grid-column:1;grid-row:2}
+  .proof-strip{grid-template-columns:repeat(4,1fr)}
+  .hv-3d{height:460px}
+  .slab-web{display:block;position:absolute;left:-6%;top:40px;width:118%;transform:rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform .4s var(--ease)}
+  .slab-phone{position:absolute;right:-4%;bottom:0;width:32%;margin:0;transform:translateZ(90px) rotateX(calc(6deg + var(--rx))) rotateY(calc(-12deg + var(--ry)));transition:transform .4s var(--ease)}
+  .risk-lift{left:2%;top:190px;width:78%;transform:translateZ(140px) rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform .4s var(--ease)}
+  .risk-lift.phone-only{display:none}
+  .risk-lift.web-only{display:block}
+  .hero .ph-tag{text-align:left;margin-top:24px}
+}
+
+/* ============================================================
+   S3 Problem: you are the switchboard (night)
+   ============================================================ */
+.s3{--stage-h:230vh}
+.s3-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;padding-top:88px;padding-bottom:40px}
+.s3-copy{display:grid;gap:18px;max-width:560px}
+.swarm{position:relative;display:flex;flex-direction:column;align-items:center;gap:22px}
+.boss-phone{position:relative;width:96px;aspect-ratio:9/19;border-radius:22px;background:var(--night-950);box-shadow:0 0 0 1px color-mix(in srgb,var(--fog-400) 35%,transparent),0 0 60px -6px color-mix(in srgb,var(--fog-200) 22%,transparent)}
+.boss-phone::after{content:"";position:absolute;inset:6px;border-radius:17px;background:radial-gradient(80% 50% at 50% 35%,color-mix(in srgb,var(--fog-400) 22%,transparent),transparent 70%)}
+.dots{position:absolute;z-index:2;inset:18% 16% auto 16%;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--paper-50);box-shadow:0 0 8px var(--paper-50);opacity:0;transform:scale(.4);transition:opacity .4s,transform .4s var(--ease)}
+.dots i.on{opacity:.9;transform:none}
+.sigs{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.sig{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:16px;background:var(--night-800);border:1px solid var(--line);color:var(--fog-200)}
+.sig-ic{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--night-900);border:1px solid color-mix(in srgb,var(--fog-400) 30%,transparent);color:var(--fog-200)}
+.noise{display:none}
+.js:not(.tier-c):not(.stages) .sig{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease),transform .6s var(--ease);transition-delay:calc(var(--i) * 70ms)}
+.js:not(.stages) .swarm.play .sig{opacity:1;transform:none}
+.js:not(.stages) .swarm.play .dots i{opacity:.9;transform:none}
+.tier-c .dots i{opacity:.9;transform:none}
+.stages .s3-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;gap:48px;padding:0 var(--gutter)}
+.stages .swarm{display:block;height:min(620px,72vh);aspect-ratio:640/620;justify-self:center;max-width:100%}
+.stages .boss-phone{position:absolute;left:50%;top:50%;width:18%;transform:translate(-50%,-50%)}
+.stages .sigs{display:block;position:absolute;inset:0}
+.stages .sig{position:absolute;--k:1.35;left:calc(50% + (var(--x) - 50%) * var(--k));top:calc(50% + (var(--y) - 50%) * var(--k));width:180px;transform:translate(-50%,-50%);padding:0;background:none;border:0;align-items:center;text-align:center;opacity:0;transition:opacity .6s var(--ease),left .9s var(--ease),top .9s var(--ease)}
+.stages .sig.on{--k:1;opacity:1}
+.stages .swarm.tight .sig.on{--k:.86}
+.stages .sig-ic{width:56px;height:56px;border-radius:16px;background:var(--night-800);box-shadow:0 12px 30px -12px var(--night-950)}
+.stages .noise{display:block;position:absolute;inset:0;pointer-events:none}
+.noise i{position:absolute;left:var(--x);top:var(--y);width:22px;height:22px;border-radius:7px;border:1px solid color-mix(in srgb,var(--fog-400) 42%,transparent);background:var(--night-800);opacity:0;transform:scale(.5);transition:opacity .6s var(--ease),transform .6s var(--ease),left .9s var(--ease),top .9s var(--ease)}
+.stages .swarm.thick .noise i{opacity:.55;transform:none}
+.stages .swarm.tight .noise i{left:calc(50% + (var(--x) - 50%) * .8);top:calc(50% + (var(--y) - 50%) * .8)}
+.quote-band{padding:32px 0 96px}
+.quote-band blockquote{margin:0;display:grid;gap:14px;max-width:900px;padding-top:28px;border-top:1px solid var(--line)}
+.quote-band q{font:700 clamp(24px,3.2vw,44px)/1.15 var(--f-display);font-stretch:108%;color:var(--paper-50);quotes:"\201C" "\201D"}
+.quote-band cite{font-style:normal;color:var(--fog-400);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* ============================================================
+   S4 Cause: six places, one person (night)
+   ============================================================ */
+.s4{background:var(--night-900)}
+.s4{--stage-h:270vh}
+.s4-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding-top:88px}
+.s4-lines{display:none}
+.s4-frames{display:grid;gap:36px}
+html:not(.stages) .s4-frame .cv{max-width:760px}
+.s4-frame figcaption{margin-top:10px;font-size:18px;color:var(--fog-200)}
+.s4-frame figcaption b{font-family:var(--f-mono);font-weight:500;font-size:12px;letter-spacing:.06em;color:var(--fog-400);margin-right:10px}
+.cv{width:100%;height:auto;overflow:visible}
+.cv text{font-family:var(--f-mono);font-weight:500;letter-spacing:.06em;fill:var(--fog-200)}
+.cv .node-bg{fill:var(--night-800);stroke:color-mix(in srgb,var(--fog-400) 45%,transparent);stroke-width:1.2}
+.cv .node-ic{color:var(--fog-200)}
+.cv .tangle{fill:none;stroke:var(--fog-400);stroke-width:1.4;opacity:.55}
+.cv .tangle.hot{stroke:var(--fog-200);opacity:.8}
+.cv .calm{fill:none;stroke:var(--teal-400);stroke-width:2;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--teal-400) 70%,transparent))}
+.cv .you-bg{fill:var(--paper-50)}
+.cv .you-t{fill:var(--night-900);font-weight:500}
+.cv .core-bg{fill:var(--night-800);stroke:var(--teal-400);stroke-width:2;filter:drop-shadow(0 0 16px color-mix(in srgb,var(--teal-400) 60%,transparent))}
+.cv .core-t{fill:var(--teal-400)}
+.js:not(.tier-c) .cv .draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.1s var(--ease)}
+.js:not(.tier-c) .s4-frame.play .cv .draw{stroke-dashoffset:0}
+.js:not(.tier-c) .s4-frame.play .cv .draw:nth-of-type(3n+2){transition-delay:.12s}
+.js:not(.tier-c) .s4-frame.play .cv .draw:nth-of-type(3n){transition-delay:.24s}
+.js:not(.tier-c) .cv .seventh{transform:translateY(-40px);opacity:0;transition:transform .8s var(--ease) .1s,opacity .5s .1s}
+.js:not(.tier-c) .s4-frame.play .cv .seventh{transform:none;opacity:1}
+.stages .s4-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;gap:48px;padding:0 var(--gutter)}
+.stages .s4-lines{display:grid;gap:18px;margin-top:32px;counter-reset:f}
+.s4-lines li{font-size:20px;line-height:1.35;color:var(--fog-200);opacity:.35;transition:opacity .4s var(--ease);display:grid;grid-template-columns:34px 1fr}
+.s4-lines li::before{counter-increment:f;content:"0" counter(f);font:500 12px/2.2 var(--f-mono);color:var(--fog-400)}
+.s4-lines li.on{opacity:1}
+.stages .s4-frames{display:grid}
+.stages .s4-frame{grid-area:1/1;opacity:0;transition:opacity .6s var(--ease)}
+.stages .s4-frame.play{opacity:1}
+.stages .s4-frame figcaption{display:none}
+.band{display:grid;gap:18px;align-items:center;margin:56px 0 0;padding:28px;border-radius:var(--r-card);background:var(--night-800);border:1px solid var(--line)}
+.band p{font:700 clamp(22px,2.4vw,30px)/1.2 var(--f-display);font-stretch:106%;color:var(--paper-50)}
+.s4-after{padding-bottom:96px}
+@media (min-width:900px){.band{grid-template-columns:1fr auto;padding:32px 40px}}
+
+/* ============================================================
+   S5 How it works: recorded once, checked, ranked (night to day)
+   ============================================================ */
+.s5{--stage-h:320vh;transition:background-color .7s var(--ease),color .7s var(--ease)}
+.s5 h2,.s5 h3{transition:color .7s var(--ease)}
+.s5.dusk{background-color:var(--dusk)}
+.s5-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;padding-top:88px;padding-bottom:40px}
+.beat{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;padding:18px;border-radius:var(--r-card);background:var(--night-800);border:1px solid var(--line)}
+.beat.b2{background:var(--dusk)}
+.beat-text{display:grid;gap:8px}
+.beat-text p{color:var(--lead)}
+.beat-n{color:var(--fg-2)}
+.s5-cond{margin-top:18px;font-size:15px;color:var(--fg-2);display:flex;gap:10px;align-items:flex-start}
+.s5-cond::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--teal-400)}
+html:not(.stages) .s5{background:linear-gradient(to bottom,var(--night-900) 0%,var(--night-900) 42%,var(--paper-50) 88%)}
+html:not(.stages) .s5 .b3{background:var(--paper-100);border-color:var(--line-200);color:var(--ink-900);--fg:var(--navy-700);--fg-2:var(--ink-500);--lead:var(--ink-500);--line:var(--line-200);--focus:var(--blue-600);--tag:var(--amber-700)}
+html:not(.stages) .s5-cond{color:var(--ink-500)}
+.beat-vis{position:relative;min-height:230px;display:grid;place-items:center}
+/* beat 1 */
+.v1{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;width:100%;max-width:520px}
+.v1-col{display:grid;gap:8px;justify-items:center}
+.v1-col .cf{width:100%;max-width:130px}
+.v1 .rec{white-space:normal;text-align:center;justify-content:center;font-size:10px;padding:6px 8px}
+.v1 .rec::before{display:none}
+.rec{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:9px;background:var(--paper-50);color:var(--navy-700);font:500 10.5px/1.2 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;box-shadow:0 8px 20px -10px var(--night-950);white-space:nowrap}
+.rec::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal-400)}
+.rec.fire{background:var(--amber-400);color:var(--night-900)}
+.rec.fire::before{background:var(--night-900)}
+.role-l{color:var(--fg-2)}
+.effort{display:inline-flex;gap:6px;align-items:center;font:500 12px/1 var(--f-mono);letter-spacing:.06em;color:var(--fg)}
+.js:not(.tier-c) .v1 .rec{opacity:0;transform:translateY(24px);transition:opacity .5s var(--ease),transform .7s var(--ease)}
+.js:not(.tier-c) .play .v1 .rec{opacity:1;transform:none}
+.js:not(.tier-c) .play .v1-col:nth-child(2) .rec{transition-delay:.12s}
+.js:not(.tier-c) .play .v1-col:nth-child(3) .rec{transition-delay:.24s}
+/* beat 2 */
+.v2{display:grid;gap:18px;width:100%;max-width:560px;justify-items:center}
+.planes{position:relative;width:100%;height:190px}
+.plane{position:absolute;top:10px;bottom:10px;width:64px;border-radius:12px;background:color-mix(in srgb,var(--fog-200) 12%,transparent);border:1px solid color-mix(in srgb,var(--fog-200) 42%,transparent);transform:skewY(-8deg);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.plane span{position:absolute;top:-24px;left:50%;transform:translateX(-50%) skewY(8deg);white-space:nowrap;color:var(--fg-2)}
+.plane.p1{left:32%}
+.plane.p2{left:calc(32% + 80px)}
+.flow{position:absolute;inset:0;display:grid;align-content:center;gap:12px}
+.flow li{justify-self:start;transform:translateX(0);transition:transform 1.2s var(--ease),background-color .4s,color .4s}
+.flow li:nth-child(2){transition-delay:.12s}
+.flow li:nth-child(3){transition-delay:.24s}
+.js:not(.tier-c) .play .flow li,.tier-c .flow li,.no-js .flow li{transform:translateX(min(calc(100vw - 260px),340px))}
+.flow li .st{margin-left:4px;opacity:.75}
+.v2 .cf{width:min(100%,360px)}
+@media (max-width:599px){
+  .plane{width:40px}
+  .plane.p1{left:4%}
+  .plane.p2{left:calc(4% + 50px)}
+  .flow li{font-size:9.5px;letter-spacing:.03em;padding:6px 8px}
+  .flow li:not(.fire) .st{display:none}
+  .js:not(.tier-c) .play .flow li,.tier-c .flow li,.no-js .flow li{transform:translateX(96px)}
+}
+/* beat 3 */
+.v3{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:16px;width:100%;max-width:560px;align-items:center}
+.rank{display:grid;gap:8px}
+.rank li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;background:var(--paper-50);border:1px solid var(--line-200);font:500 12px/1.2 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--navy-700);transform:translateY(calc(var(--from,0) * 100%));transition:transform .9s var(--ease)}
+.rank li.top{border-color:var(--amber-400);background:color-mix(in srgb,var(--amber-400) 16%,var(--paper-50))}
+.rank li .badge{padding:4px 7px;border-radius:6px;background:var(--amber-400);color:var(--night-900);font-size:10.5px}
+.rank li .ok{color:var(--teal-700)}
+.js:not(.tier-c) .play .rank li{--from:0!important}
+.tier-c .rank li,.no-js .rank li{--from:0!important}
+.v3 .crop-q{grid-column:1}
+.v3 > .cf.cf-phone{grid-column:2;grid-row:1 / span 2}
+.v3 .ph-tag{grid-column:1 / -1;margin:0}
+.stages .s5-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:auto auto auto auto 1fr;column-gap:56px;row-gap:22px;align-items:start;padding:0 var(--gutter)}
+.stages .s5-grid > h2{grid-column:1;grid-row:1;margin-bottom:8px;font-size:clamp(34px,3.6vw,54px)}
+.stages .beat{display:contents}
+.stages .beat-text{grid-column:1;opacity:.35;transition:opacity .5s var(--ease);gap:4px}
+.stages .beat-text .h3{font-size:clamp(20px,1.8vw,26px)}
+.stages .beat.play .beat-text{opacity:1}
+.stages .b1 .beat-text{grid-row:2}
+.stages .b2 .beat-text{grid-row:3}
+.stages .b3 .beat-text{grid-row:4}
+.stages .beat-vis{grid-column:2;grid-row:1 / -1;align-self:center;min-height:440px;opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease),transform .6s var(--ease);pointer-events:none}
+.stages .beat.play .beat-vis{opacity:1;transform:none;pointer-events:auto}
+.stages .s5-cond{grid-column:1;grid-row:5}
+.stages .v1-col .cf{max-width:150px}
+.stages .v3{grid-template-columns:minmax(0,1fr) 150px}
+
+/* ============================================================
+   Day sections: shared
+   ============================================================ */
+.pill-note{display:inline-flex;gap:8px;align-items:center;color:var(--fg-2);font-size:14px}
+.card{border-radius:var(--r-card);background:var(--paper-100);border:1px solid var(--line-200)}
+
+/* S6 Pillar 1 */
+.s6-vis{position:relative;display:flex;flex-direction:column;gap:28px}
+.s6-phone{order:-1;display:grid;justify-items:center;gap:10px}
+.s6-phone .cf{width:min(46%,190px)}
+.callout{font-size:15px;font-weight:600;color:var(--navy-700);display:flex;align-items:center;gap:10px}
+.callout::before{content:"";width:24px;height:1.5px;background:var(--navy-700)}
+.s6-web{position:relative}
+.hotspots{position:absolute;left:0;right:0;bottom:0;top:var(--bar);pointer-events:none}
+.hs{position:absolute;left:var(--x);top:var(--y);display:flex;align-items:center;gap:0;transform:translate(-13px,-13px)}
+.hs-n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--navy-700);color:var(--paper-50);font:500 12px/1 var(--f-mono);box-shadow:0 0 0 3px var(--paper-50)}
+.hs.fire .hs-n{background:var(--amber-400);color:var(--night-900)}
+.hs-line{display:none;width:26px;height:1.5px;background:var(--navy-700);transform-origin:left}
+.hs-label{display:none;padding:6px 10px;border-radius:8px;background:var(--paper-50);border:1px solid var(--line-200);font-size:13.5px;font-weight:600;color:var(--navy-700);white-space:nowrap;box-shadow:0 8px 18px -12px var(--night-950)}
+.hs-list{display:grid;gap:10px;counter-reset:h}
+.hs-list li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;font-weight:600;color:var(--navy-700)}
+.hs-list li::before{counter-increment:h;content:counter(h);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--navy-700);color:var(--paper-50);font:500 12px/1 var(--f-mono)}
+.hs-list li:first-child::before{background:var(--amber-400);color:var(--night-900)}
+.s6-riskring{position:absolute;left:14%;top:calc(var(--bar) + 42% * (1 - var(--bar-f,0)));width:83%;height:9%;border-radius:8px;pointer-events:none}
+@media (min-width:900px){
+  .s6-vis{display:block;max-width:1160px;padding-right:15%}
+  .s6-phone{position:absolute;right:0;bottom:-64px;width:23%;z-index:3}
+  .s6-phone .cf{width:100%}
+  .s6-phone .ph-tag{text-align:center}
+  .hs-line,.hs-label{display:block}
+  .hs-list{display:none}
+  .js:not(.tier-c) .hs .hs-line{transform:scaleX(0);transition:transform .4s var(--ease) calc(var(--i) * 80ms)}
+  .js:not(.tier-c) .hs .hs-label{opacity:0;transform:translateX(-6px);transition:opacity .4s var(--ease) calc(var(--i) * 80ms + .2s),transform .4s var(--ease) calc(var(--i) * 80ms + .2s)}
+  .js:not(.tier-c) .play .hs .hs-line{transform:none}
+  .js:not(.tier-c) .play .hs .hs-label{opacity:1;transform:none}
+}
+
+/* S7 Pillar 2: one order, first call to payment */
+.s7{--stage-h:320vh}
+.s7-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
+.route{width:100%;height:auto}
+.route .land{fill:var(--paper-100)}
+.route .grid-dot{fill:var(--line-200)}
+.route .base{fill:none;stroke:var(--line-200);stroke-width:10;stroke-linecap:round}
+.route .lit{fill:none;stroke:var(--teal-400);stroke-width:5;stroke-linecap:round;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--teal-400) 80%,transparent))}
+.route .wp{fill:var(--paper-50);stroke:var(--line-200);stroke-width:2;transition:fill .3s,stroke .3s}
+.route .wp.on{fill:var(--teal-400);stroke:var(--teal-700)}
+.route .area{font:500 13px var(--f-mono);letter-spacing:.1em;fill:var(--ink-500)}
+.route .order-bg{fill:var(--navy-700)}
+.route .order-t{font:500 11px var(--f-mono);letter-spacing:.08em;fill:var(--paper-50)}
+.route .order-dot{fill:var(--teal-400)}
+.journey{display:grid;gap:26px;counter-reset:j}
+.jstep{display:grid;gap:12px;padding-left:44px;position:relative}
+.jstep::before{counter-increment:j;content:counter(j);position:absolute;left:0;top:0;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--teal-700);color:var(--paper-50);font:500 13px/1 var(--f-mono)}
+.jstep::after{content:"";position:absolute;left:14.25px;top:36px;bottom:-22px;width:1.5px;background:var(--line-200)}
+.jstep:last-child::after{display:none}
+.jl{font:700 20px/1.25 var(--f-display);font-stretch:106%;color:var(--navy-700);padding-top:3px}
+.jcap .cf-phone{width:min(56%,210px)}
+.jcap .effort{margin-top:8px}
+.stages .s7-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:auto 1fr;gap:28px 56px;align-items:center;padding:0 var(--gutter)}
+.stages .route-box{grid-column:1;grid-row:1}
+.stages .journey{display:contents}
+.stages .jhead{grid-column:1;grid-row:2;align-self:start}
+.stages .jstep{display:contents}
+.stages .jstep::before,.stages .jstep::after{display:none}
+.stages .jl{display:none}
+.stages .jcap{grid-column:2;grid-row:1 / -1;display:grid;justify-items:center;align-content:center;height:min(560px,70vh);opacity:0;transform:scale(.98);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.stages .jstep.on .jcap{opacity:1;transform:none}
+.stages .jcap .cf-web{width:100%}
+.stages .jcap .cf-phone{width:calc(min(480px,58vh) * .437)}
+.jhead{display:none}
+.stages .jhead{display:grid;gap:10px;counter-reset:jh}
+.jhead li{display:grid;grid-template-columns:34px 1fr;align-items:center;gap:10px;font-weight:600;color:var(--ink-500);opacity:.55;transition:opacity .3s,color .3s}
+.jhead li::before{counter-increment:jh;content:counter(jh);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line-200);font:500 12px/1 var(--f-mono)}
+.jhead li.on{opacity:1;color:var(--navy-700)}
+.jhead li.on::before{background:var(--teal-700);border-color:var(--teal-700);color:var(--paper-50)}
+.jhead li.done::before{border-color:var(--teal-700);color:var(--teal-700)}
+.s7-note{margin-top:8px;color:var(--ink-500);font-size:14px}
+.s7-cards{display:grid;gap:20px;padding-top:72px;padding-bottom:128px}
+.fcard{display:grid;gap:14px;align-content:start;padding:20px;border-radius:var(--r-card);background:var(--paper-100);border:1px solid var(--line-200)}
+.fcard .cf-phone{width:min(46%,170px);justify-self:center}
+.fcard p{color:var(--ink-500)}
+@media (min-width:900px){.s7-cards{grid-template-columns:repeat(3,1fr)}}
+html:not(.stages) .s7 .stage-pin{padding-top:0}
+
+/* S8 Pillar 3: bento of five checks */
+.bento{display:grid;gap:16px}
+.tile{display:grid;gap:14px;align-content:start;padding:22px;border-radius:var(--r-card);background:var(--paper-100);border:1px solid var(--line-200)}
+.tile p{color:var(--ink-500)}
+.mm{height:120px;border-radius:14px;background:var(--paper-50);border:1px solid var(--line-200);display:grid;place-items:center;overflow:hidden}
+.mm svg{width:100%;height:100%}
+.mm .lbl{font:500 10px var(--f-mono);letter-spacing:.08em;fill:var(--ink-500)}
+.mm .bar-a{fill:var(--navy-700)}
+.mm .bar-b{fill:var(--blue-600)}
+.mm .gap{fill:var(--amber-400);opacity:0;transition:opacity .4s 1s}
+.mm .norm{stroke:var(--ink-500);stroke-dasharray:4 4;stroke-width:1.5;fill:none}
+.mm .cons{stroke:var(--navy-700);stroke-width:2.5;fill:none}
+.mm .cross{fill:var(--amber-400);opacity:0;transition:opacity .3s 1.2s}
+.mm .ring-bg{fill:none;stroke:var(--line-200);stroke-width:5}
+.mm .ring-fg{fill:none;stroke:var(--teal-700);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1.4s var(--ease),stroke .3s 1.2s}
+.mm .limit{stroke:var(--navy-700);stroke-width:2}
+.mm .fill{fill:var(--navy-700);transition:width 1.4s var(--ease)}
+.mm .over{fill:var(--amber-400);opacity:0;transition:opacity .3s 1.3s}
+.js:not(.tier-c) .mm .slide{transform:translateX(60px);transition:transform 1s var(--ease)}
+.js:not(.tier-c) .mm .draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s var(--ease)}
+.js:not(.tier-c) .play .mm .slide{transform:none}
+.js:not(.tier-c) .play .mm .draw{stroke-dashoffset:0}
+.play .mm .gap,.play .mm .cross,.play .mm .over,.tier-c .mm .gap,.tier-c .mm .cross,.tier-c .mm .over,.no-js .mm .gap,.no-js .mm .cross,.no-js .mm .over{opacity:1}
+.play .mm .ring-fg.alert,.tier-c .mm .ring-fg.alert,.no-js .mm .ring-fg.alert{stroke:var(--amber-400)}
+.mm .ring-fg{stroke-dashoffset:var(--to)}
+.js:not(.tier-c) .mm .ring-fg{stroke-dashoffset:0}
+.js:not(.tier-c) .play .mm .ring-fg{stroke-dashoffset:var(--to)}
+.mm .fill{width:var(--w)}
+.js:not(.tier-c) .mm .fill{width:0}
+.js:not(.tier-c) .play .mm .fill{width:var(--w)}
+.tile .cf-crop{width:100%}
+.approve{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;justify-items:center}
+.approve .cf{width:100%;max-width:120px}
+.approve .ic{color:var(--ink-500)}
+@media (min-width:900px){
+  .bento{grid-template-columns:repeat(3,1fr)}
+  .tile.wide{grid-column:span 2}
+  .tile.wide .mm{height:150px}
+}
+
+/* S9 Every role, one system */
+.roles{display:grid;gap:28px}
+.role-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
+.role-tabs::-webkit-scrollbar{display:none}
+.role-tabs button{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-200);background:var(--paper-50);cursor:pointer;font-weight:600;font-size:15px;color:var(--ink-500);transition:background-color .2s,color .2s,border-color .2s}
+.role-tabs button[aria-selected="true"]{background:var(--navy-700);border-color:var(--navy-700);color:var(--paper-50)}
+.role-body{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:center}
+.role-phone{display:grid;justify-items:center;perspective:1200px}
+.role-phone .flip{width:min(60%,240px);transition:transform .25s ease-in}
+.role-phone .flip.turn{transform:rotateY(90deg)}
+.role-panel{display:grid;gap:16px;padding:24px;border-radius:var(--r-card);background:var(--paper-100);border:1px solid var(--line-200)}
+.role-panel[hidden]{display:none}
+.for{display:grid;gap:6px;padding-top:14px;border-top:1px solid var(--line-200)}
+.for b{font:700 clamp(22px,2.4vw,30px)/1.2 var(--f-display);font-stretch:106%;color:var(--navy-700)}
+.film-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:72px 0 18px}
+.film-head h3{font-size:clamp(22px,2.2vw,30px)}
+.film{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 28px;counter-reset:fs}
+.film li{flex:none;width:150px;scroll-snap-align:start;display:grid;gap:8px}
+.film li::before{counter-increment:fs;content:"0" counter(fs);font:500 12px/1 var(--f-mono);letter-spacing:.06em;color:var(--ink-500)}
+.film .more{display:grid;place-items:center;align-self:stretch;border:1.5px dashed var(--line-200);border-radius:var(--r-screen);color:var(--ink-500);text-align:center;padding:12px}
+.film li.more-li::before{content:"…"}
+.closing{margin-top:40px;font:700 clamp(22px,2.4vw,32px)/1.2 var(--f-display);font-stretch:106%;color:var(--navy-700)}
+@media (min-width:900px){
+  .role-body{grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px}
+  .role-tabs{flex-wrap:wrap;overflow:visible}
+}
+
+/* S10 Before and after */
+.ba-head{display:none}
+.ba{display:grid;gap:14px}
+.ba-row{display:grid;gap:12px;padding:16px;border-radius:var(--r-card);background:var(--paper-100);border:1px solid var(--line-200)}
+.ba-today{display:flex;gap:14px;align-items:center;color:var(--ink-500);filter:grayscale(1)}
+.ba-today .ic-box{display:grid;place-items:center;width:44px;height:44px;flex:none;border-radius:12px;background:var(--paper-50);border:1px solid var(--line-200);color:var(--ink-500)}
+.ba-today span:last-child{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--ink-500) 45%,transparent)}
+.ba-with{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;font-weight:600;color:var(--navy-700)}
+.ba-with .ph-tag{margin-top:6px;font-size:10px}
+.ba-arrow{display:none}
+.mini-lbl{color:var(--ink-500)}
+@media (min-width:900px){
+  .ba-head{display:grid;grid-template-columns:minmax(0,5fr) 40px minmax(0,7fr);gap:16px;padding:0 20px 10px;color:var(--ink-500)}
+  .ba-row{grid-template-columns:minmax(0,5fr) 40px minmax(0,7fr);align-items:center;gap:16px;padding:14px 20px}
+  .ba-arrow{display:block;color:var(--teal-700)}
+  .ba-row .mini-lbl{display:none}
+  .ba-with{grid-template-columns:160px 1fr}
+}
+
+/* S11 One system, not more pieces */
+.stacks{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 18px;margin-bottom:40px}
+.stack{flex:none;width:78%;scroll-snap-align:center;display:grid;gap:14px;justify-items:center;padding:28px 18px 22px;border-radius:var(--r-card);background:var(--paper-100);border:1px solid var(--line-200);transition:opacity .8s var(--ease),filter .8s var(--ease)}
+.stack .obj{position:relative;height:150px;width:100%;display:grid;place-items:center}
+.stack .plinth{width:80%;height:14px;border-radius:50%;background:color-mix(in srgb,var(--navy-700) 14%,transparent);filter:blur(4px)}
+.stack h3{font-size:20px}
+.stack p{font-size:14px;color:var(--ink-500);text-align:center}
+.pile i,.piece,.oneblock{position:absolute;display:grid;place-items:center;border-radius:12px;background:var(--paper-50);border:1px solid var(--line-200);box-shadow:0 10px 20px -12px color-mix(in srgb,var(--night-950) 60%,transparent);color:var(--ink-500)}
+.pile i{width:58px;height:58px}
+.pile i:nth-child(1){transform:translate(-40px,26px) rotate(-12deg)}
+.pile i:nth-child(2){transform:translate(26px,30px) rotate(9deg)}
+.pile i:nth-child(3){transform:translate(-8px,-6px) rotate(-4deg)}
+.pile i:nth-child(4){transform:translate(34px,-30px) rotate(16deg)}
+.pile i:nth-child(5){transform:translate(-36px,-34px) rotate(-18deg)}
+.pieces{position:relative;width:100%;height:100%}
+.piece{width:56px;height:56px}
+.piece small{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);font:500 10px/1 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-500);white-space:nowrap}
+.piece:nth-of-type(1){left:8%;top:44%}
+.piece:nth-of-type(2){left:calc(50% - 28px);top:2%}
+.piece:nth-of-type(3){right:8%;top:44%}
+.pieces svg{position:absolute;inset:0;width:100%;height:100%}
+.pieces .broken{stroke:var(--ink-500);stroke-width:1.5;stroke-dasharray:4 6;fill:none}
+.oneblock{width:132px;height:112px;gap:6px;border-radius:18px;background:var(--navy-700);border-color:var(--navy-700);color:var(--teal-400);transition:box-shadow .8s var(--ease)}
+.oneblock .mark{font:800 26px/1 var(--f-display);font-stretch:116%;color:var(--paper-50)}
+.oneblock small{font:500 10px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--teal-400)}
+.stacks.play .stack.dim{opacity:.55;filter:saturate(0)}
+.stacks.play .oneblock{box-shadow:0 0 0 2px var(--teal-400),0 0 40px 6px color-mix(in srgb,var(--teal-400) 45%,transparent)}
+.tier-c .stack.dim{opacity:.55;filter:saturate(0)}
+.tier-c .oneblock{box-shadow:0 0 0 2px var(--teal-400),0 0 40px 6px color-mix(in srgb,var(--teal-400) 45%,transparent)}
+.cmp{width:100%;border-collapse:separate;border-spacing:0}
+.cmp caption{text-align:left}
+.cmp th,.cmp td{padding:14px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-200);font-size:15.5px}
+.cmp thead th{font:500 12px/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-500);border-bottom:1.5px solid var(--navy-700)}
+.cmp tbody th{font-weight:600;color:var(--navy-700)}
+.cmp td.fp{background:color-mix(in srgb,var(--teal-400) 14%,var(--paper-50));font-weight:600;color:var(--navy-700)}
+.cmp thead th.fp{color:var(--teal-700)}
+.cmp tr.proof th,.cmp tr.proof td{font-weight:700}
+@media (max-width:899px){
+  .cmp thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .cmp,.cmp tbody,.cmp tr,.cmp th,.cmp td{display:block}
+  .cmp tr{margin-bottom:12px;border-radius:16px;border:1px solid var(--line-200);background:var(--paper-100);overflow:hidden}
+  .cmp tbody th{padding:14px 16px 8px;border:0;font-size:17px}
+  .cmp td{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:8px 16px;border:0}
+  .cmp td::before{content:attr(data-col);font:500 10.5px/1.5 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-500)}
+  .cmp td.fp{padding-bottom:14px}
+}
+@media (min-width:900px){
+  .stacks{overflow:visible;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .stack{width:auto}
+}
+.never{display:grid;gap:22px;margin-top:40px;align-items:start}
+.callout-box{padding:24px;border-radius:var(--r-card);background:var(--navy-700);color:var(--fog-200)}
+.callout-box b{display:block;font:800 clamp(22px,2.4vw,30px)/1.15 var(--f-display);font-stretch:112%;color:var(--paper-50);margin-bottom:6px}
+.refuse{padding:24px;border-radius:var(--r-card);border:1.5px solid var(--navy-700)}
+.refuse h3{font-size:22px;margin-bottom:14px}
+.refuse ul{display:grid;gap:10px}
+.refuse li{display:flex;gap:12px;align-items:center;font-weight:600;color:var(--navy-700)}
+.refuse li .ic{width:20px;height:20px;color:var(--ink-500)}
+.refuse p{margin-top:14px;color:var(--ink-500);font-size:14.5px}
+@media (min-width:900px){.never{grid-template-columns:1fr 1fr}}
+
+/* S12 Value calculator */
+.calc{display:grid;gap:0;border-radius:var(--r-card);border:1px solid var(--line-200);background:var(--paper-100);overflow:hidden}
+.calc-tabs{display:flex;gap:6px;overflow-x:auto;padding:10px;border-bottom:1px solid var(--line-200);scrollbar-width:none}
+.calc-tabs::-webkit-scrollbar{display:none}
+.calc-tabs button{flex:none;display:inline-flex;gap:8px;align-items:center;min-height:44px;padding:0 14px;border:0;border-radius:10px;background:transparent;cursor:pointer;font-weight:600;font-size:15px;color:var(--ink-500)}
+.calc-tabs button .ic{width:20px;height:20px}
+.calc-tabs button[aria-selected="true"]{background:var(--paper-50);color:var(--navy-700);box-shadow:0 0 0 1px var(--line-200)}
+.calc-panel{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding:22px}
+.calc-panel[hidden]{display:none}
+.fields{display:grid;gap:14px}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:15px;color:var(--navy-700)}
+.field input,.field select{width:100%;min-height:48px;padding:0 14px;border-radius:10px;border:1px solid color-mix(in srgb,var(--ink-500) 50%,transparent);background:var(--paper-50);font-size:17px;color:var(--ink-900)}
+.field .unit{display:flex;align-items:center;gap:8px}
+.field .unit span{font:500 12px/1 var(--f-mono);color:var(--ink-500);letter-spacing:.04em}
+.hint{font:500 11px/1.4 var(--f-mono);letter-spacing:.03em;color:var(--ink-500)}
+.result{display:grid;gap:14px;align-content:start;padding:22px;border-radius:16px;background:var(--navy-700);color:var(--fog-200);--fg:var(--paper-50);--tag:var(--amber-400);--focus:var(--amber-400)}
+.result .big{font:800 clamp(28px,3.6vw,48px)/1.08 var(--f-display);font-stretch:108%;color:var(--paper-50)}
+.result .big .num{font-variant-numeric:tabular-nums;color:var(--teal-400)}
+.result .sub{font-size:16px}
+.result .kept{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-top:12px;border-top:1px solid color-mix(in srgb,var(--fog-400) 25%,transparent)}
+.result .kept .chip{color:var(--fog-200);border-color:color-mix(in srgb,var(--fog-400) 45%,transparent)}
+.result .formula{font:500 11px/1.5 var(--f-mono);letter-spacing:.03em;color:var(--fog-400)}
+.role-lines{display:grid;gap:12px}
+.role-lines li{display:grid;gap:4px;padding:14px 16px;border-radius:12px;background:var(--paper-50);border:1px solid var(--line-200)}
+.role-lines li b{color:var(--navy-700)}
+.role-lines a{font-size:14px;color:var(--blue-600)}
+.peace q{font:800 clamp(30px,4vw,56px)/1.05 var(--f-display);font-stretch:112%;color:var(--navy-700);quotes:"\201C" "\201D"}
+.day .band{background:var(--navy-700);border-color:var(--navy-700)}
+@media (min-width:900px){
+  .calc-panel{grid-template-columns:minmax(0,6fr) minmax(0,5fr);padding:32px;gap:32px}
+  .calc-panel.single{grid-template-columns:1fr}
+  .fields.two{grid-template-columns:1fr 1fr}
+}
+@media (max-width:899px){.result{position:sticky;bottom:12px}}
+
+/* S13 Starting is not another job */
+.s13{background:color-mix(in srgb,var(--amber-400) 7%,var(--paper-50))}
+.road{position:relative;margin:8px 0 36px}
+.road svg{width:100%;height:auto;overflow:visible}
+.road .asphalt{fill:none;stroke:var(--navy-700);stroke-width:26;stroke-linecap:round}
+.road .dash{fill:none;stroke:var(--paper-50);stroke-width:2;stroke-dasharray:10 12}
+.road .gate{fill:var(--paper-100);stroke:var(--navy-700);stroke-width:2;transition:fill .4s,stroke .4s}
+.road .gate.on{fill:var(--teal-400);stroke:var(--teal-700)}
+.road .gate-n{font:500 13px var(--f-mono);fill:var(--navy-700)}
+.road .day30{font:500 12px var(--f-mono);letter-spacing:.08em;fill:var(--navy-700)}
+.road .truck{transition:transform .2s linear}
+@media (max-width:599px){.road .gate-n,.road .day30{display:none}}
+.gates{display:grid;gap:14px;counter-reset:g}
+.gates li{display:grid;grid-template-columns:36px 1fr;gap:12px;padding:18px;border-radius:16px;background:var(--paper-50);border:1px solid var(--line-200)}
+.gates li::before{counter-increment:g;content:counter(g);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--teal-700);color:var(--paper-50);font:500 13px/1 var(--f-mono)}
+.gates b{display:block;color:var(--navy-700);font-size:17px}
+.gates span{color:var(--ink-500)}
+.keep{margin-top:28px}
+.keep .chip{color:var(--teal-700);border-color:color-mix(in srgb,var(--teal-700) 42%,transparent);background:var(--paper-50)}
+@media (min-width:900px){.gates{grid-template-columns:repeat(4,1fr)}.gates li{grid-template-columns:1fr}}
+
+/* S14 Pricing */
+.plans{display:grid;gap:16px;align-items:stretch}
+.plan{display:grid;gap:16px;align-content:start;padding:24px;border-radius:var(--r-card);background:var(--paper-100);border:1px solid var(--line-200);position:relative}
+.plan.rec-plan{background:var(--paper-50);border:2px solid var(--navy-700);box-shadow:0 30px 60px -30px color-mix(in srgb,var(--navy-700) 55%,transparent)}
+.plan .rtag{position:absolute;top:-13px;left:22px;padding:5px 10px;border-radius:999px;background:var(--navy-700);color:var(--paper-50);font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase}
+.plan h3{font-size:26px}
+.trucks{display:flex;flex-wrap:wrap;gap:3px;color:var(--navy-700);min-height:22px;align-items:center}
+.trucks .ic{width:20px;height:20px}
+.trucks b{font:500 13px var(--f-mono);margin-left:4px}
+.band-l{font-weight:600;color:var(--navy-700)}
+.plan p{color:var(--ink-500)}
+.price{display:grid;gap:4px;padding-top:12px;border-top:1px solid var(--line-200);color:var(--ink-900);font-size:15px}
+.plan .btn{margin-top:auto}
+.price .tbd{justify-self:start}
+.incl{margin-top:28px;display:grid;gap:14px}
+.facts{display:grid;gap:6px;color:var(--ink-500);font-size:15px}
+@media (min-width:900px){.plans{grid-template-columns:repeat(4,1fr)}.plan.rec-plan{transform:translateY(-12px)}}
+
+/* S15 Trust */
+.answers{display:grid;gap:16px}
+.answer{display:grid;gap:18px;align-content:space-between;min-height:220px;padding:26px;border-radius:var(--r-card);background:var(--navy-700);color:var(--fog-200)}
+.answer .mono{color:var(--fog-400)}
+.answer b{font:800 clamp(26px,2.8vw,40px)/1.08 var(--f-display);font-stretch:112%;color:var(--paper-50)}
+.answer.calm b{color:var(--teal-400)}
+.tfacts{display:grid;gap:14px;margin-top:20px}
+.tfact{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:20px;border-radius:16px;background:var(--paper-100);border:1px solid var(--line-200)}
+.tfact .ic-box{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--paper-50);border:1px solid var(--line-200);color:var(--navy-700)}
+.tfact b{display:block;color:var(--navy-700);margin-bottom:4px}
+.tfact p{color:var(--ink-500);font-size:15px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+@media (min-width:900px){.answers{grid-template-columns:repeat(3,1fr)}.tfacts{grid-template-columns:repeat(4,1fr)}.tfact{grid-template-columns:1fr}}
+
+/* S16 Questions */
+.faq{display:grid;border-top:1px solid var(--line-200);max-width:900px}
+.faq details{border-bottom:1px solid var(--line-200)}
+.faq summary{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:20px 2px;cursor:pointer;list-style:none;font:700 clamp(18px,1.6vw,21px)/1.3 var(--f-text);color:var(--navy-700)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .ic{transition:transform .25s var(--ease);color:var(--ink-500)}
+.faq details[open] summary .ic{transform:rotate(180deg)}
+.faq .ans{padding:0 2px 22px;max-width:680px;color:var(--ink-500);font-size:17px}
+
+/* S17 Final call to action (night, calm) */
+.final{position:relative;overflow:hidden;background:radial-gradient(90% 70% at 70% 20%,var(--night-800) 0%,var(--night-900) 55%,var(--night-950) 100%)}
+.final-top{display:grid;gap:36px;align-items:center}
+.final-copy{display:grid;gap:18px}
+.calm-vis{position:relative;display:grid;justify-items:center;padding:20px 0}
+.calm-vis .slab{width:min(46%,210px);transform:rotate(-7deg)}
+.calm-vis .dev-phone{box-shadow:0 0 0 1px color-mix(in srgb,var(--teal-400) 42%,transparent),0 0 70px -8px color-mix(in srgb,var(--teal-400) 45%,transparent)}
+.far{position:absolute;left:0;right:0;bottom:56px;height:40px;pointer-events:none}
+.far i{position:absolute;top:50%;width:6px;height:6px;border-radius:50%;background:var(--amber-400);box-shadow:0 0 10px var(--amber-400);opacity:.55}
+.far i:nth-child(even){background:var(--paper-50);box-shadow:0 0 10px var(--paper-50)}
+.far i:nth-child(1){left:8%}.far i:nth-child(2){left:22%;top:30%}.far i:nth-child(3){left:61%;top:62%}.far i:nth-child(4){left:80%}.far i:nth-child(5){left:92%;top:36%}
+.js:not(.tier-c) .run .far i{animation:far 4.8s var(--ease) both}
+@keyframes far{from{transform:translateX(-26px);opacity:0}to{transform:none;opacity:.55}}
+.panels{display:grid;gap:18px;margin-top:48px;align-items:start}
+.panel{padding:26px;border-radius:var(--r-card);background:var(--night-800);border:1px solid var(--line);display:grid;gap:16px;align-content:start}
+.panel h3{font-size:24px}
+.form{display:grid;gap:14px}
+.form .field label{color:var(--paper-50)}
+.form .field input,.form .field select{background:var(--night-900);border-color:color-mix(in srgb,var(--fog-400) 55%,transparent);color:var(--paper-50)}
+.form .field input:focus-visible,.form .field select:focus-visible{outline:2px solid var(--amber-400);outline-offset:1px}
+.phone-in{display:flex;align-items:center;gap:0}
+.phone-in span{display:grid;place-items:center;min-height:48px;padding:0 12px;border-radius:10px 0 0 10px;border:1px solid color-mix(in srgb,var(--fog-400) 55%,transparent);border-right:0;background:var(--night-950);font:500 15px var(--f-mono);color:var(--fog-200)}
+.phone-in input{border-radius:0 10px 10px 0!important}
+.err{color:var(--amber-400);font-size:14px;min-height:0}
+.err:empty{display:none}
+.consent{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;font-size:15px;color:var(--fog-200);cursor:pointer}
+.consent input{width:22px;height:22px;margin:1px 0 0;accent-color:var(--amber-400)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.opt{color:var(--fog-400);font-weight:400}
+.sent{padding:18px;border-radius:14px;background:color-mix(in srgb,var(--teal-400) 16%,transparent);border:1px solid var(--teal-400);color:var(--paper-50)}
+.sent[hidden]{display:none}
+.calc-note{font-size:14px;color:var(--teal-400)}
+.calc-note[hidden]{display:none}
+.final-foot{display:grid;gap:18px;margin-top:40px}
+.final-foot blockquote{margin:0;display:grid;gap:8px}
+.final-foot q{font:700 clamp(22px,2.4vw,32px)/1.2 var(--f-display);font-stretch:108%;color:var(--paper-50);quotes:"\201C" "\201D"}
+@media (min-width:900px){
+  .final-top{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+  .panels{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+  .form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+}
+
+/* S18 Footer */
+.foot{background:var(--night-950);padding:64px 0 120px;font-size:15px}
+.foot-grid{display:grid;gap:28px}
+.foot h2{font:800 22px/1 var(--f-display);font-stretch:116%;color:var(--paper-50)}
+.foot dl{display:grid;gap:12px;margin:0}
+.foot dt{font:500 11px/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fog-400)}
+.foot dd{margin:2px 0 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.foot a{color:var(--paper-50)}
+.foot-note{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--fog-400);font:500 11px/1.5 var(--f-mono);letter-spacing:.04em}
+@media (min-width:900px){.foot{padding-bottom:64px}.foot-grid{grid-template-columns:4fr 8fr}.foot dl{grid-template-columns:repeat(3,1fr);gap:24px}}
+
+/* Tier C: composed, static frames. The page reads completely (05 §4, §5). */
+.tier-c *,.tier-c *::before,.tier-c *::after{animation:none!important;transition:none!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<!-- Icons: Lucide (ISC licence), drawn inline so the page stays one file -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M3 15h18M9 9v12M15 9v12"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/></symbol>
+    <symbol id="i-fuel" viewBox="0 0 24 24"><path d="M3 22h12M4 9h10"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2 2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/></symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2M10 6h4M10 10h4M10 14h4M10 18h4"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-phone-dev" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/></symbol>
+    <symbol id="i-handshake" viewBox="0 0 24 24"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="preview-bar" role="note">
+  <span class="preview-only">Preview<span class="pv-long"> · English working copy · captures are labelled placeholders</span> · <span class="tbd" style="color:var(--amber-400)">{TBD}</span> = open decision</span>
+  <a class="preview-only" href="?view=launch">Launch view</a>
+  <a class="preview-only" href="?tier=c">Static view</a>
+  <span class="launch-only">Launch view · blocks waiting on a decision are hidden · <a href="./">Back to preview</a></span>
+</div>
+
+<!-- ============ S1 Header ============ -->
+<header class="hdr" id="top" data-register="night">
+  <div class="wrap hdr-in">
+    <a class="wordmark" href="#main" aria-label="FleetPartner, back to top">FleetPartner</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#questions">Questions</a>
+    </nav>
+    <a class="hdr-call" data-cta="call" aria-disabled="true">Call <span class="tbd" data-fact="phone">[number] · OD8</span></a>
+    <a class="btn btn-fire btn-sm" data-cta="check" href="#check-tbd">Check where your fire is</a>
+    <a class="icon-btn" data-cta="call" aria-disabled="true" aria-label="Call us (number to come)"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
+    <button class="icon-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  </div>
+  <nav class="menu" id="menu" aria-label="Menu" hidden>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#questions">Questions</a>
+    <a class="btn btn-fire" data-cta="check" href="#check-tbd">Check where your fire is</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- ============ S2 Hero ============ -->
+<section id="hero" class="hero night" data-register="night" aria-labelledby="hero-h">
+  <svg class="roads" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="rd" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#66BEB3" stop-opacity=".32"/><stop offset="1" stop-color="#66BEB3" stop-opacity="0"/></linearGradient>
+    </defs>
+    <g fill="none" stroke="url(#rd)" stroke-width="1.5">
+      <path d="M-40 560 L1010 40"/><path d="M260 560 L1030 40"/><path d="M620 560 L1050 40"/><path d="M980 560 L1070 40"/><path d="M1340 560 L1090 40"/><path d="M1700 560 L1110 40"/>
+      <path d="M-40 420 L1440 250" stroke-opacity=".5"/><path d="M-40 520 L1440 330" stroke-opacity=".4"/>
+    </g>
+  </svg>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="kicker" id="kicker">For transport companies with 10 to 50 trucks.</p>
+      <h1 id="hero-h" class="display">Know where the fire is. Without phoning anyone.</h1>
+      <p class="lead">One system for your whole company. Everyone records once. You see it ranked.</p>
+      <div class="cta-row">
+        <div class="cta-main">
+          <a class="btn btn-fire" data-cta="check" href="#check-tbd">Check where your fire is</a>
+          <p class="mono under">7 questions · 5 minutes · no call <span class="tbd" data-tbd>{TBD · OD6}</span></p>
+        </div>
+        <a class="btn btn-line" href="#form">Show me on my phone</a>
+      </div>
+      <p class="hero-links"><a data-cta="call" aria-disabled="true">Call <span class="tbd" data-fact="phone">[number] · OD8</span></a></p>
+    </div>
+    <figure class="hero-vis" data-anim>
+      <div class="hv-3d" aria-hidden="true">
+        <div class="slab slab-web"><div class="cf cf-web" data-cap="C01" data-sil="dash"></div></div>
+        <div class="slab risk-lift web-only"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-sil="crop-risk" style="--ar:6/1"></div></div>
+        <div class="slab slab-phone"><div class="cf cf-phone" data-cap="C02" data-sil="pdash"></div></div>
+        <div class="slab risk-lift phone-only"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-sil="crop-risk" style="--ar:6/1"></div></div>
+        <span class="drift d1"><svg class="ic"><use href="#i-msg"/></svg></span>
+        <span class="drift d2"><svg class="ic"><use href="#i-sheet"/></svg></span>
+        <span class="drift d3"><svg class="ic"><use href="#i-phone"/></svg></span>
+      </div>
+      <figcaption class="ph-tag">Placeholder · C01 + C02 · command screen, web and phone · biggest-risk crop</figcaption>
+    </figure>
+    <ul class="proof-strip" aria-label="What FleetPartner is">
+      <li>Orders · hours · fuel · documents · money</li>
+      <li>Web for you · an app for your people</li>
+      <li>Android app on Google Play</li>
+      <li>Built for Polish carriers</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ S3 Problem ============ -->
+<section id="problem" class="night s3" data-register="night" aria-labelledby="s3-h">
+  <div class="stage" id="st-s3" data-steps="8">
+    <div class="stage-pin">
+      <div class="wrap s3-grid">
+        <header class="s3-copy">
+          <h2 id="s3-h" class="h2">Everything comes back to you.</h2>
+          <p class="lead">Day and night. Every call, every message, every figure ends with one person.</p>
+        </header>
+        <div class="swarm" data-play>
+          <div class="boss-phone" aria-hidden="true"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+          <ul class="sigs">
+            <li class="sig" style="--x:50%;--y:9%;--i:0"><span class="sig-ic"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></span><span class="mono">One calls 10 times. One never.</span></li>
+            <li class="sig" style="--x:86%;--y:30%;--i:1"><span class="sig-ic"><svg class="ic" aria-hidden="true"><use href="#i-sheet"/></svg></span><span class="mono">One order, typed three times</span></li>
+            <li class="sig" style="--x:86%;--y:70%;--i:2"><span class="sig-ic"><svg class="ic" aria-hidden="true"><use href="#i-fuel"/></svg></span><span class="mono">Fuel: seen at month end</span></li>
+            <li class="sig" style="--x:50%;--y:91%;--i:3"><span class="sig-ic"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg></span><span class="mono">Paid late. Or never.</span></li>
+            <li class="sig" style="--x:14%;--y:70%;--i:4"><span class="sig-ic"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span><span class="mono">Insurance, inspections, licences</span></li>
+            <li class="sig" style="--x:14%;--y:30%;--i:5"><span class="sig-ic"><svg class="ic" aria-hidden="true"><use href="#i-msg"/></svg></span><span class="mono">After it already cost you</span></li>
+          </ul>
+          <div class="noise" aria-hidden="true">
+            <i style="--x:30%;--y:18%"></i><i style="--x:70%;--y:16%"></i><i style="--x:74%;--y:48%"></i><i style="--x:26%;--y:50%"></i><i style="--x:33%;--y:82%"></i><i style="--x:67%;--y:84%"></i><i style="--x:62%;--y:30%"></i><i style="--x:38%;--y:66%"></i><i style="--x:77%;--y:62%"></i><i style="--x:22%;--y:38%"></i>
+          </div>
+        </div>
+      </div>
+      <div class="stage-ui"><span class="stage-line"><i></i></span><a class="stage-skip" href="#s3-quote">Skip</a></div>
+    </div>
+  </div>
+  <div class="quote-band" id="s3-quote" data-tbd>
+    <div class="wrap">
+      <blockquote>
+        <q>Out of 10 vehicles, 6 make money, because of the lack of control.</q>
+        <cite class="mono">One owner of a 12-truck fleet <span class="tbd">{TBD · OD3} permission to publish</span></cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S4 Cause ============ -->
+<section id="cause" class="night s4" data-register="night" aria-labelledby="s4-h">
+  <div class="stage" id="st-s4" data-steps="3">
+    <div class="stage-pin">
+      <div class="wrap s4-grid">
+        <div>
+          <h2 id="s4-h" class="h2">The information exists. In six places.</h2>
+          <ol class="s4-lines" aria-hidden="true">
+            <li class="on">You are the only place it all meets.</li>
+            <li>Another app adds a seventh.</li>
+            <li>You need one place. Everyone records into it.</li>
+          </ol>
+          <p class="sr-only">The six places: WhatsApp, Excel, the office, your accountant, the GPS app, your head.</p>
+        </div>
+        <div class="s4-frames">
+          <figure class="s4-frame" data-frame="1" data-play><svg class="cv" aria-hidden="true"></svg><figcaption><b>01</b>You are the only place it all meets.</figcaption></figure>
+          <figure class="s4-frame" data-frame="2" data-play><svg class="cv" aria-hidden="true"></svg><figcaption><b>02</b>Another app adds a seventh.</figcaption></figure>
+          <figure class="s4-frame" data-frame="3" data-play><svg class="cv" aria-hidden="true"></svg><figcaption><b>03</b>You need one place. Everyone records into it.</figcaption></figure>
+        </div>
+      </div>
+      <div class="stage-ui"><span class="stage-line"><i></i></span><a class="stage-skip" href="#s4-band">Skip</a></div>
+    </div>
+  </div>
+  <div class="wrap s4-after">
+    <div class="band" id="s4-band">
+      <p>Which of the six is your fire? Find out in 5 minutes.</p>
+      <a class="btn btn-fire" data-cta="check" href="#check-tbd">Check where your fire is</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S5 How it works ============ -->
+<section id="how" class="night s5" data-register="night" aria-labelledby="s5-h">
+  <div class="stage" id="st-s5" data-steps="3">
+    <div class="stage-pin">
+      <div class="wrap s5-grid">
+        <h2 id="s5-h" class="h2">Recorded once. Checked. Ranked.</h2>
+
+        <div class="beat b1" data-play>
+          <div class="beat-vis">
+            <div>
+              <div class="v1">
+                <div class="v1-col"><span class="rec">Stop confirmed</span><div class="cf cf-phone" data-cap="C06" data-sil="pcam" data-rec></div><span class="mono role-l">Driver</span></div>
+                <div class="v1-col"><span class="rec">Repair raised</span><div class="cf cf-phone" data-cap="C16" data-sil="plist"></div><span class="mono role-l">Mechanic</span></div>
+                <div class="v1-col"><span class="rec">Invoice from order</span><div class="cf cf-phone" data-cap="C21" data-sil="plist"></div><span class="mono role-l">Office</span></div>
+              </div>
+              <p class="effort" style="margin-top:14px" data-tbd><span class="tbd">[n] · counted from C06</span> TAPS</p>
+              <p class="ph-tag">Placeholder · C06 loop, C16, C21 · driver, mechanic, office</p>
+            </div>
+          </div>
+          <div class="beat-text">
+            <span class="mono beat-n">01</span>
+            <h3 class="h3">Recorded where it happens.</h3>
+            <p>The driver, the mechanic, the office. On the phone, in the moment.</p>
+          </div>
+        </div>
+
+        <div class="beat b2" data-play>
+          <div class="beat-vis">
+            <div class="v2">
+              <div class="planes" aria-hidden="true">
+                <div class="plane p1"><span class="mono">Tachograph</span></div>
+                <div class="plane p2"><span class="mono">App</span></div>
+                <ul class="flow">
+                  <li class="rec fire">Stop confirmed <span class="st">· difference</span></li>
+                  <li class="rec">Repair raised <span class="st">· checked</span></li>
+                  <li class="rec">Invoice from order <span class="st">· checked</span></li>
+                </ul>
+              </div>
+              <figure class="cf cf-crop" data-cap="C12" data-sil="crop-diff" data-crop="the difference" style="--ar:2/1"></figure>
+            </div>
+          </div>
+          <div class="beat-text">
+            <span class="mono beat-n">02</span>
+            <h3 class="h3">Checked by the system.</h3>
+            <p>Tachograph against the app. Fuel against each truck's norm. Every expiry counted.</p>
+          </div>
+        </div>
+
+        <div class="beat b3" data-play>
+          <div class="beat-vis">
+            <div class="v3">
+              <ol class="rank" aria-label="Ranked for you">
+                <li class="top fire-glow-host" style="--from:2">Tachograph vs app <span class="badge">Biggest risk</span></li>
+                <li style="--from:-1">Repair raised</li>
+                <li style="--from:1">Invoice from order</li>
+                <li style="--from:-2">Stop confirmed <span class="ok">✓</span></li>
+              </ol>
+              <div class="cf cf-phone" data-cap="C02" data-sil="pdash"></div>
+              <div class="cf cf-crop crop-q" data-cap="C01" data-sil="crop-queues" style="--ar:16/7"></div>
+              <p class="ph-tag">Placeholder · C01 queues + C02 · the command screen</p>
+            </div>
+          </div>
+          <div class="beat-text">
+            <span class="mono beat-n">03</span>
+            <h3 class="h3">Ranked for you.</h3>
+            <p>The biggest risk first, with the reason. At your desk or on your phone.</p>
+          </div>
+        </div>
+
+        <p class="s5-cond">A full picture, once everyone records. That is why it is sold whole.</p>
+      </div>
+      <div class="stage-ui"><span class="stage-line"><i></i></span><a class="stage-skip" href="#fire">Skip</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S6 Pillar 1 ============ -->
+<section id="fire" class="day sec" data-register="day" aria-labelledby="s6-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono eyebrow">01 · Know where the fire is</p>
+      <h2 id="s6-h" class="h2">Know where the fire is.</h2>
+      <p class="lead">One screen tells you what to deal with first, and why.</p>
+    </header>
+    <div class="s6-vis" data-play data-anim>
+      <div>
+        <div class="s6-web">
+          <div class="cf cf-web" data-cap="C01" data-sil="dash" data-glow></div>
+          <ol class="hotspots" aria-hidden="true">
+            <li class="hs fire" style="--x:18%;--y:46.5%;--i:0"><span class="hs-n">1</span><span class="hs-line"></span><span class="hs-label">Biggest risk, and why</span></li>
+            <li class="hs" style="--x:17%;--y:56.5%;--i:1"><span class="hs-n">2</span><span class="hs-line"></span><span class="hs-label">Broken now</span></li>
+            <li class="hs" style="--x:60%;--y:56.5%;--i:2"><span class="hs-n">3</span><span class="hs-line"></span><span class="hs-label">Breaking soon</span></li>
+            <li class="hs" style="--x:48%;--y:78.5%;--i:3"><span class="hs-n">4</span><span class="hs-line"></span><span class="hs-label">Escalates if nobody acts</span></li>
+            <li class="hs" style="--x:17%;--y:93%;--i:4"><span class="hs-n">5</span><span class="hs-line"></span><span class="hs-label">What is fine, confirmed</span></li>
+          </ol>
+        </div>
+        <p class="ph-tag">Placeholder · C01 · command screen, web · proof chip when real: real screen · demo company · web panel · the boss</p>
+      </div>
+      <ol class="hs-list">
+        <li>Biggest risk, and why</li>
+        <li>Broken now</li>
+        <li>Breaking soon</li>
+        <li>Escalates if nobody acts</li>
+        <li>What is fine, confirmed</li>
+      </ol>
+      <div class="s6-phone">
+        <div class="cf cf-phone" data-cap="C03" data-sil="pnotif" data-rec></div>
+        <p class="ph-tag">Placeholder · C02 + C03 · notification</p>
+        <p class="callout">With you, not at your desk.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S7 Pillar 2 ============ -->
+<section id="once" class="day s7" data-register="day" aria-labelledby="s7-h">
+  <div class="wrap" style="padding-top:88px">
+    <header class="sec-head" style="margin-bottom:24px">
+      <p class="mono eyebrow">02 · Do everything once</p>
+      <h2 id="s7-h" class="h2">Do everything once.</h2>
+      <p class="lead">One order, first call to payment. Typed once, read by everyone.</p>
+    </header>
+  </div>
+  <div class="stage" id="st-s7" data-steps="5">
+    <div class="stage-pin">
+      <div class="wrap s7-grid">
+        <div class="route-box">
+          <svg class="route" viewBox="0 0 600 360" aria-hidden="true">
+            <defs><pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle class="grid-dot" cx="2" cy="2" r="1.2"/></pattern></defs>
+            <rect class="land" x="0" y="0" width="600" height="360" rx="20"/>
+            <rect x="0" y="0" width="600" height="360" rx="20" fill="url(#dots)"/>
+            <text class="area" x="470" y="48">PL</text>
+            <text class="area" x="70" y="330">DE</text>
+            <path id="route-base" class="base" d="M500 84 C 430 64, 392 172, 312 180 S 172 214, 150 250 S 110 300, 92 306"/>
+            <path id="route-lit" class="lit" d="M500 84 C 430 64, 392 172, 312 180 S 172 214, 150 250 S 110 300, 92 306" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+            <g id="wps"></g>
+            <g id="order-card"><rect class="order-bg" x="-40" y="-40" width="80" height="26" rx="8"/><circle class="order-dot" cx="-28" cy="-27" r="4"/><text class="order-t" x="-19" y="-23">ORDER</text></g>
+          </svg>
+          <p class="s7-note">One order's journey. Not route planning.</p>
+        </div>
+        <ol class="jhead" aria-hidden="true">
+          <li>Created from a saved lane</li>
+          <li>On the driver's phone</li>
+          <li>Confirmed, CMR photographed</li>
+          <li>Invoiced from the order</li>
+          <li>Paid and closed</li>
+        </ol>
+        <ol class="journey">
+          <li class="jstep"><h3 class="jl">Created from a saved lane</h3><div class="jcap"><figure class="cf cf-web" data-cap="C04" data-sil="form"></figure></div></li>
+          <li class="jstep"><h3 class="jl">On the driver's phone</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C05" data-sil="plist"></figure></div></li>
+          <li class="jstep"><h3 class="jl">Confirmed, CMR photographed</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C06" data-sil="pcam" data-rec></figure><p class="effort" data-tbd><span class="tbd">[n] · counted from C06</span> TAPS</p></div></li>
+          <li class="jstep"><h3 class="jl">Invoiced from the order</h3><div class="jcap"><figure class="cf cf-web" data-cap="C07" data-sil="form"></figure></div></li>
+          <li class="jstep"><h3 class="jl">Paid and closed</h3><div class="jcap"><figure class="cf cf-web" data-cap="C08" data-sil="table"></figure></div></li>
+        </ol>
+      </div>
+      <div class="stage-ui"><span class="stage-line"><i></i></span><a class="stage-skip" href="#s7-cards">Skip</a></div>
+    </div>
+  </div>
+  <div class="wrap s7-cards" id="s7-cards">
+    <article class="fcard"><figure class="cf cf-web" data-cap="C09" data-sil="bars"></figure><h3 class="h3">Legal hours where you assign</h3><p>Each driver's remaining driving time, next to the load.</p></article>
+    <article class="fcard"><figure class="cf cf-web" data-cap="C10" data-sil="table"></figure><h3 class="h3">Road cards that fill themselves</h3><p>Generated from the orders you already have.</p></article>
+    <article class="fcard"><figure class="cf cf-phone" data-cap="C11" data-sil="portal"></figure><h3 class="h3">Clients follow their own loads</h3><p>Give access once. They see where their load is.</p></article>
+  </div>
+</section>
+
+<!-- ============ S8 Pillar 3 ============ -->
+<section id="memory" class="day sec" data-register="day" aria-labelledby="s8-h" style="background:var(--paper-100)">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono eyebrow">03 · Nothing rests on memory</p>
+      <h2 id="s8-h" class="h2">Nothing rests on memory.</h2>
+      <p class="lead">What used to depend on someone remembering, the system checks.</p>
+    </header>
+    <div class="bento">
+      <article class="tile wide" data-play style="background:var(--paper-50)">
+        <div class="mm" aria-hidden="true">
+          <svg viewBox="0 0 600 150" preserveAspectRatio="xMidYMid meet">
+            <text class="lbl" x="24" y="47" style="font-size:15px">TACHOGRAPH</text>
+            <rect class="bar-a" x="130" y="34" width="120" height="16" rx="5"/><rect class="bar-a" x="262" y="34" width="150" height="16" rx="5"/><rect class="bar-a" x="424" y="34" width="140" height="16" rx="5"/>
+            <text class="lbl" x="24" y="101" style="font-size:15px">APP</text>
+            <g class="slide"><rect class="bar-b" x="130" y="88" width="120" height="16" rx="5"/><rect class="bar-b" x="262" y="88" width="104" height="16" rx="5"/><rect class="gap" x="366" y="88" width="46" height="16" rx="5"/><rect class="bar-b" x="424" y="88" width="140" height="16" rx="5"/></g>
+          </svg>
+        </div>
+        <h3 class="h3">The tachograph checks the app</h3>
+        <p>A gap becomes a report, not a surprise.</p>
+        <figure class="cf cf-crop" data-cap="C12" data-sil="crop-diff" data-crop="the difference" style="--ar:3/1"></figure>
+      </article>
+      <article class="tile" data-play>
+        <div class="mm" aria-hidden="true">
+          <svg viewBox="0 0 300 120"><path class="norm" d="M20 64 H280"/><text class="lbl" x="226" y="56">NORM</text><path class="cons draw" pathLength="1" d="M20 96 L70 88 L120 84 L170 74 L210 60 L250 44 L280 38"/><circle class="cross" cx="199" cy="64" r="6"/></svg>
+        </div>
+        <h3 class="h3">Fuel against each truck's norm</h3>
+        <p>A refuelling with no price is flagged.</p>
+        <figure class="cf cf-crop" data-cap="C13" data-sil="crop-rows" data-crop="over norm" style="--ar:3/1"></figure>
+      </article>
+      <article class="tile" data-play>
+        <div class="mm" aria-hidden="true">
+          <svg viewBox="0 0 300 120">
+            <g transform="translate(45 60)"><circle class="ring-bg" r="24"/><circle class="ring-fg" r="24" pathLength="1" stroke-dasharray="1" style="--to:.18" transform="rotate(-90)"/></g>
+            <g transform="translate(115 60)"><circle class="ring-bg" r="24"/><circle class="ring-fg" r="24" pathLength="1" stroke-dasharray="1" style="--to:.42" transform="rotate(-90)"/></g>
+            <g transform="translate(185 60)"><circle class="ring-bg" r="24"/><circle class="ring-fg alert" r="24" pathLength="1" stroke-dasharray="1" style="--to:.86" transform="rotate(-90)"/></g>
+            <g transform="translate(255 60)"><circle class="ring-bg" r="24"/><circle class="ring-fg" r="24" pathLength="1" stroke-dasharray="1" style="--to:.3" transform="rotate(-90)"/></g>
+          </svg>
+        </div>
+        <h3 class="h3">Every expiry, counted down</h3>
+        <p>Warning at 30 days. Alert at 7.</p>
+        <figure class="cf cf-crop" data-cap="C14" data-sil="crop-counters" data-crop="counters" style="--ar:3/1"></figure>
+      </article>
+      <article class="tile" data-play>
+        <div class="mm" aria-hidden="true">
+          <svg viewBox="0 0 300 120"><rect x="20" y="50" width="260" height="20" rx="6" fill="var(--line-200)"/><rect class="fill" x="20" y="50" height="20" rx="6" style="--w:236px"/><rect class="over" x="210" y="50" width="46" height="20" rx="0"/><path class="limit" d="M210 36 V84"/><text class="lbl" x="192" y="30">LIMIT</text></svg>
+        </div>
+        <h3 class="h3">Who owes you, against the limit</h3>
+        <p>See it before it becomes a loss.</p>
+        <figure class="cf cf-crop" data-cap="C15" data-sil="crop-limit" data-crop="over the limit" style="--ar:3/1"></figure>
+      </article>
+      <article class="tile" data-play>
+        <div class="approve">
+          <div class="cf cf-phone" data-cap="C16" data-sil="plist"></div>
+          <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg>
+          <div class="cf cf-phone" data-cap="C17" data-sil="plist" data-rec></div>
+        </div>
+        <h3 class="h3">No repair without your OK</h3>
+        <p>The workshop asks. You approve, from anywhere.</p>
+        <p class="effort" data-tbd><span class="tbd">[n] · counted from C17</span> TAP TO APPROVE</p>
+        <p class="ph-tag">Placeholder · C16 then C17 · repair request, then approval</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S9 Every role ============ -->
+<section id="roles" class="day sec" data-register="day" aria-labelledby="s9-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono eyebrow">Every role, one system</p>
+      <h2 id="s9-h" class="h2">Your screen. Their app.</h2>
+      <p class="lead">You run it on the web and your phone. Your people get what their job needs.</p>
+    </header>
+    <div class="roles">
+      <div class="role-tabs" role="tablist" aria-label="Roles">
+        <button type="button" role="tab" id="t-you" aria-controls="p-you" aria-selected="true" data-cap="C02" data-sil="pdash">You</button>
+        <button type="button" role="tab" id="t-driver" aria-controls="p-driver" aria-selected="false" tabindex="-1" data-cap="C18" data-sil="plist">Driver</button>
+        <button type="button" role="tab" id="t-dispatcher" aria-controls="p-dispatcher" aria-selected="false" tabindex="-1" data-cap="C19" data-sil="plist">Dispatcher</button>
+        <button type="button" role="tab" id="t-mechanic" aria-controls="p-mechanic" aria-selected="false" tabindex="-1" data-cap="C20" data-sil="plist">Mechanic</button>
+        <button type="button" role="tab" id="t-office" aria-controls="p-office" aria-selected="false" tabindex="-1" data-cap="C21" data-sil="plist">Office</button>
+        <button type="button" role="tab" id="t-clients" aria-controls="p-clients" aria-selected="false" tabindex="-1" data-cap="C11" data-sil="portal">Your clients</button>
+      </div>
+      <div class="role-body">
+        <div class="role-phone">
+          <div class="flip"><div class="cf cf-phone" id="role-cf" data-cap="C02" data-sil="pdash"></div></div>
+          <p class="ph-tag" id="role-tag">Placeholder · C02</p>
+        </div>
+        <div>
+          <div class="role-panel" role="tabpanel" id="p-you" aria-labelledby="t-you" tabindex="0">
+            <h3 class="h3">You</h3>
+            <ul class="chips" aria-label="Records"><li class="chip">Approvals</li><li class="chip">Decisions</li></ul>
+            <p class="for"><span class="mono eyebrow">For you</span><b>The whole company, wherever you are.</b></p>
+          </div>
+          <div class="role-panel" role="tabpanel" id="p-driver" aria-labelledby="t-driver" tabindex="0" hidden>
+            <h3 class="h3">Driver</h3>
+            <ul class="chips" aria-label="Records"><li class="chip">Stops</li><li class="chip">CMR photos</li><li class="chip">Refuelling</li><li class="chip">Expenses</li></ul>
+            <p class="for"><span class="mono eyebrow">For you</span><b>Fewer calls.</b></p>
+          </div>
+          <div class="role-panel" role="tabpanel" id="p-dispatcher" aria-labelledby="t-dispatcher" tabindex="0" hidden>
+            <h3 class="h3">Dispatcher</h3>
+            <ul class="chips" aria-label="Records"><li class="chip">Assignments</li></ul>
+            <p class="for"><span class="mono eyebrow">For you</span><b>Dispatch you can see.</b></p>
+          </div>
+          <div class="role-panel" role="tabpanel" id="p-mechanic" aria-labelledby="t-mechanic" tabindex="0" hidden>
+            <h3 class="h3">Mechanic</h3>
+            <ul class="chips" aria-label="Records"><li class="chip">Repairs</li><li class="chip">Inspections</li><li class="chip">Handovers</li></ul>
+            <p class="for"><span class="mono eyebrow">For you</span><b>No repair you didn't approve.</b></p>
+          </div>
+          <div class="role-panel" role="tabpanel" id="p-office" aria-labelledby="t-office" tabindex="0" hidden>
+            <h3 class="h3">Office</h3>
+            <ul class="chips" aria-label="Records"><li class="chip">Invoices</li><li class="chip">Purchase invoices</li><li class="chip">Fuel prices</li></ul>
+            <p class="for"><span class="mono eyebrow">For you</span><b>Money chased on time.</b></p>
+          </div>
+          <div class="role-panel" role="tabpanel" id="p-clients" aria-labelledby="t-clients" tabindex="0" hidden>
+            <h3 class="h3">Your clients</h3>
+            <ul class="chips" aria-label="Records"><li class="chip">Nothing to record</li></ul>
+            <p class="for"><span class="mono eyebrow">For you</span><b>They check their load themselves.</b></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="film-head">
+      <h3 data-tbd>A driver's whole day: <span class="tbd">[n] · counted from C23</span> steps.</h3>
+      <span class="ph-tag" style="margin:0">Placeholder · C23 · proof chip when real: every step from the real app</span>
+    </div>
+    <ol class="film" aria-label="A driver's whole day, step by step">
+      <li><div class="cf cf-phone" data-cap="C23" data-sil="plist"></div></li>
+      <li><div class="cf cf-phone" data-cap="C23" data-sil="pcam"></div></li>
+      <li><div class="cf cf-phone" data-cap="C23" data-sil="plist"></div></li>
+      <li><div class="cf cf-phone" data-cap="C23" data-sil="pcam"></div></li>
+      <li><div class="cf cf-phone" data-cap="C23" data-sil="plist"></div></li>
+      <li class="more-li"><div class="more mono">The rest of the day, counted from C23</div></li>
+    </ol>
+    <p class="closing">Your dispatcher doesn't see your finances.</p>
+  </div>
+</section>
+
+<!-- ============ S10 Before and after ============ -->
+<section id="before-after" class="day sec" data-register="day" aria-labelledby="s10-h" style="background:var(--paper-100)">
+  <div class="wrap">
+    <header class="sec-head">
+      <h2 id="s10-h" class="h2">Not another job. The same work, done once.</h2>
+    </header>
+    <div class="ba-head mono" aria-hidden="true"><span>Today</span><span></span><span>With FleetPartner</span></div>
+    <ul class="ba">
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-msg"/></svg></span><span><span class="sr-only">Today: </span>Driver texts: "loaded"</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C06" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C06 · confirmed</span></div><span><span class="sr-only">With FleetPartner: </span>Stop confirmed in the app</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span><span><span class="sr-only">Today: </span>One order, typed three times</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C04" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C04 · lane filled</span></div><span><span class="sr-only">With FleetPartner: </span>Created once, read by all</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-sheet"/></svg></span><span><span class="sr-only">Today: </span>Excel at night</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C05" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C05 · the order</span></div><span><span class="sr-only">With FleetPartner: </span>Recorded during the day</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></span><span><span class="sr-only">Today: </span>The call about the fire</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C01" data-sil="crop-risk" style="--ar:2/1"></div><span class="ph-tag">C01 · top</span></div><span><span class="sr-only">With FleetPartner: </span>Top of your screen</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span><span class="sr-only">Today: </span>Who can still drive? Call round</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C09" data-sil="crop-bars" style="--ar:2/1"></div><span class="ph-tag">C09 · hours next to load</span></div><span><span class="sr-only">With FleetPartner: </span>Hours next to the load</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg></span><span><span class="sr-only">Today: </span>Dates in your head</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C14" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C14 · OC row</span></div><span><span class="sr-only">With FleetPartner: </span>Warned 30 days ahead</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg></span><span><span class="sr-only">Today: </span>Monthly news of who hasn't paid</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C15" data-sil="crop-limit" style="--ar:2/1"></div><span class="ph-tag">C15 · over the limit</span></div><span><span class="sr-only">With FleetPartner: </span>Today, against their limit</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-note"/></svg></span><span><span class="sr-only">Today: </span>The CMR, somewhere in WhatsApp</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C07" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C07 · CMR attached</span></div><span><span class="sr-only">With FleetPartner: </span>Attached to order and invoice</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ S11 One system ============ -->
+<section id="pieces" class="day sec" data-register="day" aria-labelledby="s11-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <h2 id="s11-h" class="h2">One system. Not more pieces.</h2>
+      <p class="lead">Many carriers already pay for pieces. Each holds one slice. You still join them.</p>
+    </header>
+    <div class="stacks" data-play>
+      <div class="stack dim">
+        <div class="obj pile" aria-hidden="true"><i><svg class="ic"><use href="#i-phone-dev"/></svg></i><i><svg class="ic"><use href="#i-sheet"/></svg></i><i><svg class="ic"><use href="#i-msg"/></svg></i><i><svg class="ic"><use href="#i-note"/></svg></i><i><svg class="ic"><use href="#i-msg"/></svg></i></div>
+        <span class="plinth" aria-hidden="true"></span>
+        <h3>Excel, phone, WhatsApp</h3>
+        <p>The pile. You join it.</p>
+      </div>
+      <div class="stack dim">
+        <div class="obj" aria-hidden="true">
+          <div class="pieces">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none"><path class="broken" d="M26 50 L42 28"/><path class="broken" d="M58 28 L74 50"/><path class="broken" d="M32 64 L68 64"/></svg>
+            <span class="piece"><svg class="ic"><use href="#i-pin"/></svg><small>Per truck</small></span>
+            <span class="piece"><svg class="ic"><use href="#i-file"/></svg><small>Per month</small></span>
+            <span class="piece"><svg class="ic"><use href="#i-phone-dev"/></svg><small>Per driver</small></span>
+          </div>
+        </div>
+        <span class="plinth" aria-hidden="true"></span>
+        <h3>Separate tools</h3>
+        <p>The pieces. Three bills.</p>
+      </div>
+      <div class="stack">
+        <div class="obj" aria-hidden="true"><span class="oneblock"><span class="mark">FP</span><small>Per truck</small></span></div>
+        <span class="plinth" aria-hidden="true"></span>
+        <h3>FleetPartner</h3>
+        <p>One system. One record.</p>
+      </div>
+    </div>
+
+    <table class="cmp">
+      <caption class="sr-only">Excel, phone and WhatsApp, separate tools, and FleetPartner, compared</caption>
+      <thead><tr><th scope="col"><span class="sr-only">Compared</span></th><th scope="col">Excel, phone, WhatsApp</th><th scope="col">Separate tools</th><th scope="col" class="fp">FleetPartner</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Your information</th><td data-col="Excel, phone">Six places</td><td data-col="Separate tools">Three or four systems</td><td class="fp" data-col="FleetPartner">One record</td></tr>
+        <tr><th scope="row">Who joins it</th><td data-col="Excel, phone">You</td><td data-col="Separate tools">You, or the office</td><td class="fp" data-col="FleetPartner">Nobody has to</td></tr>
+        <tr><th scope="row">Ranked for you</th><td data-col="Excel, phone">Nothing</td><td data-col="Separate tools">Each tool's own alerts</td><td class="fp" data-col="FleetPartner">The whole company, risk first</td></tr>
+        <tr><th scope="row">Hours when assigning</th><td data-col="Excel, phone">Call the driver</td><td data-col="Separate tools">A separate tool</td><td class="fp" data-col="FleetPartner">Next to the load</td></tr>
+        <tr><th scope="row">In the trucks</th><td data-col="Excel, phone">Nothing</td><td data-col="Separate tools">A device, sometimes a 2-year contract</td><td class="fp" data-col="FleetPartner">The phones they carry</td></tr>
+        <tr><th scope="row">Tachograph against records</th><td data-col="Excel, phone">No</td><td data-col="Separate tools">The bureau checks the files</td><td class="fp" data-col="FleetPartner">Every report compares</td></tr>
+        <tr><th scope="row">How you pay</th><td data-col="Excel, phone">Your evenings</td><td data-col="Separate tools">Per truck, per driver, per month</td><td class="fp" data-col="FleetPartner">Per truck, the whole system</td></tr>
+        <tr class="proof"><th scope="row">Engine and fuel data</th><td data-col="Excel, phone">No</td><td data-col="Separate tools">Yes, with hardware</td><td class="fp" data-col="FleetPartner">No. Keep your hardware</td></tr>
+        <tr class="proof"><th scope="row">Drivers' pay settled</th><td data-col="Excel, phone">No</td><td data-col="Separate tools">Yes, by the bureau</td><td class="fp" data-col="FleetPartner">Keep your bureau</td></tr>
+      </tbody>
+    </table>
+
+    <div class="never">
+      <div class="callout-box"><b>Never sold in pieces.</b>A partial picture misleads. Every plan is the whole system.</div>
+      <div class="refuse">
+        <h3>What FleetPartner doesn't do</h3>
+        <ul>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Doesn't find loads</li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Doesn't plan routes</li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Doesn't replace your accountant</li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>No engine data: keep your GPS hardware</li>
+        </ul>
+        <p>Other systems can be connected, as a quoted job built for you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S12 Value ============ -->
+<section id="value" class="day sec" data-register="day" aria-labelledby="s12-h" style="background:var(--paper-100)">
+  <div class="wrap">
+    <header class="sec-head">
+      <h2 id="s12-h" class="h2">What it's worth. In your numbers.</h2>
+      <p class="lead">Change any figure. We don't invent them.</p>
+    </header>
+    <div class="calc" style="background:var(--paper-50)">
+      <div class="calc-tabs" role="tablist" aria-label="Value at every level">
+        <button type="button" role="tab" id="ct-money" aria-controls="cp-money" aria-selected="true"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg>Money you already pay</button>
+        <button type="button" role="tab" id="ct-fire" aria-controls="cp-fire" aria-selected="false" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg>What one fire costs</button>
+        <button type="button" role="tab" id="ct-time" aria-controls="cp-time" aria-selected="false" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Your time</button>
+        <button type="button" role="tab" id="ct-people" aria-controls="cp-people" aria-selected="false" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg>Your people's time</button>
+        <button type="button" role="tab" id="ct-peace" aria-controls="cp-peace" aria-selected="false" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg>Peace of mind</button>
+      </div>
+
+      <div class="calc-panel" role="tabpanel" id="cp-money" aria-labelledby="ct-money">
+        <div class="fields two">
+          <div class="field"><label for="c-trucks">Trucks</label><input id="c-trucks" type="number" inputmode="numeric" min="0" step="1" data-calc></div>
+          <div class="field"><label for="c-drivers">Drivers</label><input id="c-drivers" type="number" inputmode="numeric" min="0" step="1" data-calc></div>
+          <div class="field"><label for="c-gps">GPS, per truck, per month</label><div class="unit"><input id="c-gps" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div><span class="hint">Published prices: GPS 19.90 to 40 zł per truck per month. Checked 28 Sep 2026.</span></div>
+          <div class="field"><label for="c-program">A program for orders, per month</label><div class="unit"><input id="c-program" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div><span class="hint">Published prices: from 85 € a month, plus 7 or 9 € per driver. Checked 28 Sep 2026.</span></div>
+          <div class="field"><label for="c-bureau">Bureau, per driver, per month</label><div class="unit"><input id="c-bureau" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div><span class="hint">Shown as kept. Published prices: 50 to 200 zł per driver per month. Checked 28 Sep 2026.</span></div>
+        </div>
+        <div class="result" aria-live="polite">
+          <p class="big" id="r-pieces">Enter your numbers.</p>
+          <p class="sub" id="r-break"></p>
+          <div class="kept" id="r-bureau" hidden></div>
+          <p class="sub" data-tbd><span class="tbd">{TBD · OD1}</span> FleetPartner's own line appears once the price is set.</p>
+        </div>
+      </div>
+
+      <div class="calc-panel" role="tabpanel" id="cp-fire" aria-labelledby="ct-fire" hidden>
+        <div class="fields">
+          <p class="hint">Your own figure for each, in zł. No typical fines are shown until the inspection tariff is sourced.</p>
+          <div class="field"><label for="f-policy">A truck stopped with a lapsed policy</label><div class="unit"><input id="f-policy" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div></div>
+          <div class="field"><label for="f-hours">A driving-time fine</label><div class="unit"><input id="f-hours" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div></div>
+          <div class="field"><label for="f-unpaid">An unpaid invoice past the limit</label><div class="unit"><input id="f-unpaid" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div></div>
+          <div class="field"><label for="f-norm">A truck over its norm for a quarter</label><div class="unit"><input id="f-norm" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div></div>
+          <div class="field"><label for="f-claim">A damage claim without evidence</label><div class="unit"><input id="f-claim" type="number" inputmode="decimal" min="0" step="any" data-calc><span>zł</span></div></div>
+        </div>
+        <div class="result" aria-live="polite">
+          <p class="big" id="r-fires">Enter your numbers.</p>
+          <p class="sub" data-tbd><span class="tbd">{TBD · OD1}</span> "One of these equals [m] months of FleetPartner" appears once the price is set.</p>
+        </div>
+      </div>
+
+      <div class="calc-panel" role="tabpanel" id="cp-time" aria-labelledby="ct-time" hidden>
+        <div class="fields two">
+          <div class="field"><label for="t-calls">Calls a day</label><input id="t-calls" type="number" inputmode="decimal" min="0" step="any" data-calc></div>
+          <div class="field"><label for="t-mins">Minutes a call</label><input id="t-mins" type="number" inputmode="decimal" min="0" step="any" data-calc></div>
+          <div class="field"><label for="t-evenings">Evenings a week on paperwork</label><input id="t-evenings" type="number" inputmode="decimal" min="0" step="any" data-calc></div>
+          <div class="field"><label for="t-hours">Hours an evening</label><input id="t-hours" type="number" inputmode="decimal" min="0" step="any" data-calc></div>
+        </div>
+        <div class="result" aria-live="polite">
+          <p class="big" id="r-time">Enter your numbers.</p>
+          <p class="formula">Per week: calls × minutes × 7 days, plus your evenings. Then × 52 ÷ 12 for a month.</p>
+        </div>
+      </div>
+
+      <div class="calc-panel single" role="tabpanel" id="cp-people" aria-labelledby="ct-people" hidden>
+        <ul class="role-lines">
+          <li><b>Driver</b><span>Confirms in the app. No "have you delivered?" calls.</span><a href="#roles" data-role="t-driver">See the driver's screen</a></li>
+          <li><b>Dispatcher</b><span>Hours next to the load. No checking them separately.</span><a href="#roles" data-role="t-dispatcher">See the dispatcher's screen</a></li>
+          <li><b>Office</b><span>Invoices from orders. No retyping, no filling road cards.</span><a href="#roles" data-role="t-office">See the office's screen</a></li>
+          <li><b>Mechanic</b><span>Asks once in the app. No chasing approvals.</span><a href="#roles" data-role="t-mechanic">See the mechanic's screen</a></li>
+        </ul>
+      </div>
+
+      <div class="calc-panel single" role="tabpanel" id="cp-peace" aria-labelledby="ct-peace" hidden>
+        <blockquote class="peace" style="margin:0;display:grid;gap:14px" data-tbd>
+          <q>I would get my life back.</q>
+          <cite class="mono eyebrow" style="font-style:normal">One owner of a 12-truck fleet <span class="tbd">{TBD · OD3}</span></cite>
+        </blockquote>
+      </div>
+    </div>
+    <div class="band">
+      <p>Work it out with us, on the phone.</p>
+      <a class="btn btn-fire" href="#form" id="work-it-out">Work it out with us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S13 Starting ============ -->
+<section id="starting" class="day sec s13" data-register="day" aria-labelledby="s13-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <h2 id="s13-h" class="h2">Starting is not another job.</h2>
+      <p class="lead">We put it in with you. Every role at once, and we check it works.</p>
+    </header>
+    <div class="road" id="road" aria-hidden="true">
+      <svg viewBox="0 0 1000 120">
+        <path class="asphalt" d="M30 70 H900"/>
+        <path class="dash" d="M30 70 H900"/>
+        <g class="gates-svg">
+          <g transform="translate(150 0)"><rect class="gate" x="-7" y="26" width="14" height="60" rx="4"/><text class="gate-n" x="-4" y="110">1</text></g>
+          <g transform="translate(360 0)"><rect class="gate" x="-7" y="26" width="14" height="60" rx="4"/><text class="gate-n" x="-4" y="110">2</text></g>
+          <g transform="translate(570 0)"><rect class="gate" x="-7" y="26" width="14" height="60" rx="4"/><text class="gate-n" x="-4" y="110">3</text></g>
+          <g transform="translate(780 0)"><rect class="gate" x="-7" y="26" width="14" height="60" rx="4"/><text class="gate-n" x="-4" y="110">4</text></g>
+        </g>
+        <path d="M930 30 V90" stroke="var(--navy-700)" stroke-width="3"/>
+        <text class="day30" x="900" y="20">DAY 30</text>
+        <g class="truck" id="road-truck"><circle cx="0" cy="70" r="22" fill="var(--amber-400)"/><use href="#i-truck" x="-13" y="57" width="26" height="26" fill="none" stroke="var(--night-900)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+      </svg>
+    </div>
+    <ol class="gates">
+      <li><div><b>Set up with you.</b><span>Trucks, drivers, clients, documents.</span></div></li>
+      <li><div><b>A day with your drivers.</b><span>The app on their phones, shown to them.</span></div></li>
+      <li><div><b>Everyone from day one.</b><span>Half a company shows the wrong picture.</span></div></li>
+      <li><div><b>The first 30 days.</b><span>Each week we check everyone is recording.</span></div></li>
+    </ol>
+    <p class="pill-note" style="margin-top:16px" data-tbd><span class="tbd">{TBD · OD5}</span> What onboarding includes per plan, to confirm.</p>
+    <ul class="chips keep" aria-label="What you keep"><li class="chip">Keep your accountant</li><li class="chip">Keep your bureau</li><li class="chip">Keep GPS hardware if you need it</li></ul>
+  </div>
+</section>
+
+<!-- ============ S14 Pricing ============ -->
+<section id="pricing" class="day sec" data-register="day" aria-labelledby="s14-h">
+  <div class="wrap">
+    <header class="sec-head">
+      <h2 id="s14-h" class="h2">Per truck. The whole system.</h2>
+      <p class="lead">No modules to pick. Plans differ by fleet size and help starting.</p>
+    </header>
+    <div class="plans">
+      <article class="plan">
+        <h3>Start</h3>
+        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg></div>
+        <p class="band-l">Up to 9 trucks</p>
+        <p>Remote onboarding</p>
+        <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
+        <a class="btn btn-line btn-sm" href="#form">Show me on my phone</a>
+      </article>
+      <article class="plan rec-plan">
+        <span class="rtag">Recommended</span>
+        <h3>Company</h3>
+        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg></div>
+        <p class="band-l">10 to 24 trucks</p>
+        <p>Guided onboarding, plus a day with your drivers</p>
+        <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
+        <a class="btn btn-fire btn-sm" href="#form">Show me on my phone</a>
+      </article>
+      <article class="plan">
+        <h3>Fleet</h3>
+        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg></div>
+        <p class="band-l">25 to 50 trucks</p>
+        <p>Rollout team by team, reviews at 30 and 90 days</p>
+        <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
+        <a class="btn btn-line btn-sm" href="#form">Show me on my phone</a>
+      </article>
+      <article class="plan">
+        <h3>Group</h3>
+        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><b>+</b></div>
+        <p class="band-l">More than 50 trucks, or several companies</p>
+        <p>A rollout plan per company</p>
+        <p class="price"><span>Price on request</span></p>
+        <a class="btn btn-line btn-sm" href="#form">Talk to us</a>
+      </article>
+    </div>
+    <div class="incl">
+      <ul class="chips" aria-label="Included in every plan"><li class="chip">All of FleetPartner</li><li class="chip">Web for you, app for everyone</li><li class="chip">Load tracking for your clients</li><li class="chip">Support</li></ul>
+      <div class="facts"><p>Bought on the web, not in the app.</p><p>Connections to your systems are quoted separately.</p><p data-tbd><span class="tbd">{TBD · OD1 · OD5}</span> Contract terms, billing, plan bands and onboarding, to confirm.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S15 Trust ============ -->
+<section id="trust" class="day sec" data-register="day" aria-labelledby="s15-h" style="background:var(--paper-100)">
+  <div class="wrap">
+    <header class="sec-head">
+      <h2 id="s15-h" class="h2">Built from an owner's answers.</h2>
+      <p class="lead">Asked while FleetPartner was being designed. One owner, 12 trucks, Excel, phone and WhatsApp.</p>
+    </header>
+    <div class="answers" data-tbd>
+      <div class="answer"><span class="mono">What would change with full control?</span><b>I would get my life back.</b></div>
+      <div class="answer calm"><span class="mono">Why is it worth having?</span><b>Control, peace of mind.</b></div>
+      <div class="answer"><span class="mono">What would convince you to pay?</span><b>The system gives you the possibility to do everything once.</b></div>
+    </div>
+    <p class="pill-note" style="margin-top:12px" data-tbd><span class="tbd">{TBD · OD3}</span> Permission to publish his answers, unnamed.</p>
+    <div class="tfacts">
+      <div class="tfact" data-tbd><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></span><div><b>Your data and your drivers</b><p>What is recorded and when · who sees what · where data is stored · GDPR. <span class="tbd">{TBD · OD9}</span></p></div></div>
+      <div class="tfact" data-tbd><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-handshake"/></svg></span><div><b>Our commitment</b><p><span class="tbd">{TBD · OD7}</span></p></div></div>
+      <div class="tfact"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone-dev"/></svg></span><div><b>The apps</b><p>Android, on Google Play: <span class="tbd" data-fact="play">link · A2</span></p><p data-tbd>iPhone: <span class="tbd">{TBD · A2}</span></p></div></div>
+      <div class="tfact" data-tbd><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-building"/></svg></span><div><b>Who we are</b><p>Company name, address, tax number, phone, the people. <span class="tbd">{TBD · OD8}</span></p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S16 Questions ============ -->
+<section id="questions" class="day sec" data-register="day" aria-labelledby="s16-h">
+  <div class="wrap">
+    <header class="sec-head"><h2 id="s16-h" class="h2">Questions.</h2></header>
+    <div class="faq">
+      <details><summary>Is this going to be another job for me?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. We set it up with you, show your drivers the app, and check every week for the first 30 days that everyone is recording.</p></details>
+      <details><summary>What do my drivers have to do?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Record their work as it happens: stops, CMR photos, refuelling.<span data-tbd> A driver's whole day is <span class="tbd">[n] · C23</span> steps. <a href="#roles">See it above.</a></span></p></details>
+      <details><summary>Do I need GPS devices in the trucks?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Most carriers don't: position comes from the driver's phone. Need engine, fuel-level or temperature data? Keep your GPS hardware.</p></details>
+      <details><summary>Can I keep my accountant or bureau?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes. FleetPartner doesn't replace them. They work from one record instead of a box of files.</p></details>
+      <details><summary>Can I buy just part of it, like the map?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. A system that sees part of your company can show you the wrong picture. Every plan is the whole system.</p></details>
+      <details><summary>Does it work on my phone? On an iPhone?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes on Android, from Google Play: the same system as the web.<span data-tbd> iPhone: <span class="tbd">{TBD · A2}</span></span></p></details>
+      <details><summary>Does it find loads or plan routes?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. It doesn't connect to freight exchanges and doesn't plan routes.</p></details>
+      <details><summary>Can it connect to my fuel card or accounting program?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes, built for your company as a quoted job, with your partner's consent and your own access.</p></details>
+      <details data-tbd><summary>What about KSeF?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD2}</span> Meanwhile you can keep invoicing where you do now and mark it in FleetPartner.</p></details><!-- claim-lint-disable-line ksef FAQ question, hidden until OD2 -->
+      <details data-tbd><summary>Are my drivers tracked all the time?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD9}</span></p></details>
+      <details data-tbd><summary>How long does it take to start?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD5}</span></p></details>
+      <details><summary>What does it cost?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Per truck per month, net, the whole system. <a href="#pricing">See the plans.</a></p></details>
+      <details data-tbd><summary>What if you go down, or go away?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD7}</span></p></details>
+      <details data-tbd><summary>Which languages?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD10}</span></p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S17 Final call to action ============ -->
+<section id="final" class="night sec final" data-register="night" aria-labelledby="s17-h">
+  <div class="wrap">
+    <div class="final-top">
+      <div class="final-copy">
+        <h2 id="s17-h" class="display">Find out where your fire is.</h2>
+        <p class="lead">Seven questions, five minutes. Or see it on your own phone.</p>
+      </div>
+      <figure class="calm-vis" data-anim>
+        <div class="slab" aria-hidden="true"><div class="cf cf-phone" data-cap="C02" data-sil="pcalm"></div></div>
+        <div class="far" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <figcaption class="ph-tag">Placeholder · C02, second still · under control</figcaption>
+      </figure>
+    </div>
+
+    <div class="panels">
+      <div class="panel" id="check-tbd">
+        <h3>Check where your fire is</h3>
+        <p class="mono" style="color:var(--fog-400)">7 questions · 5 minutes · no call</p>
+        <a class="btn btn-fire" data-cta="check" href="#check-tbd">Check where your fire is</a>
+        <p class="pill-note" style="color:var(--fog-400)" data-tbd><span class="tbd">{TBD · OD6}</span> The control check link is set once it is live.</p>
+      </div>
+
+      <div class="panel">
+        <h3 id="form-h">Show me on my phone</h3>
+        <form class="form" id="form" novalidate aria-labelledby="form-h">
+          <div class="row">
+            <div class="field"><label for="l-name">First name</label><input id="l-name" name="firstName" autocomplete="given-name" required aria-describedby="e-name"><p class="err" id="e-name"></p></div>
+            <div class="field"><label for="l-company">Company</label><input id="l-company" name="company" autocomplete="organization" required aria-describedby="e-company"><p class="err" id="e-company"></p></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="l-trucks">Number of trucks</label>
+              <select id="l-trucks" name="trucks" required aria-describedby="e-trucks">
+                <option value="">Choose</option>
+                <option>under 10</option><option>10 to 14</option><option>15 to 24</option><option>25 to 50</option><option>more than 50</option>
+              </select><p class="err" id="e-trucks"></p></div>
+            <div class="field"><label for="l-phone">Phone</label><div class="phone-in"><span aria-hidden="true">+48</span><input id="l-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" required aria-describedby="e-phone"></div><p class="err" id="e-phone"></p></div>
+          </div>
+          <div class="field"><label for="l-email">Email <span class="opt">(optional, used only with the email consent)</span></label><input id="l-email" name="email" type="email" autocomplete="email" aria-describedby="e-email"><p class="err" id="e-email"></p></div>
+          <label class="consent"><input type="checkbox" name="consentPhone" id="l-cphone" aria-describedby="e-cphone"><span>You may call me about FleetPartner. <span class="tbd">Draft wording · OD12</span></span></label>
+          <p class="err" id="e-cphone"></p>
+          <label class="consent"><input type="checkbox" name="consentEmail" id="l-cemail"><span>You may email me about FleetPartner. <span class="tbd">Draft wording · OD12</span></span></label>
+          <div class="hp" aria-hidden="true"><label for="l-web">Website</label><input id="l-web" name="website" tabindex="-1" autocomplete="off"></div>
+          <input type="hidden" name="calculator" id="l-calc">
+          <p class="calc-note" id="calc-note" hidden>Your calculator figures are attached.</p>
+          <button class="btn btn-fire" type="submit">Show me on my phone</button>
+          <div class="sent" id="sent" role="status" tabindex="-1" hidden>
+            <p><b>Thank you. We'll call you to arrange a time.</b></p>
+            <p class="mono" style="margin-top:8px;color:var(--fog-200)">Preview · not sent · where leads go is open (OD15)</p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="final-foot">
+      <p class="hero-links">Or call us: <a data-cta="call" aria-disabled="true"><span class="tbd" data-fact="phone">[number] · OD8</span></a></p>
+      <blockquote data-tbd>
+        <q>Control, peace of mind.</q>
+        <cite class="mono" style="font-style:normal;color:var(--fog-400)">One owner of a 12-truck fleet <span class="tbd">{TBD · OD3}</span></cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ S18 Footer ============ -->
+<footer class="foot night" data-register="night">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div style="display:grid;gap:18px;align-content:start">
+        <h2>FleetPartner</h2>
+        <a class="btn btn-fire btn-sm" data-cta="check" href="#check-tbd" style="justify-self:start">Check where your fire is</a>
+      </div>
+      <dl>
+        <div><dt>Company</dt><dd>Name, address, tax number <span class="tbd">{TBD · OD8}</span></dd></div>
+        <div><dt>Phone and email</dt><dd><span class="tbd" data-fact="phone">[number] · OD8</span></dd></div>
+        <div><dt>The app</dt><dd>Google Play <span class="tbd" data-fact="play">link · A2</span></dd></div>
+        <div><dt>Privacy and cookies</dt><dd>Privacy notice, cookie notice <span class="tbd">{TBD · OD9}</span></dd></div>
+        <div><dt>Consent</dt><dd>How we use what you send us <span class="tbd">{TBD · OD12}</span></dd></div>
+        <div><dt>Language</dt><dd>PL <span class="tbd">{TBD · OD16}</span> · EN working copy</dd></div>
+      </dl>
+    </div>
+    <p class="foot-note">Preview build. Product screens are labelled placeholders until the founder's captures arrive. Every {TBD} is an open decision in handover/09-OPEN-DECISIONS.md.</p>
+  </div>
+</footer>
+
+<div class="sticky-bar" id="sticky-bar" aria-hidden="true">
+  <a class="btn btn-fire" data-cta="check" href="#check-tbd" tabindex="-1">Check where your fire is</a>
+  <a class="icon-btn" data-cta="call" aria-disabled="true" aria-label="Call us (number to come)" style="box-shadow:inset 0 0 0 1.5px var(--fog-400)"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const html = document.documentElement;
+  const params = new URLSearchParams(location.search);
+
+  /* ---------- Facts. null means still open: the page shows {TBD} in previews (07 §4, 09) ---------- */
+  const FACTS = {
+    checkUrl: null,      // OD6: the control check (ScoreApp)
+    phone: null,         // OD8: for example "+48 000 000 000"
+    googlePlayUrl: null  // A2
+  };
+  // S2 message match: names come from these whitelists, never from the URL text (07 §7).
+  const PARTNERS = {};   // code -> partner name, only with the partner's written approval
+  const EVENTS = {};     // slug -> event name
+
+  /* ---------- Captures (handover/capture-manifest.json). src stays null until the real file arrives ---------- */
+  const CAPTURES = {
+    C01: { tag: "Command screen, web", proof: "Real screen · demo company · web panel · the boss" },
+    C02: { tag: "Command screen, boss's phone", proof: "Real screen · demo company · Android app · the boss" },
+    C03: { tag: "Notification arrives", proof: "Real screen · demo company · Android app · the boss" },
+    C04: { tag: "Order from a saved lane", proof: "Real screen · demo company · web panel · the boss" },
+    C05: { tag: "The order on the driver's phone", proof: "Real screen · demo company · Android app · driver" },
+    C06: { tag: "Driver confirms unloading", proof: "Real screen · demo company · Android app · driver" },
+    C07: { tag: "Invoice from the order", proof: "Real screen · demo company · web panel · the boss" },
+    C08: { tag: "Order paid and closed", proof: "Real screen · demo company · web panel · the boss" },
+    C09: { tag: "Legal hours while assigning", proof: "Real screen · demo company · web panel · the boss" },
+    C10: { tag: "Road cards from orders", proof: "Real screen · demo company · web panel · the boss" },
+    C11: { tag: "What the shipper sees", proof: "Real screen · demo company · client portal · client" },
+    C12: { tag: "Tachograph against the app", proof: "Real screen · demo company · web panel · the boss" },
+    C13: { tag: "Fuel against the norm", proof: "Real screen · demo company · web panel · the boss" },
+    C14: { tag: "Every expiry, counted down", proof: "Real screen · demo company · web panel · the boss" },
+    C15: { tag: "A client over its limit", proof: "Real screen · demo company · web panel · the boss" },
+    C16: { tag: "Mechanic asks for approval", proof: "Real screen · demo company · Android app · mechanic" },
+    C17: { tag: "The boss approves the repair", proof: "Real screen · demo company · Android app · the boss" },
+    C18: { tag: "Driver's first screen", proof: "Real screen · demo company · Android app · driver" },
+    C19: { tag: "Dispatcher assigns a load", proof: "Real screen · demo company · Android app · dispatcher" },
+    C20: { tag: "Mechanic's job queue", proof: "Real screen · demo company · Android app · mechanic" },
+    C21: { tag: "Office: not invoiced, not paid", proof: "Real screen · demo company · Android app · office" },
+    C23: { tag: "A driver's whole day", proof: "Every step from the real app" }
+  };
+
+  /* ---------- View flags ---------- */
+  if (params.get("view") === "launch") html.classList.add("is-launch");
+  const mqReduce = matchMedia("(prefers-reduced-motion: reduce)");
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const tierC = mqReduce.matches || saveData || params.get("tier") === "c";
+  if (tierC) html.classList.add("tier-c");
+  const mqWide = matchMedia("(min-width: 900px)");
+  const stagesOn = () => html.classList.contains("stages");
+  const setStages = () => html.classList.toggle("stages", mqWide.matches && !tierC);
+  setStages();
+
+  /* ---------- Facts into the page ---------- */
+  const passThrough = ["src", "p", "e", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+  function withParams(url) {
+    const u = new URL(url);
+    passThrough.forEach((k) => { if (params.has(k)) u.searchParams.set(k, params.get(k)); });
+    return u.toString();
+  }
+  if (FACTS.checkUrl) $$('[data-cta="check"]').forEach((a) => { a.href = withParams(FACTS.checkUrl); });
+  if (FACTS.phone) {
+    $$('[data-cta="call"]').forEach((a) => { a.href = "tel:" + FACTS.phone.replace(/\s/g, ""); a.removeAttribute("aria-disabled"); });
+    $$('[data-fact="phone"]').forEach((el) => { el.textContent = FACTS.phone; el.className = ""; });
+  }
+  if (FACTS.googlePlayUrl) {
+    $$('[data-fact="play"]').forEach((el) => { const a = document.createElement("a"); a.href = FACTS.googlePlayUrl; a.textContent = "Get it on Google Play"; el.replaceWith(a); });
+  }
+
+  /* ---------- S2 message-match kicker ---------- */
+  const kicker = $("#kicker");
+  const src = params.get("src");
+  if (src === "partner" && Object.hasOwn(PARTNERS, params.get("p"))) kicker.textContent = "Recommended to you by " + PARTNERS[params.get("p")] + ".";
+  else if (src === "event" && Object.hasOwn(EVENTS, params.get("e"))) kicker.textContent = "Good to meet you at " + EVENTS[params.get("e")] + ".";
+  else if (src === "article") {
+    kicker.textContent = "Counted your order? Here is one record.";
+    if (!mqWide.matches && !location.hash) addEventListener("load", () => $("#once").scrollIntoView());
+  } else if (src === "sms") kicker.textContent = "As promised on the phone.";
+
+  /* ---------- Capture frames: silhouettes (no text, no numbers) until the capture is real ---------- */
+  const R = (x, y, w, h, c = "") => `<i class="s ${c}" style="left:${x}%;top:${y}%;width:${w}%${h ? `;height:${h}%` : ""}"></i>`;
+  const side = () => R(0, 0, 11, 100, "side") + [...Array(9)].map((_, i) => R(2.2, 9 + i * 6.5, 6.6, 2, "t")).join("");
+  const top = () => R(11, 0, 89, 7, "topbar");
+  const ptop = () => R(0, 0, 100, 6.5, "topbar") + R(6, 2.4, 22, 1.6, "t");
+  const rows = (x, y, w, h, n, gap) => [...Array(n)].map((_, i) => R(x, y + i * (h + gap), w, h)).join("");
+  const SIL = {
+    dash: () => side() + top() + R(14, 10.5, 18, 2.2, "t") + R(14, 14.5, 32, 3.6, "t t2")
+      + R(14, 21, 30, 18) + R(15.8, 24, 14, 2, "t") + R(15.8, 29, 20, 3, "t t2") + R(15.8, 34, 12, 2, "t")
+      + R(48.6, 20.5, 11.8, 18.9, "ring")
+      + R(64, 21, 33, 18) + R(65.8, 24, 14, 2, "t") + R(65.8, 29, 20, 3, "t t2") + R(65.8, 34, 12, 2, "t")
+      + R(14, 42, 83, 9, "risk") + R(16, 44.3, 10, 1.8, "t amber") + R(16, 47.4, 34, 2.2, "t t2")
+      + R(14, 54, 40, 32) + R(14, 54, 40, 5, "qh") + R(15.6, 61.5, 36.8, 10) + R(15.6, 73.5, 36.8, 10)
+      + R(57, 54, 40, 32) + R(57, 54, 40, 5, "qh") + rows(58.6, 61, 36.8, 5.2, 4, 1)
+      + R(14, 89, 83, 8) + [0, 1, 2].map((i) => R(16 + i * 27, 91.9, 1.6, 0, "tick") + R(18.6 + i * 27, 92.3, 12, 1.8, "t")).join(""),
+    pdash: () => ptop() + R(6, 9, 40, 1.6, "t") + R(35, 12, 30, 13.5, "ring")
+      + R(6, 29, 88, 10, "risk") + R(10, 31.5, 22, 1.4, "t amber") + R(10, 34.5, 60, 1.8, "t t2")
+      + [0, 1, 2, 3].map((i) => R(6, 42 + i * 10, 88, 8.5) + R(10, 44.5 + i * 10, 50, 1.5, "t") + R(10, 47.5 + i * 10, 30, 1.3, "t")).join("")
+      + R(0, 93, 100, 7, "topbar"),
+    pcalm: () => ptop() + R(6, 9, 40, 1.6, "t") + R(35, 12, 30, 13.5, "ring")
+      + R(6, 29, 88, 50) + R(10, 31.5, 34, 1.8, "t t2")
+      + [0, 1, 2, 3, 4, 5].map((i) => R(10, 36 + i * 7, 3.4, 0, "tick") + R(16, 36.4 + i * 7, 50, 1.5, "t")).join("")
+      + R(0, 93, 100, 7, "topbar"),
+    plist: () => ptop() + R(6, 9.5, 50, 2.2, "t t2")
+      + [0, 1, 2, 3, 4].map((i) => R(6, 14 + i * 15.5, 88, 13.5) + R(10, 17 + i * 15.5, 44, 1.6, "t t2") + R(10, 20.5 + i * 15.5, 70, 1.4, "t") + R(10, 23.5 + i * 15.5, 34, 1.4, "t")).join(""),
+    pcam: () => ptop() + R(6, 9.5, 88, 10) + R(10, 12, 40, 1.6, "t t2") + R(10, 15.5, 60, 1.4, "t")
+      + R(6, 22, 88, 42, "photo") + R(6, 68, 88, 7, "btn") + R(6, 78, 88, 7),
+    pnotif: () => R(0, 0, 100, 100, "lockbg") + R(28, 10, 44, 5, "t lockt") + R(34, 16.5, 32, 1.6, "t lockt")
+      + `<i class="s notif drop" style="left:5%;top:25%;width:90%;height:9%"></i>` + R(10, 27.4, 30, 1.4, "t") + R(10, 30.4, 64, 1.4, "t"),
+    portal: () => ptop() + R(6, 9, 88, 38, "map") + R(6, 50, 88, 13) + R(10, 53, 40, 1.8, "t t2") + R(10, 57, 60, 1.4, "t")
+      + [0, 1, 2].map((i) => R(6, 66 + i * 9, 88, 7.5) + R(10, 68.8 + i * 9, 3.4, 0, "tick") + R(16, 69 + i * 9, 50, 1.4, "t")).join(""),
+    table: () => side() + top() + R(14, 10.5, 24, 3.4, "t t2") + R(14, 17, 83, 6)
+      + [...Array(8)].map((_, i) => R(14, 26 + i * 8.8, 83, 7.2) + R(16, 28.6 + i * 8.8, 14, 2, "t") + R(40, 28.6 + i * 8.8, 20, 2, "t") + R(72, 28.6 + i * 8.8, 12, 2, "t")).join(""),
+    form: () => side() + top() + R(14, 10.5, 28, 3.4, "t t2")
+      + [0, 1, 2, 3, 4].map((r) => R(14, 18 + r * 13, 40, 9) + R(57, 18 + r * 13, 40, 9)).join("") + R(80, 88, 17, 7, "btn"),
+    bars: () => side() + top() + R(14, 10.5, 28, 3.4, "t t2")
+      + [60, 52, 47, 38, 30, 22, 12].map((w, i) => R(14, 20 + i * 10.5, 12, 2.6, "t") + R(30, 19.6 + i * 10.5, w, 3.6, "meter")).join(""),
+    "crop-risk": () => R(0, 0, 100, 100, "risk") + R(4, 22, 16, 13, "t amber") + R(4, 46, 62, 17, "t t2") + R(4, 72, 38, 12, "t"),
+    "crop-queues": () => R(2, 4, 47, 92) + R(2, 4, 47, 14, "qh") + rows(4, 24, 43, 30, 2, 6) + R(51, 4, 47, 92) + R(51, 4, 47, 14, "qh") + rows(53, 22, 43, 14, 4, 3.5),
+    "crop-diff": () => [0, 1, 2].map((i) => R(3, 10 + i * 28, 20, 18, "t") + R(27, 8 + i * 28, 20, 22) + R(51, 8 + i * 28, 20, 22) + R(75, 8 + i * 28, 22, 22, i === 1 ? "risk" : "")).join(""),
+    "crop-rows": () => [0, 1, 2, 3].map((i) => R(3, 6 + i * 23.5, 94, 19) + R(6, 12 + i * 23.5, 24, 7, "t t2") + R(40, 12 + i * 23.5, 30, 7, "t")).join(""),
+    "crop-counters": () => [0, 1, 2, 3].map((i) => R(3 + i * 24.5, 12, 21.5, 76) + R(6 + i * 24.5, 26, 10, 16, "t t2") + R(6 + i * 24.5, 56, 15, 10, "t")).join(""),
+    "crop-limit": () => R(3, 8, 94, 84) + R(7, 20, 30, 10, "t t2") + R(7, 52, 86, 14, "meter") + R(7, 52, 70, 14, "t t2") + R(76, 42, 1.2, 34, "t t2"),
+    "crop-bars": () => [70, 55, 40, 22].map((w, i) => R(3, 10 + i * 22, 18, 10, "t") + R(26, 8 + i * 22, w, 14, "meter")).join("")
+  };
+
+  function renderFrame(el) {
+    const id = el.dataset.cap;
+    const cap = CAPTURES[id] || { tag: id };
+    const kind = el.classList.contains("cf-phone") ? "phone" : el.classList.contains("cf-crop") ? "crop" : "web";
+    const sil = SIL[el.dataset.sil] ? SIL[el.dataset.sil]() : "";
+    const inner = cap.src
+      ? `<img src="${cap.src}" alt="${cap.alt || cap.tag}" loading="lazy" decoding="async">`
+      : sil + ("rec" in el.dataset ? '<span class="shim"></span>' : "");
+    const chrome = kind === "web" ? '<div class="bar"><i></i><i></i><i></i></div>' : kind === "phone" ? '<span class="cam"></span>' : "";
+    let out = `<div class="dev dev-${kind}" aria-hidden="true">${chrome}<div class="scr-box"><div class="scr">${inner}</div></div></div>`;
+    if (el.tagName === "FIGURE") {
+      const label = cap.src ? cap.proof : `Placeholder · ${id} · ${el.dataset.crop || cap.tag}`;
+      out += `<figcaption class="ph-tag">${label}</figcaption>`;
+    }
+    el.innerHTML = out;
+  }
+  $$(".cf[data-cap]").forEach(renderFrame);
+  // The biggest-risk crops carry the fire.
+  $$(".fire-glow-host").forEach((el) => (el.querySelector(".dev") || el).classList.add("fire-glow"));
+  $$("[data-glow] .s.risk").forEach((el) => el.classList.add("fire-glow"));
+
+  /* ---------- S4 converge diagram, built for the viewport (wide or tall) ---------- */
+  const NS = "http://www.w3.org/2000/svg";
+  const PLACES = [["WhatsApp", "i-msg"], ["Excel", "i-sheet"], ["The office", "i-building"], ["Your accountant", "i-calc"], ["The GPS app", "i-pin"], ["Your head", "i-cloud"]];
+  function convergeLayout(wide) {
+    if (wide) {
+      const ang = [-60, -36, -12, 12, 36, 60].map((a) => (a * Math.PI) / 180);
+      return { vb: "0 0 820 520", fs: 13, r: 22, you: [90, 260], core: [410, 260],
+        places: ang.map((a) => [410 + 250 * Math.cos(a), 260 + 225 * Math.sin(a)]), seventh: [270, 70], labelSide: "right" };
+    }
+    return { vb: "0 0 360 452", fs: 11, r: 20, you: [180, 420], core: [180, 290],
+      places: [[60, 36], [180, 36], [300, 36], [60, 132], [180, 132], [300, 132]], seventh: [318, 226], labelSide: "below" };
+  }
+  function buildConverge(svg, frame, L) {
+    const P = L.places, [yx, yy] = L.you, [cx, cy] = L.core;
+    let s = "";
+    const node = (x, y, label, icon, cls = "") => {
+      const lx = L.labelSide === "right" ? x + L.r + 10 : x;
+      const ly = L.labelSide === "right" ? y + L.fs * 0.35 : y + L.r + L.fs + 6;
+      const anchor = L.labelSide === "right" ? "start" : "middle";
+      return `<g class="${cls}"><circle class="node-bg" cx="${x}" cy="${y}" r="${L.r}"/><use class="node-ic" href="#${icon}" x="${x - 11}" y="${y - 11}" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="${lx}" y="${ly}" font-size="${L.fs}" text-anchor="${anchor}">${label.toUpperCase()}</text></g>`;
+    };
+    if (frame < 3) {
+      // Tangled: every place joins YOU, crossing each other.
+      P.forEach(([x, y], i) => {
+        const flip = i % 2 ? 1 : -1;
+        const c1 = L.labelSide === "right" ? [x - 160, cy + (cy - y) * 1.1] : [cx + (cx - x) * 1.2, y + 120];
+        const c2 = L.labelSide === "right" ? [yx + 150, y + flip * 140] : [x + flip * 90, yy - 120];
+        s += `<path class="tangle draw${i % 3 === 0 ? " hot" : ""}" pathLength="1" d="M${x} ${y} C${c1[0]} ${c1[1]} ${c2[0]} ${c2[1]} ${yx} ${yy}"/>`;
+      });
+      [[0, 3], [1, 4], [2, 5]].forEach(([a, b]) => {
+        const [ax, ay] = P[a], [bx, by] = P[b];
+        s += `<path class="tangle draw" pathLength="1" d="M${ax} ${ay} Q${(ax + bx) / 2 + (L.labelSide === "right" ? -120 : 80)} ${(ay + by) / 2} ${bx} ${by}"/>`;
+      });
+      if (frame === 2) {
+        const [sx, sy] = L.seventh;
+        s += `<g class="seventh"><path class="tangle hot" d="M${sx} ${sy} C${sx - 90} ${sy + 160} ${yx + 120} ${yy - 60} ${yx} ${yy}"/><path class="tangle" d="M${sx} ${sy} Q${(sx + P[2][0]) / 2} ${sy + 150} ${P[2][0]} ${P[2][1]}"/><path class="tangle" d="M${sx} ${sy} Q${sx + 60} ${(sy + P[0][1]) / 2} ${P[0][0]} ${P[0][1]}"/>${node(sx, sy, "Another app", "i-phone-dev")}</g>`;
+      }
+    } else {
+      // Calm: every place records into one core; YOU joins it by one line.
+      P.forEach(([x, y]) => {
+        const mx = (x + cx) / 2;
+        s += L.labelSide === "right"
+          ? `<path class="calm draw" pathLength="1" d="M${x - L.r} ${y} C${mx} ${y} ${mx} ${cy} ${cx + 34} ${cy}"/>`
+          : `<path class="calm draw" pathLength="1" d="M${x} ${y + L.r} C${x} ${(y + cy) / 2} ${cx} ${(y + cy) / 2} ${cx} ${cy - 34}"/>`;
+      });
+      s += L.labelSide === "right"
+        ? `<path class="calm draw" pathLength="1" d="M${yx + 28} ${yy} L${cx - 34} ${cy}"/>`
+        : `<path class="calm draw" pathLength="1" d="M${yx} ${yy - 28} L${cx} ${cy + 34}"/>`;
+      s += `<rect class="core-bg" x="${cx - 34}" y="${cy - 34}" width="68" height="68" rx="18"/><text class="core-t" x="${cx}" y="${cy + 6}" font-size="16" text-anchor="middle" font-weight="500">FP</text>`;
+    }
+    P.forEach(([x, y], i) => { s += node(x, y, PLACES[i][0], PLACES[i][1]); });
+    s += `<circle class="you-bg" cx="${yx}" cy="${yy}" r="28"/><text class="you-t" x="${yx}" y="${yy + 4.5}" font-size="13" text-anchor="middle">YOU</text>`;
+    svg.setAttribute("viewBox", L.vb);
+    svg.innerHTML = s;
+  }
+  function buildAllConverge() {
+    const L = convergeLayout(mqWide.matches);
+    $$(".s4-frame").forEach((f) => buildConverge($("svg", f), +f.dataset.frame, L));
+  }
+  buildAllConverge();
+
+  /* ---------- S7 route: waypoints and the travelling order ---------- */
+  const routeBase = $("#route-base"), routeLit = $("#route-lit"), orderCard = $("#order-card"), wps = $("#wps");
+  const routeLen = routeBase.getTotalLength();
+  const WP = [0, 0.25, 0.5, 0.75, 1];
+  wps.innerHTML = WP.map((t) => { const p = routeBase.getPointAtLength(routeLen * t); return `<circle class="wp" cx="${p.x}" cy="${p.y}" r="9"/>`; }).join("");
+  function moveOrder(p) {
+    const pt = routeBase.getPointAtLength(routeLen * p);
+    orderCard.setAttribute("transform", `translate(${pt.x} ${pt.y})`);
+    routeLit.setAttribute("stroke-dashoffset", String(1 - p));
+    $$(".wp", wps).forEach((c, i) => c.classList.toggle("on", p >= WP[i] - 0.001));
+  }
+
+  /* ---------- Stages ---------- */
+  const STAGE = {
+    "st-s3"(st, step) {
+      $$(".sig", st).forEach((el, i) => el.classList.toggle("on", step >= i));
+      const sw = $(".swarm", st);
+      sw.classList.toggle("thick", step >= 6);
+      sw.classList.toggle("tight", step >= 7);
+      $$(".dots i", st).forEach((d, i) => d.classList.toggle("on", i <= step));
+    },
+    "st-s4"(st, step) {
+      $$(".s4-frame", st).forEach((f, i) => f.classList.toggle("play", i === step));
+      $$(".s4-lines li", st).forEach((l, i) => l.classList.toggle("on", i === step));
+    },
+    "st-s5"(st, step) {
+      $$(".beat", st).forEach((b, i) => b.classList.toggle("play", i === step));
+      const sec = $("#how");
+      sec.classList.toggle("night", step < 2);
+      sec.classList.toggle("dusk", step === 1);
+      sec.classList.toggle("day", step === 2);
+      sec.dataset.register = step === 2 ? "day" : "night";
+    },
+    "st-s7"(st, step) {
+      $$(".jstep", st).forEach((j, i) => j.classList.toggle("on", i === step));
+      $$(".jhead li", st).forEach((j, i) => { j.classList.toggle("on", i === step); j.classList.toggle("done", i < step); });
+    }
+  };
+  const stages = $$(".stage");
+  function stageUpdate() {
+    if (!stagesOn()) return;
+    const vh = innerHeight;
+    for (const st of stages) {
+      const r = st.getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) continue;
+      const total = r.height - vh;
+      const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+      st.style.setProperty("--p", p.toFixed(4));
+      const n = +st.dataset.steps;
+      const step = Math.min(n - 1, Math.floor(p * n));
+      if (st.id === "st-s7") moveOrder(Math.min(1, Math.max(0, (p * n - 0.5) / (n - 1))));
+      if (st._step !== step) { st._step = step; STAGE[st.id](st, step); }
+    }
+  }
+  function resetStacked() {
+    // Stacked (phones, tier C): every stage shows its composed frames.
+    stages.forEach((st) => { st._step = undefined; st.style.removeProperty("--p"); });
+    $$(".sig").forEach((el) => el.classList.add("on"));
+    $$(".s4-frame, .beat").forEach((el) => el.classList.toggle("play", tierC));
+    const how = $("#how");
+    how.classList.add("night"); how.classList.remove("dusk", "day"); how.dataset.register = "night";
+    $$(".jstep").forEach((j) => j.classList.remove("on"));
+    moveOrder(1);
+  }
+
+  /* ---------- Play on enter: reveals, micro-motions, loops ---------- */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      const el = e.target;
+      if ("reveal" in el.dataset && e.isIntersecting) el.classList.add("in");
+      if ("play" in el.dataset && !(stagesOn() && el.closest(".stage"))) { if (e.isIntersecting) el.classList.add("play"); }
+      if ("anim" in el.dataset || el.classList.contains("dev")) el.classList.toggle("run", e.isIntersecting);
+    });
+  }, { rootMargin: "0px 0px -12% 0px", threshold: 0.15 });
+  $$("[data-reveal], [data-play], [data-anim]").forEach((el) => io.observe(el));
+  $$(".dev").forEach((el) => io.observe(el));
+
+  /* ---------- Header, menu, phone sticky bar ---------- */
+  const header = $("#top"), hero = $("#hero"), finalSec = $("#final"), bar = $("#sticky-bar");
+  const menuBtn = $("#menu-btn"), menu = $("#menu");
+  const registers = $$("[data-register]").filter((el) => el !== header);
+  let lastY = scrollY;
+  function headerUpdate() {
+    const y = scrollY, hb = hero.getBoundingClientRect().bottom, hh = header.offsetHeight;
+    header.classList.toggle("solid", hb < hh + 8 || !menu.hidden);
+    for (const s of registers) {
+      const r = s.getBoundingClientRect();
+      if (r.top <= hh && r.bottom > hh) { header.dataset.register = s.dataset.register; break; }
+    }
+    if (!mqWide.matches) header.classList.toggle("hide", y > lastY + 2 && y > 160 && menu.hidden);
+    if (y < lastY - 2) header.classList.remove("hide");
+    lastY = y;
+    const fr = finalSec.getBoundingClientRect();
+    const show = hb < 0 && !(fr.top < innerHeight && fr.bottom > 0);
+    bar.classList.toggle("show", show);
+    bar.setAttribute("aria-hidden", String(!show));
+    $$("a", bar).forEach((a) => (show ? a.removeAttribute("tabindex") : a.setAttribute("tabindex", "-1")));
+  }
+  menuBtn.addEventListener("click", () => {
+    const open = menu.hidden;
+    menu.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.innerHTML = `<svg class="ic" aria-hidden="true"><use href="#i-${open ? "x" : "menu"}"/></svg>`;
+    headerUpdate();
+  });
+  $$("a", menu).forEach((a) => a.addEventListener("click", () => { menu.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); menuBtn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>'; }));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { menuBtn.click(); menuBtn.focus(); } });
+
+  /* ---------- S13 road: the truck passes each gate as you read ---------- */
+  const road = $("#road"), truck = $("#road-truck"), gates = $$("#road .gate");
+  const GATE_X = [150, 360, 570, 780];
+  function roadUpdate() {
+    let p = 1;
+    if (!tierC) {
+      const r = road.getBoundingClientRect(), vh = innerHeight;
+      p = Math.min(1, Math.max(0, (vh * 0.9 - r.top) / (vh * 0.55)));
+    }
+    const x = 40 + p * 870;
+    truck.setAttribute("transform", `translate(${x} 0)`);
+    gates.forEach((g, i) => g.classList.toggle("on", x >= GATE_X[i]));
+  }
+
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; headerUpdate(); stageUpdate(); roadUpdate(); });
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  mqWide.addEventListener("change", () => { setStages(); buildAllConverge(); if (!stagesOn()) resetStacked(); onScroll(); });
+  if (!stagesOn()) resetStacked();
+  headerUpdate(); stageUpdate(); roadUpdate();
+
+  /* ---------- Hero pointer parallax, up to 4 degrees (tier A only) ---------- */
+  const hv = $(".hv-3d");
+  if (!tierC && matchMedia("(pointer: fine)").matches) {
+    hero.addEventListener("pointermove", (e) => {
+      const r = hero.getBoundingClientRect();
+      const dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+      hv.style.setProperty("--ry", (dx * 8).toFixed(2) + "deg");
+      hv.style.setProperty("--rx", (-dy * 6).toFixed(2) + "deg");
+    });
+    hero.addEventListener("pointerleave", () => { hv.style.setProperty("--ry", "0deg"); hv.style.setProperty("--rx", "0deg"); });
+  }
+
+  /* ---------- Tabs (roles and calculator): arrows, Home, End ---------- */
+  function tabs(list, onChange) {
+    const ts = $$('[role="tab"]', list);
+    function select(t, focus) {
+      ts.forEach((x) => {
+        const on = x === t;
+        x.setAttribute("aria-selected", String(on));
+        x.tabIndex = on ? 0 : -1;
+        $("#" + x.getAttribute("aria-controls")).hidden = !on;
+      });
+      if (focus) t.focus();
+      onChange && onChange(t);
+    }
+    ts.forEach((t, i) => {
+      t.addEventListener("click", () => select(t));
+      t.addEventListener("keydown", (e) => {
+        const k = e.key;
+        let n = null;
+        if (k === "ArrowRight" || k === "ArrowDown") n = ts[(i + 1) % ts.length];
+        else if (k === "ArrowLeft" || k === "ArrowUp") n = ts[(i - 1 + ts.length) % ts.length];
+        else if (k === "Home") n = ts[0];
+        else if (k === "End") n = ts[ts.length - 1];
+        if (n) { e.preventDefault(); select(n, true); }
+      });
+    });
+    return select;
+  }
+  const roleCf = $("#role-cf"), roleTag = $("#role-tag"), flip = $(".role-phone .flip");
+  function showRole(t) {
+    const swap = () => {
+      roleCf.dataset.cap = t.dataset.cap; roleCf.dataset.sil = t.dataset.sil; renderFrame(roleCf);
+      roleTag.textContent = "Placeholder · " + t.dataset.cap + " · " + CAPTURES[t.dataset.cap].tag;
+    };
+    if (tierC) return swap();
+    flip.classList.add("turn");
+    setTimeout(() => { swap(); flip.classList.remove("turn"); }, 250);
+  }
+  const selectRole = tabs($(".role-tabs"), showRole);
+  roleTag.textContent = "Placeholder · C02 · " + CAPTURES.C02.tag;
+  tabs($(".calc-tabs"));
+  $$("[data-role]").forEach((a) => a.addEventListener("click", () => selectRole($("#" + a.dataset.role))));
+
+  /* ---------- S12 calculator (formulas as in the pricing dashboard's Anchor 2 calculator) ---------- */
+  const num = (id) => { const v = parseFloat(($("#" + id).value || "").replace(",", ".")); return Number.isFinite(v) && v >= 0 ? v : null; };
+  const zl = (v) => v.toLocaleString("pl-PL", { maximumFractionDigits: 2 }) + " zł";
+  const N = (v) => `<span class="num">${v}</span>`;
+  function calc() {
+    const trucks = num("c-trucks"), drivers = num("c-drivers"), gps = num("c-gps"), program = num("c-program"), bureau = num("c-bureau");
+    if (trucks && (gps !== null || program !== null)) {
+      const pieces = trucks * (gps || 0) + (program || 0);
+      $("#r-pieces").innerHTML = `The pieces cost you ${N(zl(pieces))} a month.`;
+      $("#r-break").innerHTML = `Break-even: ${zl(pieces / trucks)} per truck.`;
+    } else {
+      $("#r-pieces").textContent = "Enter your numbers.";
+      $("#r-break").textContent = "";
+    }
+    const kept = $("#r-bureau");
+    if (drivers && bureau !== null) { kept.hidden = false; kept.innerHTML = `<span class="chip">Kept</span><span>Your bureau: ${zl(drivers * bureau)} a month. FleetPartner doesn't replace it.</span>`; }
+    else kept.hidden = true;
+
+    const fires = ["f-policy", "f-hours", "f-unpaid", "f-norm", "f-claim"].map(num).filter((v) => v !== null);
+    let sum = 0; fires.forEach((v) => { sum += v; });
+    $("#r-fires").innerHTML = fires.length ? `Your fires: ${N(zl(sum))}.` : "Enter your numbers.";
+
+    const calls = num("t-calls"), mins = num("t-mins"), ev = num("t-evenings"), hrs = num("t-hours");
+    const week = (calls !== null && mins !== null ? (calls * mins * 7) / 60 : 0) + (ev !== null && hrs !== null ? ev * hrs : 0);
+    const any = (calls !== null && mins !== null) || (ev !== null && hrs !== null);
+    $("#r-time").innerHTML = any ? `About ${N(Math.round((week * 52) / 12).toLocaleString("pl-PL") + " hours")} a month.` : "Enter your numbers.";
+  }
+  $$("[data-calc]").forEach((i) => i.addEventListener("input", calc));
+  $("#work-it-out").addEventListener("click", () => {
+    const data = {};
+    $$("[data-calc]").forEach((i) => { if (i.value !== "") data[i.id] = i.value; });
+    const has = Object.keys(data).length > 0;
+    $("#l-calc").value = has ? JSON.stringify(data) : "";
+    $("#calc-note").hidden = !has;
+  });
+
+  /* ---------- S16: the first two questions open on desktop ---------- */
+  if (mqWide.matches) $$(".faq details").slice(0, 2).forEach((d) => { d.open = true; });
+
+  /* ---------- S17 form: validated here; no endpoint until OD15 ---------- */
+  const form = $("#form"), bornAt = Date.now();
+  const setErr = (id, msg) => {
+    const input = $("#" + id), err = $("#" + input.getAttribute("aria-describedby"));
+    err.textContent = msg;
+    if (msg) input.setAttribute("aria-invalid", "true"); else input.removeAttribute("aria-invalid");
+    return !msg;
+  };
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if ($("#l-web").value || Date.now() - bornAt < 3000) return;
+    const phone = $("#l-phone").value.replace(/[\s-]/g, "").replace(/^(\+48|0048)/, "");
+    const email = $("#l-email").value.trim();
+    const ok = [
+      setErr("l-name", $("#l-name").value.trim() ? "" : "Please enter your first name."),
+      setErr("l-company", $("#l-company").value.trim() ? "" : "Please enter your company."),
+      setErr("l-trucks", $("#l-trucks").value ? "" : "Please choose the number of trucks."),
+      setErr("l-phone", /^\d{9}$/.test(phone) ? "" : "Please enter a 9-digit Polish phone number."),
+      setErr("l-email", !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "" : "Please check the email address."),
+      setErr("l-cphone", $("#l-cphone").checked ? "" : "We need your permission to call you.")
+    ];
+    const first = ok.indexOf(false);
+    if (first > -1) { $$("[aria-invalid=true]", form)[0]?.focus(); return; }
+    $("#sent").hidden = false;
+    $("#sent").focus();
+    form.querySelector('button[type="submit"]').disabled = true;
+  });
+})();
+</script>
+</body>
+</html>
