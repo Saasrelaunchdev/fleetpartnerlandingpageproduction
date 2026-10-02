@@ -652,12 +652,18 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .ok-label .hs-n{background:var(--fp-accent);color:var(--fp-on-accent);box-shadow:none}
 .s6-ok .cf{width:100%}
 .s6-web{position:relative}
-.hotspots{position:absolute;left:0;right:0;top:var(--bar);aspect-ratio:16/10;pointer-events:none}
+.hotspots{position:absolute;left:0;right:0;top:var(--bar);aspect-ratio:16/10;overflow:hidden;pointer-events:none}
 .hs{position:absolute;left:var(--x);top:var(--y);display:flex;align-items:center;gap:0;transform:translate(-13px,-13px)}
 .hs-n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--fp-navy-900);color:#fff;font:600 12px/1 var(--f-text);box-shadow:0 0 0 3px var(--fp-screen)}
 .hs.fire .hs-n{background:var(--fp-fire);color:var(--fp-navy-975)}
 .hs-line{display:none;width:26px;height:1.5px;background:var(--fp-navy-900);transform-origin:left}
 .hs-label{display:none;padding:6px 10px;border-radius:8px;background:var(--fp-screen);border:1px solid var(--fp-slate-200);font-size:13.5px;font-weight:600;color:var(--fp-navy-900);white-space:nowrap;box-shadow:0 8px 18px -12px color-mix(in srgb,var(--fp-navy-975) 60%,transparent)}
+/* Zoomed in, each hotspot moves with the spot it marks; below 700 px they step aside (the list names them) */
+.hs{transition:left 1.1s var(--ease-in-out),top 1.1s var(--ease-in-out)}
+.zoomed .hs{left:calc(var(--x) * var(--z,1) + var(--zx,0px));top:calc(var(--y) * var(--z,1) + var(--zy,0px))}
+.hotspots{transition:opacity .3s var(--ease-out)}
+.tier-c .hs{transition:none}
+@media (max-width:699px){.zoomed .hotspots{opacity:0}}
 .hs-list{display:grid;gap:10px;counter-reset:h}
 .hs-list li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;font-weight:600;color:var(--fp-heading)}
 .hs-list li::before{counter-increment:h;content:counter(h);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--fp-heading);color:var(--fp-bg);font:600 12px/1 var(--f-text)}
@@ -718,9 +724,10 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .fcard{display:grid;gap:14px;align-content:start;padding:0 0 22px;overflow:hidden;border-radius:var(--r-card);background:var(--fp-surface);border:1px solid var(--fp-line)}
 .fcard > .h3,.fcard > p,.fcard .proof-chip{margin-inline:22px}
 .fcard p{color:var(--fp-text-2)}
-/* The screen fills a window the card's width: at rest it bleeds off the window's edges; zoomed in (--z, --zx, --zy
-   from the script) it shows the detail, ringed, the rest of the screen washed back. A cursor (a tap on touch
-   screens) clicks the detail first, at --cx, --cy */
+/* Zoom on the detail. The screen's layer (.zl) zooms inside the screen, or, in the S7 cards, inside a window the
+   card's width where the device bleeds off the edges at rest. Zoomed in (--z, --zx, --zy from the script) it shows
+   the detail, ringed, the rest of the screen washed back. A cursor (a tap on phone and touch screens) clicks the
+   detail first, at --cx, --cy */
 .zw{position:relative;aspect-ratio:1.2;overflow:hidden;background:radial-gradient(120% 90% at 0 0,color-mix(in srgb,var(--fp-accent) 12%,transparent),transparent 60%),var(--fp-bg);border-bottom:1px solid var(--fp-line)}
 .zl{position:absolute;inset:0;transform-origin:0 0;transition:translate 1.1s var(--ease-in-out),scale 1.1s var(--ease-in-out)}
 .zoomed .zl{translate:var(--zx,0) var(--zy,0);scale:var(--z,1)}
@@ -729,6 +736,8 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .zw .dev-phone{left:27%;top:6%;width:46%}
 .zring{position:absolute;z-index:2;border-radius:var(--fr);pointer-events:none;opacity:0;box-shadow:0 0 0 calc(2px / var(--z,1)) var(--fp-accent),0 0 0 calc(7px / var(--z,1)) color-mix(in srgb,var(--fp-accent) 24%,transparent),0 0 0 100vmax color-mix(in srgb,var(--fp-screen) 34%,transparent);transition:opacity .45s var(--ease-out)}
 .zoomed .zring{opacity:1;transition-delay:.85s}
+.zring.fire{box-shadow:0 0 0 calc(2px / var(--z,1)) var(--fp-fire),0 0 0 calc(7px / var(--z,1)) color-mix(in srgb,var(--fp-fire) 24%,transparent),0 0 0 100vmax color-mix(in srgb,var(--fp-screen) 34%,transparent)}
+.zring.fire::after{--fp-accent:var(--fp-fire)}
 .zring::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 calc(2px / var(--z,1)) var(--fp-accent);opacity:0}
 .js:not(.tier-c) .zoomed .zring::after{animation:zring 1.1s var(--ease-out) 1.2s}
 @keyframes zring{from{opacity:.9;inset:0}to{opacity:0;inset:calc(-16px / var(--z,1))}}
@@ -740,13 +749,18 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .zc-touch{width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:color-mix(in srgb,var(--fp-slate-950) 16%,transparent);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--fp-slate-25) 85%,transparent);animation:touch .7s var(--ease-out) both}
 .zc-ripple{width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;border:2px solid var(--fp-accent);animation:ripple .6s var(--ease-out) 1.1s forwards}
 .zc-touch ~ .zc-ripple{animation-delay:.3s}
+.scr .zc-touch{width:var(--zt,30px);height:var(--zt,30px);margin:calc(var(--zt,30px) / -2) 0 0 calc(var(--zt,30px) / -2)}
+.scr .zc-ripple{width:calc(var(--zt,30px) * 1.2);height:calc(var(--zt,30px) * 1.2);margin:calc(var(--zt,30px) * -.6) 0 0 calc(var(--zt,30px) * -.6)}
 /* From below right onto the detail; the press at 1.07 s */
 @keyframes zc-cursor{0%{opacity:0;translate:90px 70px}10%{opacity:1;translate:90px 70px;animation-timing-function:var(--ease-in-out)}65%{translate:0 0;scale:1;animation-timing-function:var(--ease-out)}71%{scale:.82}78%{scale:1}88%{opacity:1}100%{opacity:0;translate:0 0;scale:1}}
-/* The whole window is the zoom button; its icon sits in the corner */
+/* The whole window (or device) is the zoom button; its icon sits in the corner, smaller on small screens */
 .zbtn{position:absolute;inset:0;z-index:6;display:grid;align-content:end;justify-content:end;padding:12px;border:0;border-radius:0;background:none;cursor:zoom-in;-webkit-tap-highlight-color:transparent}
 .zoomed .zbtn{cursor:zoom-out}
 .zbtn:focus-visible{outline-offset:-4px;border-radius:calc(var(--r-card) - 2px) calc(var(--r-card) - 2px) 0 0}
-.zbtn .ic{grid-area:1 / 1;width:36px;height:36px;padding:9px;border-radius:50%;background:color-mix(in srgb,var(--fp-surface) 90%,transparent);border:1px solid var(--fp-line-strong);color:var(--fp-heading);box-shadow:var(--shadow-soft);transition:opacity var(--t-ui) ease,scale var(--t-press) var(--ease-out)}
+.dev > .zbtn{padding:10px}
+.dev > .zbtn:focus-visible{outline-offset:-3px;border-radius:inherit}
+.zbtn.mini .ic{display:none}
+.zbtn .ic{grid-area:1 / 1;width:var(--zb,36px);height:var(--zb,36px);padding:calc(var(--zb,36px) / 4);border-radius:50%;background:color-mix(in srgb,var(--fp-surface) 90%,transparent);border:1px solid var(--fp-line-strong);color:var(--fp-heading);box-shadow:var(--shadow-soft);transition:opacity var(--t-ui) ease,scale var(--t-press) var(--ease-out)}
 .zbtn .ic + .ic,.zoomed .zbtn .ic{opacity:0}
 .zoomed .zbtn .ic + .ic{opacity:1}
 .zbtn:active .ic{scale:.94}
@@ -1293,9 +1307,9 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <div class="beat b1" data-play>
           <div class="beat-vis">
             <div class="v1">
-              <div class="v1-col"><span class="rec">Order accepted</span><div class="cf cf-phone" data-cap="C05" data-shot="orders" data-sil="plist"></div><span class="label role-l">Driver</span></div>
-              <div class="v1-col"><span class="rec">Truck called in</span><div class="cf cf-phone" data-cap="C16" data-shot="callIn" data-sil="plist"></div><span class="label role-l">Mechanic</span></div>
-              <div class="v1-col"><span class="rec">Driver assigned</span><div class="cf cf-phone" data-cap="C26" data-shot="fleet" data-sil="plist"></div><span class="label role-l">Dispatcher</span></div>
+              <div class="v1-col"><span class="rec">Order accepted</span><div class="cf cf-phone" data-cap="C05" data-shot="orders" data-sil="plist" data-zoom="6.02 68.52 32.31 6.39 1.5" data-zoom-w="46"></div><span class="label role-l">Driver</span></div>
+              <div class="v1-col"><span class="rec">Truck called in</span><div class="cf cf-phone" data-cap="C16" data-shot="callIn" data-sil="plist" data-zoom="2.41 43.69 48.06 8.64 2.2" data-zoom-w="54"></div><span class="label role-l">Mechanic</span></div>
+              <div class="v1-col"><span class="rec">Driver assigned</span><div class="cf cf-phone" data-cap="C26" data-shot="fleet" data-sil="plist" data-zoom="6.48 74.96 42.41 3.35 1" data-zoom-w="50"></div><span class="label role-l">Dispatcher</span></div>
             </div>
           </div>
           <div class="beat-text">
@@ -1359,8 +1373,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <p class="lead">One screen tells you what to deal with first, and why.</p>
     </header>
     <div class="s6-vis" data-play data-anim>
-      <div class="s6-web">
-        <figure class="cf cf-web" data-cap="C01" data-shot="screen" data-sil="dash"></figure>
+      <div class="s6-web" data-zoom-scope>
+        <figure class="cf cf-web" data-cap="C01" data-shot="screen" data-sil="dash" data-zoom="17.78 56.67 78.89 12.78 .97" data-zoom-w="82" data-zoom-narrow="18.75 57.6 37.5 10.6 .6" data-zoom-w-narrow="44" data-zoom-tone="fire"></figure>
         <ol class="hotspots" aria-hidden="true">
           <li class="hs fire" style="--x:70%;--y:62.9%;--i:0"><span class="hs-n">1</span><span class="hs-line"></span><span class="hs-label">Biggest risk, and why</span></li>
           <li class="hs" style="--x:38%;--y:74.4%;--i:1"><span class="hs-n">2</span><span class="hs-line"></span><span class="hs-label">Broken now</span></li>
@@ -1412,18 +1426,18 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
           <li>Delivered, invoiced, paid</li>
         </ol>
         <ol class="journey">
-          <li class="jstep"><h3 class="jl">Created from a template</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C19" data-shot="orders" data-sil="plist"></figure></div></li>
-          <li class="jstep"><h3 class="jl">On the driver's phone</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C05" data-shot="orders" data-sil="plist"></figure></div></li>
-          <li class="jstep"><h3 class="jl">Delivered, invoiced, paid</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C21" data-shot="finance" data-sil="plist"></figure></div></li>
+          <li class="jstep"><h3 class="jl">Created from a template</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C19" data-shot="orders" data-sil="plist" data-zoom="6.48 21.83 76.85 6.04 1.4" data-zoom-w="80"></figure></div></li>
+          <li class="jstep"><h3 class="jl">On the driver's phone</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C05" data-shot="orders" data-sil="plist" data-zoom="6.02 68.52 32.31 6.39 1.5" data-zoom-w="46"></figure></div></li>
+          <li class="jstep"><h3 class="jl">Delivered, invoiced, paid</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C21" data-shot="finance" data-sil="plist" data-zoom="2.41 32.36 95.09 6.92 2.6" data-zoom-w="100"></figure></div></li>
         </ol>
       </div>
       <div class="stage-ui"><span class="stage-line"><i></i></span><a class="stage-skip" href="#s7-cards">Skip</a></div>
     </div>
   </div>
   <div class="wrap s7-cards" id="s7-cards">
-    <article class="fcard"><figure class="cf cf-web" data-cap="C09" data-shot="screen" data-sil="bars" data-zoom="2.39 79.78 11.78 8.13 .6" data-zoom-w="36"></figure><h3 class="h3">Legal hours where you assign</h3><p>Each driver's remaining driving time, next to the load.</p></article>
-    <article class="fcard"><figure class="cf cf-web" data-cap="C10" data-shot="screen" data-sil="table" data-zoom="2.67 36.89 25.11 6.4 .6" data-zoom-w="32"></figure><h3 class="h3">Road cards that fill themselves</h3><p>Generated from the orders you already have.</p></article>
-    <article class="fcard"><figure class="cf cf-phone" data-cap="C26" data-shot="fleet" data-sil="plist" data-zoom="3.15 61.55 93.6 26.01 2.8" data-zoom-w="100"></figure><h3 class="h3">Every truck, one record</h3><p>Plate, model, mileage and driver, in one place.</p></article>
+    <article class="fcard"><figure class="cf cf-web" data-cap="C09" data-shot="screen" data-sil="bars" data-zoom="2.39 79.78 11.78 8.13 .6" data-zoom-w="36" data-zoom-card></figure><h3 class="h3">Legal hours where you assign</h3><p>Each driver's remaining driving time, next to the load.</p></article>
+    <article class="fcard"><figure class="cf cf-web" data-cap="C10" data-shot="screen" data-sil="table" data-zoom="2.67 36.89 25.11 6.4 .6" data-zoom-w="32" data-zoom-card></figure><h3 class="h3">Road cards that fill themselves</h3><p>Generated from the orders you already have.</p></article>
+    <article class="fcard"><figure class="cf cf-phone" data-cap="C26" data-shot="fleet" data-sil="plist" data-zoom="3.15 61.55 93.6 26.01 2.8" data-zoom-w="100" data-zoom-card></figure><h3 class="h3">Every truck, one record</h3><p>Plate, model, mileage and driver, in one place.</p></article>
   </div>
 </section>
 
@@ -1480,9 +1494,9 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       </article>
       <article class="tile" data-play>
         <div class="approve">
-          <div class="cf cf-phone" data-cap="C20" data-shot="panel" data-sil="plist"></div>
+          <div class="cf cf-phone" data-cap="C20" data-shot="panel" data-sil="plist" data-zoom="3.15 54.76 93.61 4.63 2" data-zoom-w="100"></div>
           <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg>
-          <div class="cf cf-phone" data-cap="C16" data-shot="callInExternal" data-sil="plist"></div>
+          <div class="cf cf-phone" data-cap="C16" data-shot="callInExternal" data-sil="plist" data-zoom="49.54 45.94 47.96 6.39 2.2" data-zoom-w="54"></div>
         </div>
         <h3 class="h3">Service, called in on the record</h3>
         <p>The mechanic picks the truck, the reason and the workshop.</p>
@@ -1501,14 +1515,14 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </header>
     <div class="roles">
       <div class="role-tabs" role="tablist" aria-label="Roles">
-        <button type="button" role="tab" id="t-you" aria-controls="p-you" aria-selected="true" data-cap="C21" data-shot="finance" data-sil="pdash">You</button>
-        <button type="button" role="tab" id="t-driver" aria-controls="p-driver" aria-selected="false" tabindex="-1" data-cap="C05" data-shot="orders" data-sil="plist">Driver</button>
-        <button type="button" role="tab" id="t-dispatcher" aria-controls="p-dispatcher" aria-selected="false" tabindex="-1" data-cap="C26" data-shot="fleet" data-sil="plist">Dispatcher</button>
-        <button type="button" role="tab" id="t-mechanic" aria-controls="p-mechanic" aria-selected="false" tabindex="-1" data-cap="C20" data-shot="panel" data-sil="plist">Mechanic</button>
+        <button type="button" role="tab" id="t-you" aria-controls="p-you" aria-selected="true" data-cap="C21" data-shot="finance" data-sil="pdash" data-zoom="2.41 32.36 95.09 6.92 2.6" data-zoom-w="100">You</button>
+        <button type="button" role="tab" id="t-driver" aria-controls="p-driver" aria-selected="false" tabindex="-1" data-cap="C05" data-shot="orders" data-sil="plist" data-zoom="6.02 68.52 32.31 6.39 1.5" data-zoom-w="46">Driver</button>
+        <button type="button" role="tab" id="t-dispatcher" aria-controls="p-dispatcher" aria-selected="false" tabindex="-1" data-cap="C26" data-shot="fleet" data-sil="plist" data-zoom="6.48 74.96 42.41 3.35 1" data-zoom-w="50">Dispatcher</button>
+        <button type="button" role="tab" id="t-mechanic" aria-controls="p-mechanic" aria-selected="false" tabindex="-1" data-cap="C20" data-shot="panel" data-sil="plist" data-zoom="3.15 54.76 93.61 4.63 2" data-zoom-w="100">Mechanic</button>
       </div>
       <div class="role-body">
         <div class="role-phone">
-          <div class="flip"><div class="cf cf-phone" id="role-cf" data-cap="C21" data-shot="finance" data-sil="pdash"></div></div>
+          <div class="flip"><div class="cf cf-phone" id="role-cf" data-cap="C21" data-shot="finance" data-sil="pdash" data-zoom="2.41 32.36 95.09 6.92 2.6" data-zoom-w="100"></div></div>
         </div>
         <div>
           <div class="role-panel" role="tabpanel" id="p-you" aria-labelledby="t-you" tabindex="0">
@@ -1845,7 +1859,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <p class="lead">Seven questions, five minutes. Or see it on your own phone.</p>
       </div>
       <figure class="calm-vis" data-anim>
-        <div class="slab" aria-hidden="true"><div class="cf cf-phone" data-cap="C19" data-shot="orders" data-sil="pcalm"></div></div>
+        <div class="slab"><div class="cf cf-phone" data-cap="C19" data-shot="orders" data-sil="pcalm" data-zoom="2.41 85.58 95.09 6.97 2.6" data-zoom-w="100"></div></div>
         <div class="far" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       </figure>
     </div>
@@ -2114,7 +2128,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   function shotHTML(el, id, cap, wide, narrow) {
     const name = el.dataset.shot, nName = el.dataset.shotNarrow, aName = el.dataset.shotAlt;
     // A zoom frame shows its shot up to the zoomed-in width (the window's width over the share it zooms to).
-    const sizes = el.dataset.zoomW ? `${Math.round(((el.clientWidth || 360) * 100) / el.dataset.zoomW)}px` : `auto, ${Math.round(el.clientWidth) || 360}px`;
+    const zw = el.dataset.zoomW && zoomParams(el).vw;
+    const sizes = zw ? `${Math.round(((el.clientWidth || 360) * 100) / zw)}px` : `auto, ${Math.round(el.clientWidth) || 360}px`;
     const sources = (n, s, media) => ["avif", "webp"]
       .map((t) => `<source type="image/${t}"${media ? ` media="${media}"` : ""} srcset="${srcset(id, n, s, t)}" sizes="${sizes}">`).join("");
     const img = (n, s, alt, more) => `<img src="${shotFile(id, n, s.ws[Math.min(3, s.ws.length - 1)], "webp")}" srcset="${srcset(id, n, s, "webp")}"`
@@ -2128,6 +2143,12 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   }
 
   const ZOOM_LABEL = "Zoom in on the detail";
+  const mqNarrow = matchMedia("(max-width: 699px)");
+  // The detail's box and the zoomed-in share for the current width.
+  function zoomParams(f) {
+    const n = mqNarrow.matches && f.dataset.zoomNarrow;
+    return { box: (n || f.dataset.zoom).split(" ").map(Number), vw: +((n && f.dataset.zoomWNarrow) || f.dataset.zoomW) };
+  }
   function renderFrame(el) {
     const id = el.dataset.cap;
     const cap = CAPTURES[id] || { tag: id };
@@ -2142,15 +2163,19 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     const chrome = kind === "web" ? '<div class="bar"><i></i><i></i><i></i></div>' : kind === "phone" && !wide ? '<span class="cam"></span>' : "";
     // A real screen in a figure is content (its alt and proof chip); elsewhere the frame is decoration beside its text.
     const hidden = wide && el.tagName === "FIGURE" ? "" : ' aria-hidden="true"';
-    // A zoom frame (data-zoom: the detail's box in % of the shot, its corner radius in cqw; data-zoom-w: the share of
-    // the shot's width the window shows zoomed in): the screen fills a window the card's width, and zooms in there.
-    const zoom = wide && el.dataset.zoom ? el.dataset.zoom.split(" ").map(Number) : null;
-    const zring = zoom ? `<span class="zring" style="left:${zoom[0]}%;top:${zoom[1]}%;width:${zoom[2]}%;height:${zoom[3]}%;--fr:${zoom[4]}cqw"></span>` : "";
-    let out = `<div class="dev dev-${kind}"${hidden}>${chrome}<div class="scr-box">${scr}${inner}${zring}</div></div></div>`;
-    if (zoom) {
-      out = `<div class="zw"><div class="zl">${out}</div><button class="zbtn" type="button" aria-pressed="false" aria-label="${ZOOM_LABEL}">`
-        + '<svg class="ic" aria-hidden="true"><use href="#i-zoom-in"/></svg><svg class="ic" aria-hidden="true"><use href="#i-zoom-out"/></svg></button></div>';
-    }
+    // A zoom frame (data-zoom: the detail's box in % of the shot and its corner radius in cqw; data-zoom-w: the share
+    // of the shot's width shown zoomed in; -narrow variants below 700 px): the screen zooms in on the detail inside its
+    // own frame, or, with data-zoom-card, the device fills a window the card's width and the window zooms. The zoom
+    // button covers the device; the ring is placed by the script.
+    const zoom = !!(wide && el.dataset.zoom), card = zoom && "zoomCard" in el.dataset;
+    const zring = zoom ? `<span class="zring${el.dataset.zoomTone ? " " + el.dataset.zoomTone : ""}"></span>` : "";
+    const zbtn = zoom ? `<button class="zbtn" type="button" aria-pressed="false" aria-label="${ZOOM_LABEL}">`
+      + '<svg class="ic" aria-hidden="true"><use href="#i-zoom-in"/></svg><svg class="ic" aria-hidden="true"><use href="#i-zoom-out"/></svg></button>' : "";
+    const screen = zoom && !card ? `<div class="zl">${inner}${zring}</div>` : inner + zring;
+    // A decorative zoom frame hides its screen, not the device, so its button stays reachable.
+    let out = `<div class="dev dev-${kind}"${zoom ? "" : hidden}>${chrome}<div class="scr-box"${zoom ? hidden : ""}>${scr}${screen}</div></div>`
+      + `${zoom && !card ? zbtn : ""}</div>`;
+    if (card) out = `<div class="zw"><div class="zl">${out}</div>${zbtn}</div>`;
     if (el.tagName === "FIGURE") {
       // No-break spaces: a proof chip (short parts) wraps only after a dot; a longer placeholder tag
       // may wrap inside a part, but never starts a line with a dot.
@@ -2459,67 +2484,118 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     host.addEventListener("animationend", (e) => { if (e.target.matches(".hv-hover, .hv-cursor, .hv-touch, .hv-ripple")) e.target.remove(); });
   }
 
-  /* ---------- S7 cards: when a card comes into view, a cursor moves onto the detail and clicks it (on touch
-     screens, a tap); the screen zooms in on the detail and stays there, the detail ringed. The button in the window
-     zooms out and in again. Tier C and reduced motion start zoomed in ---------- */
-  const zoomFrames = $$(".cf[data-zoom]").filter((f) => f.querySelector(".zw"));
-  // The zoom that brings the detail to the window's centre, at the share of the shot data-zoom-w asks for, kept
-  // inside the screen's edges. Measured at rest: the layer's own zoom and its transition are lifted while measuring.
+  /* ---------- Zoom on the detail: when a screen comes into view, a cursor moves onto the detail and clicks it
+     (phone screens, and every screen on a touch screen: a tap); the screen zooms in on the detail and stays there,
+     the detail ringed. The button over the screen zooms out and in again. Tier C and reduced motion start zoomed
+     in ---------- */
+  const zoomFrames = $$(".cf[data-zoom]").filter((f) => f.querySelector(".zl"));
+  // The element that carries the zoom (its variables and the zoomed class): the frame, or a wider data-zoom-scope
+  // that also holds what follows the zoom (the S6 hotspots).
+  const zoomScope = (f) => f.closest("[data-zoom-scope]") || f;
+  const zoomed = (f) => zoomScope(f).classList.contains("zoomed");
+  // The zoom that brings the detail to the window's centre at the share of the shot data-zoom-w asks for, kept
+  // inside the screen's edges. The window is the card's (data-zoom-card) or the screen itself. Measured at rest in
+  // the layer's own pixels: its zoom and transition are lifted while measuring, ancestors' scale divided out.
   function zoomFit(f) {
-    const zw = $(".zw", f), zl = $(".zl", f), scr = $(".scr", f), ring = $(".zring", f);
+    const win = $(".zw", f) || $(".scr", f), zl = $(".zl", f), scr = $(".scr", f), ring = $(".zring", f);
+    if (!win || !zl || !ring) return false;
+    const card = win !== scr, { box, vw } = zoomParams(f), sc = zoomScope(f);
+    ring.style.cssText = `left:${box[0]}%;top:${box[1]}%;width:${box[2]}%;height:${box[3]}%;--fr:${box[4]}cqw`;
     zl.style.transition = "none";
     zl.style.translate = zl.style.scale = "none";
-    const w = zw.getBoundingClientRect(), s = scr.getBoundingClientRect(), r = ring.getBoundingClientRect();
+    const w = win.getBoundingClientRect(), s = scr.getBoundingClientRect(), r = ring.getBoundingClientRect();
     zl.style.translate = zl.style.scale = "";
     void zl.offsetWidth;
     zl.style.transition = "";
-    if (!w.width || !s.width) return;
-    // A phone screen's rounded corners would show the phone behind them: the view keeps clear of them.
-    const rad = parseFloat(getComputedStyle(scr.closest(".scr-box")).borderTopLeftRadius) || 0;
-    const W = w.width, H = w.height, sx = s.left - w.left, sy = s.top - w.top + rad, sh = s.height - 2 * rad;
-    const cx = r.left - w.left + r.width / 2, cy = r.top - w.top + r.height / 2;
+    const W = win.offsetWidth, H = win.offsetHeight;
+    if (!w.width || !s.width || !W) return false;
+    const k = w.width / W;
+    // A phone screen's rounded corners would show the phone behind them in a card window: the view keeps clear.
+    const rad = card ? parseFloat(getComputedStyle(scr.closest(".scr-box")).borderTopLeftRadius) || 0 : 0;
+    const sx = (s.left - w.left) / k, sy = (s.top - w.top) / k + rad, sw = s.width / k, sh = s.height / k - 2 * rad;
+    const rw = r.width / k, rh = r.height / k, cx = (r.left - w.left) / k + rw / 2, cy = (r.top - w.top) / k + rh / 2;
     // 2 px of overscan, so a screen zoomed to the window's full width never leaves a sub-pixel sliver of its frame.
-    const z = Math.min((W + 2) / ((s.width * f.dataset.zoomW) / 100), (W * 0.97) / r.width, (H * 0.85) / r.height);
+    const z = Math.max(1, Math.min((W + 2) / ((sw * vw) / 100), (W * 0.97) / rw, (H * 0.85) / rh));
     const fit = (t, lo, hi) => (lo > hi - 4 ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, t)));
-    f.style.setProperty("--z", z.toFixed(3));
-    f.style.setProperty("--zx", fit(W / 2 - z * cx, W - z * (sx + s.width), -z * sx).toFixed(1) + "px");
-    f.style.setProperty("--zy", fit(H / 2 - z * cy, H - z * (sy + sh), -z * sy).toFixed(1) + "px");
-    f.style.setProperty("--cx", ((cx / W) * 100).toFixed(2) + "%");
-    f.style.setProperty("--cy", ((cy / H) * 100).toFixed(2) + "%");
+    sc.style.setProperty("--z", z.toFixed(3));
+    sc.style.setProperty("--zx", fit(W / 2 - z * cx, W - z * (sx + sw), -z * sx).toFixed(1) + "px");
+    sc.style.setProperty("--zy", fit(H / 2 - z * cy, H - z * (sy + sh), -z * sy).toFixed(1) + "px");
+    sc.style.setProperty("--cx", ((cx / W) * 100).toFixed(2) + "%");
+    sc.style.setProperty("--cy", ((cy / H) * 100).toFixed(2) + "%");
+    // The button's icon and the tap scale with small screens; the smallest show no icon.
+    const dev = f.querySelector(".dev").offsetWidth;
+    f.style.setProperty("--zb", Math.round(Math.min(36, Math.max(26, dev * 0.13))) + "px");
+    f.style.setProperty("--zt", Math.round(Math.min(30, Math.max(16, W * 0.18))) + "px");
+    $(".zbtn", f)?.classList.toggle("mini", dev < 140);
+    return true;
   }
   function zoomSet(f, on) {
-    f.classList.toggle("zoomed", on);
-    $(".zbtn", f).setAttribute("aria-pressed", String(on));
+    zoomScope(f).classList.toggle("zoomed", on);
+    const b = $(".zbtn", f);
+    if (b) b.setAttribute("aria-pressed", String(on));
   }
   function zoomPlay(f) {
     if (f._played) return;
     f._played = true;
-    const zw = $(".zw", f), mouse = matchMedia("(hover: hover) and (pointer: fine)").matches;
-    zw.insertAdjacentHTML("beforeend", (mouse
-      ? '<span class="zc-cursor"><svg viewBox="0 0 14 20"><path d="M1 1v15.6l4.1-3.9 2.7 6.2 2.7-1.2-2.6-6.1h5.7z"/></svg></span>'
-      : '<span class="zc-touch"></span>') + '<span class="zc-ripple"></span>');
+    zoomFit(f);
+    const host = $(".zw", f) || $(".scr", f);
+    const tap = f.classList.contains("cf-phone") || !matchMedia("(hover: hover) and (pointer: fine)").matches;
+    host.insertAdjacentHTML("beforeend", (tap
+      ? '<span class="zc-touch"></span>'
+      : '<span class="zc-cursor"><svg viewBox="0 0 14 20"><path d="M1 1v15.6l4.1-3.9 2.7 6.2 2.7-1.2-2.6-6.1h5.7z"/></svg></span>')
+      + '<span class="zc-ripple"></span>');
     // The press is the ripple: the zoom starts with it, unless the visitor has used the button meanwhile.
-    $(".zc-ripple", zw).addEventListener("animationstart", () => { if (!f._user) zoomSet(f, true); }, { once: true });
-    zw.addEventListener("animationend", (e) => { if (e.target.matches(".zc-cursor, .zc-touch, .zc-ripple")) e.target.remove(); });
+    $(".zc-ripple", host).addEventListener("animationstart", () => { if (!f._user) zoomSet(f, true); }, { once: true });
+    host.addEventListener("animationend", (e) => { if (e.target.matches(".zc-cursor, .zc-touch, .zc-ripple")) e.target.remove(); });
+  }
+  // Screens play one after the other, 0.8 s apart. In the scroll stages (S5 beats, S7 journey) a screen waits for
+  // its step to be on screen.
+  let zoomNext = 0;
+  function zoomQueue(f, delay = 250) {
+    const now = performance.now(), at = Math.max(now + delay, zoomNext);
+    zoomNext = at + 800;
+    setTimeout(() => zoomPlay(f), at - now);
+  }
+  function zoomWhenShown(f) {
+    const step = stagesOn() && f.closest(".stage .jstep, .stage .beat");
+    if (!step) return zoomQueue(f);
+    const cls = step.matches(".jstep") ? "on" : "play";
+    if (step.classList.contains(cls)) return zoomQueue(f, 450);
+    const mo = new MutationObserver(() => {
+      if (!step.classList.contains(cls)) return;
+      mo.disconnect();
+      zoomQueue(f, 450);
+    });
+    mo.observe(step, { attributes: true, attributeFilter: ["class"] });
+  }
+  // A frame whose screen changes (the S9 role phone) starts again at rest, and plays again once it has been seen.
+  function zoomReset(f) {
+    f._played = f._user = false;
+    zoomSet(f, false);
+  }
+  function zoomRestart(f, delay) {
+    if (!f.dataset.zoom || !$(".zl", f)) return;
+    if (tierC) { zoomFit(f); f._played = true; zoomSet(f, true); return; }
+    if (f._seen) setTimeout(() => zoomPlay(f), delay);
   }
   if (zoomFrames.length) {
-    const fitAll = () => zoomFrames.forEach(zoomFit);
-    new ResizeObserver(fitAll).observe($("#s7-cards"));
-    fitAll();
-    zoomFrames.forEach((f) => $(".zbtn", f).addEventListener("click", () => {
+    const ro = new ResizeObserver((entries) => entries.forEach((e) => zoomFit(e.target)));
+    zoomFrames.forEach((f) => ro.observe(f));
+    mqNarrow.addEventListener("change", () => zoomFrames.forEach(zoomFit));
+    document.addEventListener("click", (e) => {
+      const b = e.target.closest(".zbtn"), f = b && b.closest(".cf[data-zoom]");
+      if (!f) return;
       f._played = f._user = true;
-      zoomSet(f, !f.classList.contains("zoomed"));
-    }));
-    if (tierC) zoomFrames.forEach((f) => { f._played = true; zoomSet(f, true); });
+      zoomFit(f);
+      zoomSet(f, !zoomed(f));
+    });
+    if (tierC) zoomFrames.forEach((f) => { zoomFit(f); f._played = true; zoomSet(f, true); });
     else {
-      // Cards that come into view together play one after the other.
-      let next = 0;
       const zio = new IntersectionObserver((entries) => entries.forEach((e) => {
         if (!e.isIntersecting) return;
         zio.unobserve(e.target);
-        const now = performance.now(), at = Math.max(now + 250, next);
-        next = at + 800;
-        setTimeout(() => zoomPlay(e.target), at - now);
+        e.target._seen = true;
+        zoomWhenShown(e.target);
       }), { threshold: 0.6 });
       zoomFrames.forEach((f) => zio.observe(f));
     }
@@ -2560,7 +2636,11 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     roleShown = t;
     roleCf.dataset.cap = t.dataset.cap; roleCf.dataset.sil = t.dataset.sil;
     if (t.dataset.shot) roleCf.dataset.shot = t.dataset.shot; else delete roleCf.dataset.shot;
+    if (t.dataset.zoom) { roleCf.dataset.zoom = t.dataset.zoom; roleCf.dataset.zoomW = t.dataset.zoomW; }
+    else { delete roleCf.dataset.zoom; delete roleCf.dataset.zoomW; }
+    zoomReset(roleCf);
     renderFrame(roleCf);
+    zoomRestart(roleCf, 350);
   }
   function showRole(t, keyboard) {
     roleWant = t;
