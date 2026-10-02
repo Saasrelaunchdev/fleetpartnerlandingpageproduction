@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>FleetPartner · The TMS built for carriers</title>
 <meta name="description" content="The TMS built for carriers. For fleets of 10-50 trucks. No phoning around: problems come to you, biggest first.">
-<!-- Production view by default: placeholder labels and {TBD} facts show only with ?view=preview. Remove noindex at launch (07-TECH-AND-BUILD-PLAN.md §10, §11). -->
+<!-- Production view by default: {TBD} facts show only with ?view=preview. Remove noindex at launch (07-TECH-AND-BUILD-PLAN.md §10, §11). -->
 <meta name="robots" content="noindex, nofollow">
 <!-- Share card (brand/src/build_og.cjs). Make og:image absolute once the domain is set (OD14). -->
 <meta property="og:type" content="website">
@@ -245,7 +245,7 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
 .tbd{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;border:1px dashed color-mix(in srgb,var(--fp-fire) 75%,transparent);background:color-mix(in srgb,var(--fp-fire) 13%,transparent);color:var(--tag);font:600 12.5px/1.3 var(--f-text);white-space:nowrap;vertical-align:middle}
 /* The page is the production page by default. The internal notes (placeholder labels, {TBD} chips and the
    blocks waiting on a decision, the preview bar, any [data-internal] note) show only in the preview view: ?view=preview */
-html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar,.film .more-li){display:none!important}
+html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar){display:none!important}
 
 /* Placeholder tag: where a proof chip will sit once the capture is real (05 §6) */
 .ph-tag{display:block;margin-top:10px;font:500 13px/1.4 var(--f-text);color:var(--tag)}
@@ -282,7 +282,7 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar,.
 .dev-web .bar i{width:6px;height:6px;border-radius:50%;background:var(--fp-slate-200)}
 .dev-web .scr-box{position:relative;aspect-ratio:16/10}
 .dev-phone{border-radius:calc(var(--r-screen) + 6px);background:var(--fp-device);padding:6px;box-shadow:var(--shadow-device)}
-.dev-phone .scr-box{position:relative;aspect-ratio:9/20;border-radius:var(--r-screen);overflow:hidden}
+.dev-phone .scr-box{position:relative;aspect-ratio:1080/2268;border-radius:var(--r-screen);overflow:hidden}
 .dev-phone .cam{position:absolute;z-index:3;top:12px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--fp-device)}
 .dev-crop{border-radius:14px;box-shadow:var(--shadow-soft)}
 .dev-crop .scr-box{position:relative;aspect-ratio:var(--ar,2/1)}
@@ -416,11 +416,12 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar,.
 .under{color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .hero-links{font-size:15px;color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .hero-vis{position:relative}
-.hv-3d{position:relative;perspective:1600px;--rx:0deg;--ry:0deg}
+/* Phones: the web screen, the boss's phone at its corner, the card lifted from the screen (desktop below) */
+.hv-3d{position:relative;perspective:1600px;--rx:0deg;--ry:0deg;padding-bottom:30%}
 .slab{position:relative;transform-style:preserve-3d}
-.slab-web{display:none}
-.slab-phone{width:min(62%,250px);margin:0 auto;transform:rotateX(calc(4deg + var(--rx))) rotateY(calc(-8deg + var(--ry)))}
-.risk-lift{position:absolute;z-index:4;left:50%;width:min(76%,300px);top:26%;transform:translateX(-50%);--lift-z:0px}
+.slab-web{width:90%;transform:rotateX(calc(6deg + var(--rx))) rotateY(calc(-10deg + var(--ry))) rotateZ(1deg)}
+.slab-phone{position:absolute;right:0;bottom:0;width:29%;transform:translateZ(40px) rotateX(calc(4deg + var(--rx))) rotateY(calc(-10deg + var(--ry)))}
+.risk-lift{position:absolute;z-index:4;left:0;top:30%;width:74%;--lift-z:70px;transform:translateZ(var(--lift-z)) rotateX(calc(6deg + var(--rx))) rotateY(calc(-10deg + var(--ry))) rotateZ(1deg)}
 .risk-lift .dev-crop{border-radius:12px}
 /* The hero's web screen is sharp (data-shot) with its out-of-focus twin on top (data-shot-alt): out of focus
    once the card is lifted. Rack focus under the pointer: on the screen, the screen is sharp and the card goes
@@ -435,7 +436,6 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar,.
   .js:not(.tier-c) .slab-web:hover ~ .risk-lift .cf{scale:.97}
   .js:not(.tier-c) .risk-lift:hover .cf{scale:1.025}
 }
-.risk-lift.web-only{display:none}
 .drift{position:absolute;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--fp-surface);border:1px solid var(--fp-line-strong);color:var(--fp-text-2);opacity:0}
 .drift.d1{left:4%;top:12%}
 .drift.d2{right:2%;top:46%}
@@ -444,14 +444,14 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar,.
 @keyframes drift{0%{opacity:0;transform:none}25%{opacity:.9}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.8)}}
 .drift.d1{--dx:-60px;--dy:-40px}.drift.d2{--dx:70px;--dy:-20px}.drift.d3{--dx:-50px;--dy:50px}
 .js:not(.tier-c) .hv-3d .slab-phone,.js:not(.tier-c) .hv-3d .slab-web{animation:rise .9s var(--ease-out) both}
-/* The intro (tier A): the dashboard arrives sharp; the cursor moves over it, rests on the biggest risk (a hover
-   ring) and clicks; the screen goes out of focus and the card lifts out of the spot it sits in (--pop-x, --pop-y,
-   --pop-s measured by the script; without them it simply rises). On phones, a tap on the risk row. Tier C and
+/* The intro (tier A): the dashboard arrives sharp; with a mouse, a cursor moves over it, rests on the biggest risk
+   (a hover ring) and clicks; on a touch screen, a tap on it. The screen goes out of focus and the card lifts out of
+   the spot it sits in (--pop-x, --pop-y, --pop-s measured by the script; without them it simply rises). Tier C and
    reduced motion show the end state */
-.js:not(.tier-c) .risk-lift{animation:pop var(--t-enter) var(--ease-out) var(--pop-at,1.15s) both}
-.js:not(.tier-c) .hv-3d .run.fire-glow::after{animation-delay:2s}
-.js:not(.tier-c) .hv-3d .web-only .run.fire-glow::after{animation-delay:2.9s}
-.js:not(.tier-c) .slab-web picture.alt{animation:defocus .4s var(--ease-out) 2.25s backwards}
+.hv-3d{--pop-at:1.15s;--defocus-at:1.15s}
+.js:not(.tier-c) .risk-lift{animation:pop var(--t-enter) var(--ease-out) var(--pop-at) both}
+.js:not(.tier-c) .hv-3d .run.fire-glow::after{animation-delay:1.9s}
+.js:not(.tier-c) .slab-web picture.alt{animation:defocus .4s var(--ease-out) var(--defocus-at) backwards}
 .hv-hover,.hv-cursor,.hv-touch,.hv-ripple{position:absolute;z-index:3;pointer-events:none;opacity:0}
 .hv-hover{border-radius:var(--fr);box-shadow:0 0 0 2px var(--fp-fire),0 0 0 6px color-mix(in srgb,var(--fp-fire) 22%,transparent);animation:hover-ring .65s var(--ease-out) 1.95s both}
 .hv-cursor{width:18px;transform-origin:0 0;animation:cursor 2.5s .7s both}
@@ -459,34 +459,28 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar,.
 .hv-cursor path{fill:var(--fp-slate-950);stroke:var(--fp-slate-25);stroke-width:1.4;stroke-linejoin:round}
 .hv-touch{width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:color-mix(in srgb,var(--fp-slate-950) 16%,transparent);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--fp-slate-25) 85%,transparent);animation:touch .7s var(--ease-out) .95s both}
 .hv-ripple{width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;border:2px solid var(--fp-accent);animation:ripple .6s var(--ease-out) 1.08s forwards}
-.slab-web .hv-ripple{animation-delay:2.2s}
-@media (max-width:899px){
-  .js:not(.tier-c) .slab-phone .scr{animation:defocus-f .4s var(--ease-out) 1.1s both}
-  .tier-c .slab-phone .scr,.no-js .slab-phone .scr{filter:blur(3px)}
+@media (hover:hover) and (pointer:fine){
+  .hv-3d{--pop-at:2.25s;--defocus-at:2.25s}
+  .hv-ripple{animation-delay:2.2s}
+  .js:not(.tier-c) .hv-3d .run.fire-glow::after{animation-delay:2.9s}
 }
 @keyframes rise{from{opacity:0;translate:0 40px}to{opacity:1;translate:0 0}}
 @keyframes pop{from{opacity:0;translate:var(--pop-x,0) var(--pop-y,14px) calc(-1 * var(--lift-z));scale:var(--pop-s,.96)}to{opacity:1;translate:0 0 0;scale:1}}
 @keyframes defocus{from{opacity:0}to{opacity:1}}
-@keyframes defocus-f{from{filter:blur(0)}to{filter:blur(3px)}}
 @keyframes hover-ring{0%{opacity:0}35%{opacity:1}65%{opacity:1}100%{opacity:0}}
 /* From the top right, a pause over the receivables, then onto the biggest risk: press at 2.2 s */
 @keyframes cursor{0%{opacity:0;translate:28cqw -30cqw}6%{opacity:1;translate:28cqw -30cqw;animation-timing-function:var(--ease-in-out)}28%{translate:8cqw -15.6cqw;animation-timing-function:linear}34%{translate:8cqw -15.6cqw;animation-timing-function:var(--ease-in-out)}56%{translate:0 0;scale:1;animation-timing-function:var(--ease-out)}60%{scale:.82}66%{scale:1}84%{opacity:1}100%{opacity:0;translate:0 0;scale:1}}
 @keyframes touch{0%{opacity:0;scale:1.3}20%{opacity:1;scale:1}65%{opacity:1;scale:1}100%{opacity:0;scale:.9}}
 @keyframes ripple{from{opacity:.9;scale:.35}to{opacity:0;scale:1.6}}
-.hero .ph-tag{text-align:center}
 @media (min-width:900px){
   .hero{padding:calc(var(--header-h) + 40px) 0 48px;min-height:min(100vh,980px)}
   .hero-grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:center;gap:36px 40px}
   .hero-copy{grid-column:1;grid-row:1}
   .hero-vis{grid-column:2;grid-row:1}
-  .hv-3d{height:460px}
-  .slab-web{display:block;position:absolute;left:-6%;top:40px;width:118%;transform:rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform var(--t-reveal) var(--ease-out)}
+  .hv-3d{height:460px;padding-bottom:0}
+  .slab-web{position:absolute;left:-6%;top:40px;width:118%;transform:rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform var(--t-reveal) var(--ease-out)}
   .slab-phone{position:absolute;right:-4%;bottom:0;width:32%;margin:0;transform:translateZ(90px) rotateX(calc(6deg + var(--rx))) rotateY(calc(-12deg + var(--ry)));transition:transform var(--t-reveal) var(--ease-out)}
   .risk-lift{left:2%;top:190px;width:78%;--lift-z:140px;transform:translateZ(var(--lift-z)) rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform var(--t-reveal) var(--ease-out)}
-  .risk-lift.web-only{--pop-at:2.25s}
-  .risk-lift.phone-only{display:none}
-  .risk-lift.web-only{display:block}
-  .hero .ph-tag{text-align:left;margin-top:24px}
 }
 
 /* ============================================================
@@ -621,7 +615,7 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
   .js:not(.tier-c) .play .flow li,.tier-c .flow li,.no-js .flow li{transform:translateX(min(112px,calc(100vw - 266px)))}
 }
 /* beat 3 */
-.v3{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:16px;width:100%;max-width:560px;align-items:center}
+.v3{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;width:100%;max-width:560px;align-items:center}
 .rank{display:grid;gap:8px}
 .rank li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;background:var(--fp-bg);border:1px solid var(--fp-line-strong);font:600 13.5px/1.2 var(--f-text);color:var(--fp-heading);position:relative;transform:translateY(calc(var(--from,0) * 100%));transition:transform var(--t-move) var(--ease-in-out)}
 .rank li.top{border-color:var(--fp-fire);background:color-mix(in srgb,var(--fp-fire) 14%,var(--fp-bg))}
@@ -630,7 +624,6 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .js:not(.tier-c) .play .rank li{--from:0!important}
 .tier-c .rank li,.no-js .rank li{--from:0!important}
 .v3 .crop-q{grid-column:1}
-.v3 > .cf.cf-phone{grid-column:2;grid-row:1 / span 2}
 .v3 .ph-tag{grid-column:1 / -1;margin:0}
 .stages .s5-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:auto auto auto auto 1fr;column-gap:56px;row-gap:22px;align-items:start;padding:0 var(--gutter)}
 .stages .s5-grid > h2{grid-column:1;grid-row:1;margin-bottom:8px;font-size:clamp(34px,3.6vw,54px)}
@@ -645,7 +638,7 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .stages .beat.play .beat-vis{opacity:1;transform:none;pointer-events:auto}
 .stages .s5-cond{grid-column:1;grid-row:5}
 .stages .v1-col .cf{max-width:150px}
-.stages .v3{grid-template-columns:minmax(0,1fr) 150px}
+.stages .v3{grid-template-columns:minmax(0,1fr)}
 
 /* ============================================================
    Proof sections: shared
@@ -654,12 +647,12 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 
 /* S6 Pillar 1 */
 .s6-vis{position:relative;display:flex;flex-direction:column;gap:28px}
-.s6-phone{order:-1;display:grid;justify-items:center;gap:10px}
-.s6-phone .cf{width:min(46%,190px)}
-.callout{font-size:15px;font-weight:600;color:var(--fp-heading);display:flex;align-items:center;gap:10px}
-.callout::before{content:"";width:24px;height:1.5px;background:var(--fp-accent)}
+.s6-ok{display:grid;gap:12px}
+.ok-label{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--fp-heading)}
+.ok-label .hs-n{background:var(--fp-accent);color:var(--fp-on-accent);box-shadow:none}
+.s6-ok .cf{width:100%}
 .s6-web{position:relative}
-.hotspots{position:absolute;left:0;right:0;bottom:0;top:var(--bar);pointer-events:none}
+.hotspots{position:absolute;left:0;right:0;top:var(--bar);aspect-ratio:16/10;pointer-events:none}
 .hs{position:absolute;left:var(--x);top:var(--y);display:flex;align-items:center;gap:0;transform:translate(-13px,-13px)}
 .hs-n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--fp-navy-900);color:#fff;font:600 12px/1 var(--f-text);box-shadow:0 0 0 3px var(--fp-screen)}
 .hs.fire .hs-n{background:var(--fp-fire);color:var(--fp-navy-975)}
@@ -670,10 +663,8 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .hs-list li::before{counter-increment:h;content:counter(h);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--fp-heading);color:var(--fp-bg);font:600 12px/1 var(--f-text)}
 .hs-list li:first-child::before{background:var(--fp-fire);color:var(--fp-navy-975)}
 @media (min-width:900px){
-  .s6-vis{display:block;max-width:1160px;padding-right:15%}
-  .s6-phone{position:absolute;right:0;bottom:-64px;width:23%;z-index:3}
-  .s6-phone .cf{width:100%}
-  .s6-phone .ph-tag{text-align:center}
+  .s6-vis{display:block;max-width:1100px}
+  .s6-ok{margin-top:32px}
   .hs-line,.hs-label{display:block}
   .hs-list{display:none}
   .js:not(.tier-c) .hs .hs-line{transform:scaleX(0);transition:transform var(--t-reveal) var(--ease-out) calc(var(--i) * 80ms)}
@@ -683,7 +674,7 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 }
 
 /* S7 Pillar 2: one order, first call to payment */
-.s7{--stage-h:320vh}
+.s7{--stage-h:270vh}
 .s7-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
 .route{width:100%;height:auto}
 .route .land{fill:var(--fp-surface);stroke:var(--fp-line)}
@@ -714,7 +705,7 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .stages .jcap{grid-column:2;grid-row:1 / -1;display:grid;justify-items:center;align-content:center;height:min(560px,70vh);opacity:0;transform:scale(.98);transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
 .stages .jstep.on .jcap{opacity:1;transform:none}
 .stages .jcap .cf-web{width:100%}
-.stages .jcap .cf-phone{width:calc(min(480px,58vh) * .437)}
+.stages .jcap .cf-phone{width:calc(min(480px,58vh) * .462)}
 .jhead{display:none}
 .stages .jhead{display:grid;gap:10px;counter-reset:jh}
 .jhead li{display:grid;grid-template-columns:34px 1fr;align-items:center;gap:10px;font-weight:600;color:var(--fp-text-2);opacity:.6;transition:opacity .3s,color .3s}
@@ -753,6 +744,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .mm .limit{stroke:var(--fp-heading);stroke-width:2}
 .mm .fill{fill:var(--fp-heading);transform-box:fill-box;transform-origin:left center;transition:transform 1.4s var(--ease-out)}
 .mm .over{fill:var(--fp-fire);opacity:0;transition:opacity .3s 1.3s}
+.mm .node{fill:var(--fp-bg);stroke:var(--fp-heading);stroke-width:2.5;transition:fill .3s 1.2s,stroke .3s 1.2s}
+.play .mm .node.end,.tier-c .mm .node.end,.no-js .mm .node.end{fill:var(--fp-accent);stroke:var(--fp-accent)}
 .js:not(.tier-c) .mm .slide{transform:translateX(60px);transition:transform 1s var(--ease-out)}
 .js:not(.tier-c) .mm .draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s var(--ease-out)}
 .js:not(.tier-c) .play .mm .slide{transform:none}
@@ -766,7 +759,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .js:not(.tier-c) .play .mm .fill{transform:none}
 .tile .cf-crop{width:100%}
 /* Tile 1 shows the whole report card from 700 px; narrower, the frame turns 2:1 for a closer crop of the difference */
-@media (max-width:699px){.tile.wide .cf-crop{--ar:2/1!important}}
+@media (max-width:699px){.tile.wide .cf-crop{--ar:2/1!important}.s6-ok .cf-crop{--ar:1812/501!important}}
 .approve{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;justify-items:center}
 .approve .cf{width:100%;max-width:120px}
 .approve .ic{color:var(--fp-text-2)}
@@ -782,6 +775,11 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .role-tabs::-webkit-scrollbar{display:none}
 .role-tabs button{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--fp-line-strong);background:var(--fp-bg);cursor:pointer;font-weight:600;font-size:15px;color:var(--fp-text-2);transition:transform var(--t-press) var(--ease-out),background-color var(--t-ui) ease,color var(--t-ui) ease,border-color var(--t-ui) ease}
 .role-tabs button[aria-selected="true"]{background:var(--fp-heading);border-color:var(--fp-heading);color:var(--fp-bg)}
+@media (max-width:599px){
+  /* the four roles share one row on a phone: the side padding gives way before the row has to scroll */
+  .role-tabs{gap:6px}
+  .role-tabs button{flex:1 0 auto;padding:0 clamp(8px,calc((100vw - 296px) / 8),16px)}
+}
 .role-body{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:center}
 .role-phone{display:grid;justify-items:center;perspective:1200px}
 .role-phone .flip{width:min(60%,240px)}
@@ -789,13 +787,6 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .role-panel[hidden]{display:none}
 .for{display:grid;gap:6px;padding-top:14px;border-top:1px solid var(--fp-line)}
 .for b{font:700 clamp(22px,2.4vw,30px)/1.2 var(--f-display);font-stretch:106%;color:var(--fp-heading)}
-.film-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:72px 0 18px}
-.film-head h3{font-size:clamp(22px,2.2vw,30px)}
-.film{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 28px;counter-reset:fs}
-.film li{flex:none;width:150px;scroll-snap-align:start;display:grid;gap:8px}
-.film li::before{counter-increment:fs;content:counter(fs);font:600 13px/1 var(--f-text);color:var(--fp-text-2)}
-.film .more{display:grid;place-items:center;align-self:stretch;border:1.5px dashed var(--fp-line-strong);border-radius:var(--r-screen);color:var(--fp-text-2);text-align:center;padding:12px}
-.film li.more-li::before{content:"…"}
 .closing{margin-top:40px;font:700 clamp(22px,2.4vw,32px)/1.2 var(--f-display);font-stretch:106%;color:var(--fp-heading)}
 @media (min-width:900px){
   .role-body{grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px}
@@ -1115,7 +1106,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 <a class="skip-link" href="#main">Skip to content</a>
 
 <div class="preview-bar" role="note">
-  <span>Preview<span class="pv-long"> · English working copy · captures are labelled placeholders</span> · <span class="tbd">{TBD}</span> = open decision</span>
+  <span>Preview<span class="pv-long"> · English working copy</span> · <span class="tbd">{TBD}</span> = open decision</span>
   <a href="./">Production view</a>
   <a href="?view=preview&amp;tier=c">Static view</a>
 </div>
@@ -1172,15 +1163,13 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </div>
     <figure class="hero-vis" data-anim>
       <div class="hv-3d" aria-hidden="true">
-        <div class="slab slab-web"><div class="cf cf-web" data-cap="C01" data-shot="screen" data-shot-alt="backdrop" data-sil="dash"></div></div>
-        <div class="slab risk-lift web-only" data-from="17.85 56.78 46.81 12.48" data-card="17.78 56.67 78.89 12.78 0.97"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-shot="biggestRisk" data-sil="crop-risk" style="--ar:6/1"></div></div>
-        <div class="slab slab-phone"><div class="cf cf-phone" data-cap="C02" data-sil="pdash"></div></div>
-        <div class="slab risk-lift phone-only" data-from="6 29 88 10"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-shot="biggestRisk" data-sil="crop-risk" style="--ar:6/1"></div></div>
+        <div class="slab slab-web"><div class="cf cf-web" data-cap="C01" data-shot="screen" data-shot-alt="backdrop" data-sil="dash" data-eager></div></div>
+        <div class="slab risk-lift" data-from="17.85 56.78 46.81 12.48" data-card="17.78 56.67 78.89 12.78 0.97"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-shot="biggestRisk" data-sil="crop-risk" style="--ar:6/1"></div></div>
+        <div class="slab slab-phone"><div class="cf cf-phone" data-cap="C21" data-shot="finance" data-sil="pdash"></div></div>
         <span class="drift d1"><svg class="ic"><use href="#i-msg"/></svg></span>
         <span class="drift d2"><svg class="ic"><use href="#i-sheet"/></svg></span>
         <span class="drift d3"><svg class="ic"><use href="#i-phone"/></svg></span>
       </div>
-      <figcaption class="ph-tag">Placeholder · C02 · C01 interim until its retake</figcaption>
     </figure>
   </div>
 </section>
@@ -1262,19 +1251,15 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 
         <div class="beat b1" data-play>
           <div class="beat-vis">
-            <div>
-              <div class="v1">
-                <div class="v1-col"><span class="rec">Stop confirmed</span><div class="cf cf-phone" data-cap="C06" data-sil="pcam" data-rec></div><span class="label role-l">Driver</span></div>
-                <div class="v1-col"><span class="rec">Repair raised</span><div class="cf cf-phone" data-cap="C16" data-sil="plist"></div><span class="label role-l">Mechanic</span></div>
-                <div class="v1-col"><span class="rec">Invoice from order</span><div class="cf cf-phone" data-cap="C21" data-sil="plist"></div><span class="label role-l">Office</span></div>
-              </div>
-              <p class="effort" style="margin-top:14px" data-tbd><span class="tbd">[n] · counted from C06</span> taps</p>
-              <p class="ph-tag">Placeholder · C06 loop, C16, C21 · driver, mechanic, office</p>
+            <div class="v1">
+              <div class="v1-col"><span class="rec">Order accepted</span><div class="cf cf-phone" data-cap="C05" data-shot="orders" data-sil="plist"></div><span class="label role-l">Driver</span></div>
+              <div class="v1-col"><span class="rec">Truck called in</span><div class="cf cf-phone" data-cap="C16" data-shot="callIn" data-sil="plist"></div><span class="label role-l">Mechanic</span></div>
+              <div class="v1-col"><span class="rec">Driver assigned</span><div class="cf cf-phone" data-cap="C26" data-shot="fleet" data-sil="plist"></div><span class="label role-l">Dispatcher</span></div>
             </div>
           </div>
           <div class="beat-text">
             <h3 class="h3">Recorded where it happens.</h3>
-            <p>The driver, the mechanic, the office. On the phone, in the moment.</p>
+            <p>The driver, the mechanic, the dispatcher. On the phone, in the moment.</p>
           </div>
         </div>
 
@@ -1285,9 +1270,9 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
                 <div class="plane p1"><span class="label">Tachograph</span></div>
                 <div class="plane p2"><span class="label">App</span></div>
                 <ul class="flow">
-                  <li class="rec fire">Stop confirmed <span class="st">· difference</span></li>
-                  <li class="rec">Repair raised <span class="st">· checked</span></li>
-                  <li class="rec">Invoice from order <span class="st">· checked</span></li>
+                  <li class="rec fire">Driver's hours <span class="st">· difference</span></li>
+                  <li class="rec">Truck called in <span class="st">· checked</span></li>
+                  <li class="rec">Driver assigned <span class="st">· checked</span></li>
                 </ul>
               </div>
               <figure class="cf cf-crop" data-cap="C12" data-shot="differenceTight" data-sil="crop-diff" data-crop="the difference" style="--ar:2/1"></figure>
@@ -1303,19 +1288,17 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
           <div class="beat-vis">
             <div class="v3">
               <ol class="rank" aria-label="Ranked for you">
-                <li class="top fire-glow-host" style="--from:2">Tachograph vs app <span class="badge">Biggest risk</span></li>
-                <li style="--from:-1">Repair raised</li>
-                <li style="--from:1">Invoice from order</li>
-                <li style="--from:-2">Stop confirmed <span class="ok">✓</span></li>
+                <li class="top fire-glow-host" style="--from:2">Loading not confirmed <span class="badge">Biggest risk</span></li>
+                <li style="--from:-1">Driver's hours, a difference</li>
+                <li style="--from:1">Truck called in</li>
+                <li style="--from:-2">Order accepted <span class="ok">✓</span></li>
               </ol>
-              <div class="cf cf-phone" data-cap="C02" data-sil="pdash"></div>
-              <div class="cf cf-crop crop-q" data-cap="C01" data-sil="crop-queues" style="--ar:16/7"></div>
-              <p class="ph-tag">Placeholder · C01 queues + C02 · the command screen</p>
+              <div class="cf cf-crop crop-q" data-cap="C01" data-shot="rankQueues" data-sil="crop-queues" style="--ar:3460/610"></div>
             </div>
           </div>
           <div class="beat-text">
             <h3 class="h3">Ranked for you.</h3>
-            <p>The biggest risk first, with the reason. At your desk or on your phone.</p>
+            <p>The biggest risk first, with the reason. Then the rest, in order.</p>
           </div>
         </div>
 
@@ -1335,30 +1318,22 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <p class="lead">One screen tells you what to deal with first, and why.</p>
     </header>
     <div class="s6-vis" data-play data-anim>
-      <div>
-        <div class="s6-web">
-          <div class="cf cf-web" data-cap="C01" data-sil="dash" data-glow></div>
-          <ol class="hotspots" aria-hidden="true">
-            <li class="hs fire" style="--x:18%;--y:46.5%;--i:0"><span class="hs-n">1</span><span class="hs-line"></span><span class="hs-label">Biggest risk, and why</span></li>
-            <li class="hs" style="--x:17%;--y:56.5%;--i:1"><span class="hs-n">2</span><span class="hs-line"></span><span class="hs-label">Broken now</span></li>
-            <li class="hs" style="--x:60%;--y:56.5%;--i:2"><span class="hs-n">3</span><span class="hs-line"></span><span class="hs-label">Breaking soon</span></li>
-            <li class="hs" style="--x:48%;--y:78.5%;--i:3"><span class="hs-n">4</span><span class="hs-line"></span><span class="hs-label">Escalates if nobody acts</span></li>
-            <li class="hs" style="--x:17%;--y:93%;--i:4"><span class="hs-n">5</span><span class="hs-line"></span><span class="hs-label">What is fine, confirmed</span></li>
-          </ol>
-        </div>
-        <p class="ph-tag">Placeholder · C01 · command screen, web · proof chip when real: real screen · demo company · web panel · the boss</p>
+      <div class="s6-web">
+        <figure class="cf cf-web" data-cap="C01" data-shot="screen" data-sil="dash"></figure>
+        <ol class="hotspots" aria-hidden="true">
+          <li class="hs fire" style="--x:70%;--y:62.9%;--i:0"><span class="hs-n">1</span><span class="hs-line"></span><span class="hs-label">Biggest risk, and why</span></li>
+          <li class="hs" style="--x:38%;--y:74.4%;--i:1"><span class="hs-n">2</span><span class="hs-line"></span><span class="hs-label">Broken now</span></li>
+          <li class="hs" style="--x:79%;--y:74.4%;--i:2"><span class="hs-n">3</span><span class="hs-line"></span><span class="hs-label">Breaking soon</span></li>
+        </ol>
       </div>
       <ol class="hs-list">
         <li>Biggest risk, and why</li>
         <li>Broken now</li>
         <li>Breaking soon</li>
-        <li>Escalates if nobody acts</li>
-        <li>What is fine, confirmed</li>
       </ol>
-      <div class="s6-phone">
-        <div class="cf cf-phone" data-cap="C03" data-sil="pnotif" data-rec></div>
-        <p class="ph-tag">Placeholder · C02 + C03 · notification</p>
-        <p class="callout">With you, not at your desk.</p>
+      <div class="s6-ok">
+        <p class="ok-label"><span class="hs-n" aria-hidden="true">4</span>What is fine, confirmed</p>
+        <div class="cf cf-crop" data-cap="C01" data-shot="underControl" data-shot-narrow="underControlNarrow" data-sil="crop-rows" style="--ar:3448/501"></div>
       </div>
     </div>
   </div>
@@ -1373,7 +1348,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <p class="lead">One order, first call to payment. Typed once, read by everyone.</p>
     </header>
   </div>
-  <div class="stage" id="st-s7" data-steps="5">
+  <div class="stage" id="st-s7" data-steps="3">
     <div class="stage-pin">
       <div class="wrap s7-grid">
         <div class="route-box">
@@ -1391,18 +1366,14 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
           <p class="s7-note">One order's journey. Not route planning.</p>
         </div>
         <ol class="jhead" aria-hidden="true">
-          <li>Created from a saved lane</li>
+          <li>Created from a template</li>
           <li>On the driver's phone</li>
-          <li>Confirmed, CMR photographed</li>
-          <li>Invoiced from the order</li>
-          <li>Paid and closed</li>
+          <li>Delivered, invoiced, paid</li>
         </ol>
         <ol class="journey">
-          <li class="jstep"><h3 class="jl">Created from a saved lane</h3><div class="jcap"><figure class="cf cf-web" data-cap="C04" data-sil="form"></figure></div></li>
-          <li class="jstep"><h3 class="jl">On the driver's phone</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C05" data-sil="plist"></figure></div></li>
-          <li class="jstep"><h3 class="jl">Confirmed, CMR photographed</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C06" data-sil="pcam" data-rec></figure><p class="effort" data-tbd><span class="tbd">[n] · counted from C06</span> taps</p></div></li>
-          <li class="jstep"><h3 class="jl">Invoiced from the order</h3><div class="jcap"><figure class="cf cf-web" data-cap="C07" data-sil="form"></figure></div></li>
-          <li class="jstep"><h3 class="jl">Paid and closed</h3><div class="jcap"><figure class="cf cf-web" data-cap="C08" data-sil="table"></figure></div></li>
+          <li class="jstep"><h3 class="jl">Created from a template</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C19" data-shot="orders" data-sil="plist"></figure></div></li>
+          <li class="jstep"><h3 class="jl">On the driver's phone</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C05" data-shot="orders" data-sil="plist"></figure></div></li>
+          <li class="jstep"><h3 class="jl">Delivered, invoiced, paid</h3><div class="jcap"><figure class="cf cf-phone" data-cap="C21" data-shot="finance" data-sil="plist"></figure></div></li>
         </ol>
       </div>
       <div class="stage-ui"><span class="stage-line"><i></i></span><a class="stage-skip" href="#s7-cards">Skip</a></div>
@@ -1411,7 +1382,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   <div class="wrap s7-cards" id="s7-cards">
     <article class="fcard"><figure class="cf cf-web" data-cap="C09" data-shot="screen" data-sil="bars"></figure><h3 class="h3">Legal hours where you assign</h3><p>Each driver's remaining driving time, next to the load.</p></article>
     <article class="fcard"><figure class="cf cf-web" data-cap="C10" data-shot="screen" data-sil="table"></figure><h3 class="h3">Road cards that fill themselves</h3><p>Generated from the orders you already have.</p></article>
-    <article class="fcard"><figure class="cf cf-phone" data-cap="C11" data-sil="portal"></figure><h3 class="h3">Clients follow their own loads</h3><p>Give access once. They see where their load is.</p></article>
+    <article class="fcard"><figure class="cf cf-phone" data-cap="C26" data-shot="fleet" data-sil="plist"></figure><h3 class="h3">Every truck, one record</h3><p>Plate, model, mileage and driver, in one place.</p></article>
   </div>
 </section>
 
@@ -1460,22 +1431,20 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       </article>
       <article class="tile" data-play>
         <div class="mm" aria-hidden="true">
-          <svg viewBox="0 0 300 120"><rect x="20" y="50" width="260" height="20" rx="6" class="track"/><rect class="fill" x="20" y="50" width="236" height="20" rx="6"/><rect class="over" x="210" y="50" width="46" height="20" rx="0"/><path class="limit" d="M210 36 V84"/><text class="lbl" x="192" y="30">Limit</text></svg>
+          <svg viewBox="0 0 300 120"><rect class="track" x="40" y="46" width="220" height="8" rx="4"/><rect class="fill" x="40" y="46" width="220" height="8" rx="4"/><circle class="node" cx="40" cy="50" r="8"/><circle class="node" cx="150" cy="50" r="8"/><circle class="node end" cx="260" cy="50" r="8"/><text class="lbl" x="40" y="86" text-anchor="middle">Delivered</text><text class="lbl" x="150" y="86" text-anchor="middle">Invoiced</text><text class="lbl" x="260" y="86" text-anchor="middle">Paid</text></svg>
         </div>
-        <h3 class="h3">Who owes you, against the limit</h3>
-        <p>See it before it becomes a loss.</p>
-        <figure class="cf cf-crop" data-cap="C15" data-sil="crop-limit" data-crop="over the limit" style="--ar:3/1"></figure>
+        <h3 class="h3">Paid, and what's overdue</h3>
+        <p>Every delivered order, followed to payment.</p>
+        <figure class="cf cf-crop" data-cap="C21" data-shot="paid" data-sil="crop-limit" data-crop="paid and overdue" style="--ar:3/1"></figure>
       </article>
       <article class="tile" data-play>
         <div class="approve">
-          <div class="cf cf-phone" data-cap="C16" data-sil="plist"></div>
+          <div class="cf cf-phone" data-cap="C20" data-shot="panel" data-sil="plist"></div>
           <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg>
-          <div class="cf cf-phone" data-cap="C17" data-sil="plist" data-rec></div>
+          <div class="cf cf-phone" data-cap="C16" data-shot="callInExternal" data-sil="plist"></div>
         </div>
-        <h3 class="h3">No repair without your OK</h3>
-        <p>The workshop asks. You approve, from anywhere.</p>
-        <p class="effort" data-tbd><span class="tbd">[n] · counted from C17</span> tap to approve</p>
-        <p class="ph-tag">Placeholder · C16 then C17 · repair request, then approval</p>
+        <h3 class="h3">Service, called in on the record</h3>
+        <p>The mechanic picks the truck, the reason and the workshop.</p>
       </article>
     </div>
   </div>
@@ -1491,65 +1460,40 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </header>
     <div class="roles">
       <div class="role-tabs" role="tablist" aria-label="Roles">
-        <button type="button" role="tab" id="t-you" aria-controls="p-you" aria-selected="true" data-cap="C02" data-sil="pdash">You</button>
-        <button type="button" role="tab" id="t-driver" aria-controls="p-driver" aria-selected="false" tabindex="-1" data-cap="C05" data-sil="plist">Driver</button>
-        <button type="button" role="tab" id="t-dispatcher" aria-controls="p-dispatcher" aria-selected="false" tabindex="-1" data-cap="C19" data-sil="plist">Dispatcher</button>
-        <button type="button" role="tab" id="t-mechanic" aria-controls="p-mechanic" aria-selected="false" tabindex="-1" data-cap="C16" data-sil="plist">Mechanic</button>
-        <button type="button" role="tab" id="t-office" aria-controls="p-office" aria-selected="false" tabindex="-1" data-cap="C21" data-sil="plist">Office</button>
-        <button type="button" role="tab" id="t-clients" aria-controls="p-clients" aria-selected="false" tabindex="-1" data-cap="C11" data-sil="portal">Your clients</button>
+        <button type="button" role="tab" id="t-you" aria-controls="p-you" aria-selected="true" data-cap="C21" data-shot="finance" data-sil="pdash">You</button>
+        <button type="button" role="tab" id="t-driver" aria-controls="p-driver" aria-selected="false" tabindex="-1" data-cap="C05" data-shot="orders" data-sil="plist">Driver</button>
+        <button type="button" role="tab" id="t-dispatcher" aria-controls="p-dispatcher" aria-selected="false" tabindex="-1" data-cap="C26" data-shot="fleet" data-sil="plist">Dispatcher</button>
+        <button type="button" role="tab" id="t-mechanic" aria-controls="p-mechanic" aria-selected="false" tabindex="-1" data-cap="C20" data-shot="panel" data-sil="plist">Mechanic</button>
       </div>
       <div class="role-body">
         <div class="role-phone">
-          <div class="flip"><div class="cf cf-phone" id="role-cf" data-cap="C02" data-sil="pdash"></div></div>
-          <p class="ph-tag" id="role-tag">Placeholder · C02</p>
+          <div class="flip"><div class="cf cf-phone" id="role-cf" data-cap="C21" data-shot="finance" data-sil="pdash"></div></div>
         </div>
         <div>
           <div class="role-panel" role="tabpanel" id="p-you" aria-labelledby="t-you" tabindex="0">
             <h3 class="h3">You</h3>
-            <ul class="chips" aria-label="Records"><li class="chip">Approvals</li><li class="chip">Decisions</li></ul>
+            <ul class="chips" aria-label="Records"><li class="chip">Finance</li><li class="chip">Orders</li><li class="chip">Decisions</li></ul>
             <p class="for"><span class="label eyebrow">For you</span><b>The whole company, wherever you are.</b></p>
           </div>
           <div class="role-panel" role="tabpanel" id="p-driver" aria-labelledby="t-driver" tabindex="0" hidden>
             <h3 class="h3">Driver</h3>
-            <ul class="chips" aria-label="Records"><li class="chip">Stops</li><li class="chip">CMR photos</li><li class="chip">Refuelling</li><li class="chip">Expenses</li></ul>
+            <ul class="chips" aria-label="Records"><li class="chip">Orders</li><li class="chip">Working day</li><li class="chip">Refuelling</li><li class="chip">Costs</li></ul>
             <p class="for"><span class="label eyebrow">For you</span><b>Fewer calls.</b></p>
           </div>
           <div class="role-panel" role="tabpanel" id="p-dispatcher" aria-labelledby="t-dispatcher" tabindex="0" hidden>
             <h3 class="h3">Dispatcher</h3>
-            <ul class="chips" aria-label="Records"><li class="chip">Assignments</li></ul>
+            <ul class="chips" aria-label="Records"><li class="chip">Orders</li><li class="chip">Schedule</li><li class="chip">Fleet</li></ul>
             <p class="for"><span class="label eyebrow">For you</span><b>Dispatch you can see.</b></p>
           </div>
           <div class="role-panel" role="tabpanel" id="p-mechanic" aria-labelledby="t-mechanic" tabindex="0" hidden>
             <h3 class="h3">Mechanic</h3>
-            <ul class="chips" aria-label="Records"><li class="chip">Repairs</li><li class="chip">Inspections</li><li class="chip">Handovers</li></ul>
-            <p class="for"><span class="label eyebrow">For you</span><b>No repair you didn't approve.</b></p>
-          </div>
-          <div class="role-panel" role="tabpanel" id="p-office" aria-labelledby="t-office" tabindex="0" hidden>
-            <h3 class="h3">Office</h3>
-            <ul class="chips" aria-label="Records"><li class="chip">Invoices</li><li class="chip">Purchase invoices</li><li class="chip">Fuel prices</li></ul>
-            <p class="for"><span class="label eyebrow">For you</span><b>Money chased on time.</b></p>
-          </div>
-          <div class="role-panel" role="tabpanel" id="p-clients" aria-labelledby="t-clients" tabindex="0" hidden>
-            <h3 class="h3">Your clients</h3>
-            <ul class="chips" aria-label="Records"><li class="chip">Nothing to record</li></ul>
-            <p class="for"><span class="label eyebrow">For you</span><b>They check their load themselves.</b></p>
+            <ul class="chips" aria-label="Records"><li class="chip">Call-ins</li><li class="chip">Service entries</li><li class="chip">Inspections</li></ul>
+            <p class="for"><span class="label eyebrow">For you</span><b>Service, on the record.</b></p>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="film-head">
-      <h3>A driver's whole day<span data-tbd>: <span class="tbd">[n] · counted from C23</span> steps</span>.</h3>
-      <span class="ph-tag" style="margin:0">Placeholder · C23 · proof chip when real: every step from the real app</span>
-    </div>
-    <ol class="film" aria-label="A driver's whole day, step by step">
-      <li><div class="cf cf-phone" data-cap="C23" data-sil="plist"></div></li>
-      <li><div class="cf cf-phone" data-cap="C23" data-sil="pcam"></div></li>
-      <li><div class="cf cf-phone" data-cap="C23" data-sil="plist"></div></li>
-      <li><div class="cf cf-phone" data-cap="C23" data-sil="pcam"></div></li>
-      <li><div class="cf cf-phone" data-cap="C23" data-sil="plist"></div></li>
-      <li class="more-li"><div class="more label">The rest of the day, counted from C23</div></li>
-    </ol>
     <p class="closing">Your dispatcher doesn't see your finances.</p>
   </div>
 </section>
@@ -1562,14 +1506,14 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </header>
     <div class="ba-head label" aria-hidden="true"><span>Today</span><span></span><span>With FleetPartner</span></div>
     <ul class="ba">
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-msg"/></svg></span><span><span class="sr-only">Today: </span>Driver texts: "loaded"</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C06" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C06 · confirmed</span></div><span><span class="sr-only">With FleetPartner: </span>Stop confirmed in the app</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span><span><span class="sr-only">Today: </span>One order, typed three times</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C04" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C04 · lane filled</span></div><span><span class="sr-only">With FleetPartner: </span>Created once, read by all</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-sheet"/></svg></span><span><span class="sr-only">Today: </span>Excel at night</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C05" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C05 · the order</span></div><span><span class="sr-only">With FleetPartner: </span>Recorded during the day</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></span><span><span class="sr-only">Today: </span>The call about the fire</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C01" data-sil="crop-risk" style="--ar:2/1"></div><span class="ph-tag">C01 · top</span></div><span><span class="sr-only">With FleetPartner: </span>Top of your screen</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span><span class="sr-only">Today: </span>Who can still drive? Call round</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C09" data-shot="hours" data-sil="crop-bars" style="--ar:2/1"></div><span class="ph-tag">C09 · hours next to load</span></div><span><span class="sr-only">With FleetPartner: </span>Hours next to the load</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg></span><span><span class="sr-only">Today: </span>Dates in your head</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C14" data-shot="warning" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C14 · OC row</span></div><span><span class="sr-only">With FleetPartner: </span>Warned 30 days ahead</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg></span><span><span class="sr-only">Today: </span>Monthly news of who hasn't paid</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C15" data-sil="crop-limit" style="--ar:2/1"></div><span class="ph-tag">C15 · over the limit</span></div><span><span class="sr-only">With FleetPartner: </span>Today, against their limit</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-note"/></svg></span><span><span class="sr-only">Today: </span>The CMR, somewhere in WhatsApp</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C07" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C07 · CMR attached</span></div><span><span class="sr-only">With FleetPartner: </span>Attached to order and invoice</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-msg"/></svg></span><span><span class="sr-only">Today: </span>Driver texts: "loaded"</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C05" data-shot="stop" data-sil="crop-rows" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Every stop in the app</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span><span><span class="sr-only">Today: </span>One order, typed three times</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C19" data-shot="template" data-sil="crop-rows" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Created once, from a template</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-sheet"/></svg></span><span><span class="sr-only">Today: </span>Excel at night</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C18" data-shot="roadLog" data-sil="crop-rows" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Recorded during the day</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></span><span><span class="sr-only">Today: </span>The call about the fire</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C01" data-shot="riskRow" data-sil="crop-risk" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Top of your screen</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span><span class="sr-only">Today: </span>Who can still drive? Call round</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C09" data-shot="hours" data-sil="crop-bars" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Hours next to the load</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg></span><span><span class="sr-only">Today: </span>Dates in your head</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C14" data-shot="warning" data-sil="crop-rows" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Warned 30 days ahead</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg></span><span><span class="sr-only">Today: </span>Monthly news of who hasn't paid</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C21" data-shot="counters" data-sil="crop-limit" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Overdue, counted for you</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></span><span><span class="sr-only">Today: </span>The workshop, by phone</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C16" data-shot="callInHead" data-sil="crop-rows" style="--ar:2/1"></div></div><span><span class="sr-only">With FleetPartner: </span>Called in from the app</span></div></li>
     </ul>
   </div>
 </section>
@@ -1705,8 +1649,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <ul class="role-lines">
           <li><b>Driver</b><span>Confirms in the app. No "have you delivered?" calls.</span><a href="#roles" data-role="t-driver">See the driver's screen</a></li>
           <li><b>Dispatcher</b><span>Hours next to the load. No checking them separately.</span><a href="#roles" data-role="t-dispatcher">See the dispatcher's screen</a></li>
-          <li><b>Office</b><span>Invoices from orders. No retyping, no filling road cards.</span><a href="#roles" data-role="t-office">See the office's screen</a></li>
-          <li><b>Mechanic</b><span>Asks once in the app. No chasing approvals.</span><a href="#roles" data-role="t-mechanic">See the mechanic's screen</a></li>
+          <li><b>Office</b><span>Invoices from orders. No retyping, no filling road cards.</span></li>
+          <li><b>Mechanic</b><span>Calls trucks in from the app. No chasing by phone.</span><a href="#roles" data-role="t-mechanic">See the mechanic's screen</a></li>
         </ul>
       </div>
 
@@ -1834,7 +1778,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     <header class="sec-head"><h2 id="s16-h" class="h2">Questions.</h2></header>
     <div class="faq">
       <details><summary>Is this going to be another job for me?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. We set it up with you, show your drivers the app, and check every week for the first 30 days that everyone is recording.</p></details>
-      <details><summary>What do my drivers have to do?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Record their work as it happens: stops, CMR photos, refuelling.<span data-tbd> A driver's whole day is <span class="tbd">[n] · C23</span> steps. <a href="#roles">See it above.</a></span></p></details>
+      <details><summary>What do my drivers have to do?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Record their working day in the app as it happens: their orders, refuelling, border crossings and costs.</p></details>
       <details><summary>Do I need GPS devices in the trucks?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Most carriers don't: position comes from the driver's phone. Need engine, fuel-level or temperature data? Keep your GPS hardware.</p></details>
       <details><summary>Can I keep my accountant or bureau?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes. FleetPartner doesn't replace them. They work from one record instead of a box of files.</p></details>
       <details><summary>Can I buy just part of it, like the map?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. A system that sees part of your company can show you the wrong picture. Every plan is the whole system.</p></details>
@@ -1860,9 +1804,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <p class="lead">Seven questions, five minutes. Or see it on your own phone.</p>
       </div>
       <figure class="calm-vis" data-anim>
-        <div class="slab" aria-hidden="true"><div class="cf cf-phone" data-cap="C02" data-sil="pcalm"></div></div>
+        <div class="slab" aria-hidden="true"><div class="cf cf-phone" data-cap="C19" data-shot="orders" data-sil="pcalm"></div></div>
         <div class="far" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-        <figcaption class="ph-tag">Placeholder · C02, second still · under control</figcaption>
       </figure>
     </div>
 
@@ -1937,7 +1880,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <div data-tbd><dt>Language</dt><dd>PL <span class="tbd">{TBD · OD16}</span> · EN working copy</dd></div>
       </dl>
     </div>
-    <p class="foot-note" data-internal>Preview build. Product screens are labelled placeholders until the founder's captures arrive. Every {TBD} is an open decision in handover/09-OPEN-DECISIONS.md.</p>
+    <p class="foot-note" data-internal>Preview view. Every {TBD} is an open decision in handover/09-OPEN-DECISIONS.md.</p>
   </div>
 </footer>
 
@@ -1964,21 +1907,16 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   const PARTNERS = {};   // code -> partner name, only with the partner's written approval
   const EVENTS = {};     // slug -> event name
 
-  /* ---------- Captures (handover/capture-manifest.json). src stays null until the real file arrives ---------- */
+  /* ---------- Captures: the final set (handover/capture-manifest.json, assets-src/captures/REVIEW.md) ---------- */
   const CAPTURES = {
-    C01: { tag: "Command screen, web", proof: "Real screen · demo company · web panel · the boss" },
-    C02: { tag: "Command screen, boss's phone", proof: "Real screen · demo company · Android app · the boss" },
-    C03: { tag: "Notification arrives", proof: "Real screen · demo company · Android app · the boss" },
-    C04: { tag: "Order from a saved lane", proof: "Real screen · demo company · web panel · the boss" },
-    C05: { tag: "The order on the driver's phone", proof: "Real screen · demo company · Android app · driver" },
-    C06: { tag: "Driver confirms unloading", proof: "Real screen · demo company · Android app · driver" },
-    C07: { tag: "Invoice from the order", proof: "Real screen · demo company · web panel · the boss" },
-    C08: { tag: "Order paid and closed", proof: "Real screen · demo company · web panel · the boss" },
+    C01: { tag: "Command screen, web", proof: "Real screen · demo company · web panel · the boss",
+      alt: { screen: "The command screen in the web panel: income and payables, the company status, the biggest risk (loading not confirmed, order ZL-2026-102416) and the two queues, Needs action and Will be a problem soon." } },
+    C05: { tag: "The driver's orders", proof: "Real screen · demo company · Android app · driver",
+      alt: { orders: "The driver's Orders in the FleetPartner app: the steps from assigned to closed, and order ZL-202610-1001, Warsaw to Lisbon, assigned and waiting to be accepted." } },
     C09: { tag: "Legal hours while assigning", proof: "Real screen · demo company · web panel · the boss",
       alt: { screen: "Driver driving hours in the web panel: each driver's remaining driving time, with Assign order beside it." } },
     C10: { tag: "Road cards from orders", proof: "Real screen · demo company · web panel · the boss",
       alt: { screen: "Road cards in the web panel: one card per driver and vehicle, with its period and starting kilometres." } },
-    C11: { tag: "What the shipper sees", proof: "Real screen · demo company · client portal · client" },
     C12: { tag: "Tachograph against the app", proof: "Real screen · demo company · web panel · the boss",
       alt: { difference: "A tachograph report marked as a discrepancy: the driver log is 9% below the tachograph.",
         differenceTight: "A tachograph report marked as a discrepancy: the driver log is 9% below the tachograph." } },
@@ -1986,16 +1924,20 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       alt: { overNorm: "A fuel anomaly: one truck at 34.5 L/100 km, 21% above its own norm." } },
     C14: { tag: "Every expiry, counted down", proof: "Real screen · demo company · web panel · the boss",
       alt: { countdown: "Expiry dates: an OC policy due in 3 days in red, the next one in 16 days in amber." } },
-    C15: { tag: "A client over its limit", proof: "Real screen · demo company · web panel · the boss" },
-    C16: { tag: "Mechanic asks for approval", proof: "Real screen · demo company · Android app · mechanic" },
-    C17: { tag: "The boss approves the repair", proof: "Real screen · demo company · Android app · the boss" },
-    C19: { tag: "Dispatcher assigns a load", proof: "Real screen · demo company · Android app · dispatcher" },
-    C21: { tag: "Office: not invoiced, not paid", proof: "Real screen · demo company · Android app · office" },
-    C23: { tag: "A driver's whole day", proof: "Every step from the real app" }
+    C16: { tag: "The mechanic calls a truck in", proof: "Real screen · demo company · Android app · mechanic" },
+    C18: { tag: "The driver's first screen", proof: "Real screen · demo company · Android app · driver" },
+    C19: { tag: "Orders on the boss's phone", proof: "Real screen · demo company · Android app · the boss",
+      alt: { orders: "Orders in the FleetPartner app: add a new order with its driver and vehicle, or one from a route template, and the steps from assigned to paid and closed. No order has a problem." } },
+    C20: { tag: "The mechanic's panel", proof: "Real screen · demo company · Android app · mechanic" },
+    C21: { tag: "Finance on the boss's phone", proof: "Real screen · demo company · Android app · the boss",
+      alt: { finance: "The boss's main dashboard in the FleetPartner app: 90 orders completed, 504 paid, none overdue, and the delivered orders waiting to be invoiced, with their amounts.",
+        paid: "Finance on the boss's phone: 504 orders paid, none overdue." } },
+    C26: { tag: "The fleet on the phone", proof: "Real screen · demo company · Android app · dispatcher",
+      alt: { fleet: "Fleet in the FleetPartner app: 22 vehicles, 21 active and 1 in service, each tractor unit with its model, mileage and driver." } }
   };
   // Processed crops of the reviewed captures (sizes, widths, placeholder, focus ring). Do not edit by hand.
   /* shots:start (generated by tools/process_captures.py from assets-src/captures/crops.json) */
-  const SHOTS = {"C01":{"biggestRisk":{"w":2022,"h":337,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADwAgCdASoYAAQAPu1iqU2ppaOiMAgBMB2JaQDLLDBsAAD+7/M0DUpSrMa82dRaIvAAAA=="},"backdrop":{"w":4320,"h":2700,"ws":[320,480,640,800,960,1280],"lq":"data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADwAwCdASoYAA8APu1oqk6ppiQiMAgBMB2JZSzAAS3+2/wK0C44BacAAP7v9bKGQYRbol7YNzIFWFUqsVHTys3RcR82N4//4lTeLpQRsJDWC3BlO5uBX4ggAAA="},"screen":{"w":4320,"h":2700,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwBACdASoYAA8APu1oqk6ppiQiMAgBMB2JZQBUgo/4DyQBrNhj9q+q+yAA/u/PYyExO0mPfr2A7MaoMnD3NP4d3VKFfYmRNzDIn3c3zimSSKi3HEYcgwAA"}},"C12":{"difference":{"w":3523,"h":1101,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACQAwCdASoYAAgAPu1kqk4ppaQiMAgBMB2JZQDG9CHUoXZq3DkAAP7qgy3pxRzUOBqa0AUywy1D9Skl0y5GvhElW5JjBdLAAAA=","focus":[75.05,40.33,23.9,14.62,0.681]},"differenceTight":{"w":1744,"h":872,"ws":[320,480,640,800,960,1280,1600,1744],"lq":"data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAQAwCdASoYAAwALrV2u12jqampiYC0SzgABc6MQlB454AA/vYFSP5Uv9UC3bzRp6WSqBSZFTVFZnNXaz3oYXElhgAAAA==","focus":[49.14,49.2,48.28,18.46,1.376]}},"C13":{"overNorm":{"w":1525,"h":508,"ws":[320,480,640,800,960,1280,1525],"lq":"data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAgCdASoYAAgAPu1iqU2ppaOiMAgBMB2JaQDLLC0kAAD+8BYIqeGTken8zxyioSKncAGfbNfHyeyAAAA="}},"C14":{"countdown":{"w":2415,"h":805,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAwCdASoYAAgAPu1iqU2ppaOiMAgBMB2JYwC/c/7AwNPkG3WMAAD+5yyOhVKJMgt+6hb7a2sTSqhIIaztQ0AA"},"warning":{"w":600,"h":300,"ws":[320,480],"lq":"data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACQAwCdASoYAAwAPu1iqU2ppaQiMAgBMB2JZwAAW+sa4+3aevIAAP7xxL6UgZLI0Z3w8YKsAAA="}},"C09":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwBACdASoYAA8APu1krU2ppaSiMAgBMB2JaACsAGtt05PfvNRhxTHddhAA/vwktEx8A1y/tLOZzox/RVc/AfC1r9r9UnxfeRbLImD0WMwWKMaIbGkA63cFnAb82CAA"},"hours":{"w":1100,"h":550,"ws":[320,480],"lq":"data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAwCdASoYAAwAPu1iqU2ppaOiMAgBMB2JZwDG9CGgXBKgAP7wR/9Vsas9eNwUF015i/EW3DnOqfTPBWScTr4zjAA="}},"C10":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABQAwCdASoYAA8APu1mq04ppaQiMAgBMB2JaQAAetHPk4wkAAD+8IBqgS+AZH27nGug7te4GHJ9DjcQi6sNZ+tcwi3mBNToQAA="}}};
+  const SHOTS = {"C01":{"biggestRisk":{"w":2022,"h":337,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADwAgCdASoYAAQAPu1iqU2ppaOiMAgBMB2JaQDLLDBsAAD+7/M0DUpSrMa82dRaIvAAAA=="},"backdrop":{"w":4320,"h":2700,"ws":[320,480,640,800,960,1280],"lq":"data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADwAwCdASoYAA8APu1oqk6ppiQiMAgBMB2JZSzAAS3+2/wK0C44BacAAP7v9bKGQYRbol7YNzIFWFUqsVHTys3RcR82N4//4lTeLpQRsJDWC3BlO5uBX4ggAAA="},"screen":{"w":4320,"h":2700,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwBACdASoYAA8APu1oqk6ppiQiMAgBMB2JZQBUgo/4DyQBrNhj9q+q+yAA/u/PYyExO0mPfr2A7MaoMnD3NP4d3VKFfYmRNzDIn3c3zimSSKi3HEYcgwAA"},"riskRow":{"w":2022,"h":1011,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAABQAwCdASoYAAwALrV2u12jqampiYC0SxgABi86JwN8UqdGMAD+9RoUQULyhjp4jR7UmP+I+6S6LDQmJ609zGBr+F9sE8R3yoidCiSDcky776P0gmi6oaOfShxArAAA"},"rankQueues":{"w":3460,"h":610,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAACQAwCdASoYAAQAPu1kqk4ppaQiMAgBMB2JQBOgBDh6l7B2CjHAAP7GA+nurHJMXGhx6odB44eXrcMjFMfyTfvp/oqCr0IVGxdZYW0b2h2XAAAA"},"underControl":{"w":3448,"h":501,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAACwAgCdASoYAAMAPu1iqU2ppaQiMAgBMB2JaQAAeyAA/vCRufXbyv9zAAA="},"underControlNarrow":{"w":1812,"h":501,"ws":[320,480,640,800,960,1280,1600,1812],"lq":"data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAAAQAwCdASoYAAcAPu1kqU2ppaOiMAgBMB2JaQAAetDEoAAA/vCsOHv79CSM49o8EnwtYan514ieYr9AAAA="}},"C12":{"difference":{"w":3523,"h":1101,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACQAwCdASoYAAgAPu1kqk4ppaQiMAgBMB2JZQDG9CHUoXZq3DkAAP7qgy3pxRzUOBqa0AUywy1D9Skl0y5GvhElW5JjBdLAAAA=","focus":[75.05,40.33,23.9,14.62,0.681]},"differenceTight":{"w":1744,"h":872,"ws":[320,480,640,800,960,1280,1600,1744],"lq":"data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAQAwCdASoYAAwALrV2u12jqampiYC0SzgABc6MQlB454AA/vYFSP5Uv9UC3bzRp6WSqBSZFTVFZnNXaz3oYXElhgAAAA==","focus":[49.14,49.2,48.28,18.46,1.376]}},"C13":{"overNorm":{"w":1525,"h":508,"ws":[320,480,640,800,960,1280,1525],"lq":"data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAgCdASoYAAgAPu1iqU2ppaOiMAgBMB2JaQDLLC0kAAD+8BYIqeGTken8zxyioSKncAGfbNfHyeyAAAA="}},"C14":{"countdown":{"w":2415,"h":805,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAwCdASoYAAgAPu1iqU2ppaOiMAgBMB2JYwC/c/7AwNPkG3WMAAD+5yyOhVKJMgt+6hb7a2sTSqhIIaztQ0AA"},"warning":{"w":600,"h":300,"ws":[320,480],"lq":"data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACQAwCdASoYAAwAPu1iqU2ppaQiMAgBMB2JZwAAW+sa4+3aevIAAP7xxL6UgZLI0Z3w8YKsAAA="}},"C09":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwBACdASoYAA8APu1krU2ppaSiMAgBMB2JaACsAGtt05PfvNRhxTHddhAA/vwktEx8A1y/tLOZzox/RVc/AfC1r9r9UnxfeRbLImD0WMwWKMaIbGkA63cFnAb82CAA"},"hours":{"w":1100,"h":550,"ws":[320,480],"lq":"data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAwCdASoYAAwAPu1iqU2ppaOiMAgBMB2JZwDG9CGgXBKgAP7wR/9Vsas9eNwUF015i/EW3DnOqfTPBWScTr4zjAA="}},"C10":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABQAwCdASoYAA8APu1mq04ppaQiMAgBMB2JaQAAetHPk4wkAAD+8IBqgS+AZH27nGug7te4GHJ9DjcQi6sNZ+tcwi3mBNToQAA="}},"C21":{"finance":{"w":1080,"h":2268,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRr4AAABXRUJQVlA4ILIAAABwBQCdASoYADIAPu1mqlGppSOirBVbMTAdiWknABUyUwAKO5/2Itcf+NMYtd/L4Lhy7hAAAP7x4J+O1MGYLTE8TG277fCndZWAA//RDGbndXtQugbFP7uG1W6qJ8l9XZ/AsRdPLOKZVd6ggnVUbPMAZXhLUxkc6my5+FKEsG4oX1HpuiRv+RDjIYfDbf4PsElUPaat38GuBPm/wa7ftQHdUNj6eYNpiM44Z1qBcMQAAAAA"},"paid":{"w":1000,"h":333,"ws":[320,480,640,800,960],"lq":"data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAACwAgCdASoYAAgAPu1kqU2ppaQiMAgBMB2JaQAAeyAA/vCpCjuXSilUP+rGTUFR84v2Pm2DsCAUBAAA"},"counters":{"w":1000,"h":500,"ws":[320,480,640,800,960],"lq":"data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADwAgCdASoYAAwAPu1kqU2ppaOiMAgBMB2JaQAAetCIAAD+8Kw6wcOWER9pWsqH5zBVLVDz6KGlHLPcXnuCHhiAAAA="}},"C05":{"orders":{"w":1080,"h":2268,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAAAwBgCdASoYADIAPulipk2pJaOiMBgN+SAdCWcAAIRWtpslOHZoGU1USJZsSCgEmyHwb1GrR2FSDOgAAP72E90ow0gPlzAHOe40jgIdKP2kG0DY4wMjbGuCceE3rGJAt2V8S3KTFVE56q9E9k8MTNax4fXGe22uX8iOX8X6XNlaEYra5M16rJg9C/iFEY0gNgnyskgpfa7GhNOAa3NzfxswiJQu71S7tEqQhWZfzHevLQ6D+qgAAA=="},"stop":{"w":1000,"h":500,"ws":[320,480,640,800,960],"lq":"data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAACQAwCdASoYAAwAPu1iqU2ppaQiMAgBMB2JaQAAXK+VpIS132AAAP7tyJi28w3TR8g8y2XvQgqAvdecDB+7lKRsAAA="}},"C26":{"fleet":{"w":1080,"h":2268,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAAAwBQCdASoYADIAPu1oq08ppiOiLAmZMB2JZwDTJBPaGI+j5cSPfhJFGkw75ff9Bt9HAAD+8eCfjtTK9jiJKDy4oMXENevQNuCuczebuXoZAMF0x2qRbpIF+PxXE77t/wr1pdOpUpu4rOqzDQDtl/BWyKr4e1Ofy3lsbG6mvDrIPmWULBT9nht6aBaMURSQPk/ShWKAAAA="}},"C20":{"panel":{"w":1080,"h":2268,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRtwAAABXRUJQVlA4INAAAACwBQCdASoYADIAPu1gpU2ppaMiM/mYATAdiWMAytUgAf7/CALcTq05MbO4cK4kwMCWxNC0SsAA/vHgn47UwVncCsyj2YemUALup1VvaYyaqtzRwAXAVoAUbkx20IZV4w2DHJ+/c21RwRpb5lDe/aHz8zjCW2bPJX4VPhq64cgsbGH9lM6P8NAWWcbHch+dvkiDOWzt7eFLgQ0yT2cS1s8p0zql1BfFiysYF7HuPiB7hDAbdMF+a+uam6eQNwBbTvyBklGlLouHWTpitCg6LAAA"}},"C16":{"callIn":{"w":1080,"h":2268,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAADwBQCdASoYADIAPu1gp02ppSOiN/K4ATAdiWUAzpT7OgAMmI8P3LAYzs9cVE1aSWaIi7DhXJFvAAD+9SK49+RWyb0E4TaCwkmcUhwLJ5FW8GRDgop1kqGk2e2lp61IyNv9sovpqZKIbSsMSJF0xSAKg2PC9NRFlOAYnVbDKNnQA8Gx91nhFkuDXssVih85BfE5D4nIoxJvtNMjNSJaPjAh7QotDhwBAAA="},"callInExternal":{"w":1080,"h":2268,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRsoAAABXRUJQVlA4IL4AAAAwBgCdASoYADIAPuFcpU2opSOiO/JIARAcCWUAzwxeepQOavStj2mZ7GX1oDf3n9ci/dS8qtj1ofOAAP72SlhhHQOFk+tQyVpOz9tRC/6h6IEOzncfK1/b5kDtO3n9RPVR88aauXXsnGW86ezoZjPeaALJlkptAFPNaKrqnLZyAOqEbt1lgKDUNntrUmGNkgT+G7GFiDvByCBRxG/k8zT0K3H4d4ifbwasKZgAP8391sTRO2ZOOGwrE3V4AAAA"},"callInHead":{"w":1080,"h":540,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAACwAgCdASoYAAwAPu1iqU2ppaQiMAgBMB2JaQAAeyAA/vCXQzxE2nYhqle9dQ/1mdBL9tUdwxKbwNiGAAA="}},"C19":{"orders":{"w":1080,"h":2268,"ws":[320,480,640,800,960,1080],"lq":"data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAAAwBACdASoYADIAPu1urlCppqQiqAqpMB2JaQAAPlRtrJkIgEstFGZ+mRAA/vB7C+N4xyVHq0yPf0vgszX/T3B9eQNjV8Iq3jWoZGkXVG+Z/5yjq8kgVlUEuNspdskGvL6jQsyv6b5zxIylzlBdUFcuK92D10RCnUlbZvJ5uXGvfyUzXgAAAA=="},"template":{"w":1000,"h":500,"ws":[320,480,640,800,960],"lq":"data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAABwAwCdASoYAAwAPu1iqU2ppaOiMAgBMB2JaQAAUz5/zrW5IAAA/vHgwh2LDiU9obMRy5UZOsaoAA=="}},"C18":{"roadLog":{"w":1020,"h":510,"ws":[320,480,640,800,960],"lq":"data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADwAwCdASoYAAwAPu1mq04ppaQiMAgBMB2JQBahC89OgOBVV178SHsgAP7x3pTtTK9jXZMYGqCJhUB2+2s/VoXiQ8196+oMsbFEh18epDZvhmRKz9RNhJTLWLMQbwiu8IZ760NReahpEJEN1C4AAA=="}}};
   /* shots:end */
 
   /* ---------- View flags: the production page by default; ?view=preview adds the internal notes ---------- */
@@ -2120,7 +2062,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 
   // A real capture: a <picture> of its processed crop (AVIF, then WebP), sized by the frame it sits in.
   // data-shot names the crop; data-shot-narrow an art-directed closer crop for narrow screens;
-  // data-shot-alt a second state of the same frame, stacked and hidden until CSS shows it.
+  // data-shot-alt a second state of the same frame, stacked and hidden until CSS shows it;
+  // data-eager loads the shot at once, at high priority (the hero's screen, the first view's largest paint).
   const NARROW = "(max-width: 699px)";
   const shotFile = (id, name, w, ext) => `media/${id.toLowerCase()}-${name.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}-${w}.${ext}`;
   const srcset = (id, name, s, ext) => s.ws.map((w) => `${shotFile(id, name, w, ext)} ${w}w`).join(", ");
@@ -2133,11 +2076,12 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     const sources = (n, s, media) => ["avif", "webp"]
       .map((t) => `<source type="image/${t}"${media ? ` media="${media}"` : ""} srcset="${srcset(id, n, s, t)}" sizes="${sizes}">`).join("");
     const img = (n, s, alt, more) => `<img src="${shotFile(id, n, s.ws[Math.min(3, s.ws.length - 1)], "webp")}" srcset="${srcset(id, n, s, "webp")}"`
-      + ` sizes="${sizes}" width="${s.w}" height="${s.h}" alt="${alt}" loading="lazy" decoding="async"${more || ""}>`;
+      + ` sizes="${sizes}" width="${s.w}" height="${s.h}" alt="${alt}" decoding="async"${more || ' loading="lazy"'}>`;
     const alt = el.tagName === "FIGURE" ? (cap.alt && cap.alt[name]) || cap.tag : "";
     const second = aName && SHOTS[id][aName];
-    return `<picture>${narrow ? sources(nName, narrow, NARROW) : ""}${sources(name, wide)}${img(name, wide, alt)}</picture>`
-      + (second ? `<picture class="alt">${sources(aName, second)}${img(aName, second, "", ' fetchpriority="low"')}</picture>` : "")
+    const first = "eager" in el.dataset ? ' loading="eager" fetchpriority="high"' : "";
+    return `<picture>${narrow ? sources(nName, narrow, NARROW) : ""}${sources(name, wide)}${img(name, wide, alt, first)}</picture>`
+      + (second ? `<picture class="alt">${sources(aName, second)}${img(aName, second, "", ' loading="lazy" fetchpriority="low"')}</picture>` : "")
       + (narrow ? ring(wide, "f-wide") + ring(narrow, "f-narrow") : ring(wide, ""));
   }
 
@@ -2152,7 +2096,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     const scr = wide
       ? `<div class="scr shot${narrow ? " narrow" : ""}" style="--lq:url('${wide.lq}')${narrow ? `;--lqn:url('${narrow.lq}')` : ""}">`
       : '<div class="scr">';
-    const chrome = kind === "web" ? '<div class="bar"><i></i><i></i><i></i></div>' : kind === "phone" ? '<span class="cam"></span>' : "";
+    const chrome = kind === "web" ? '<div class="bar"><i></i><i></i><i></i></div>' : kind === "phone" && !wide ? '<span class="cam"></span>' : "";
     // A real screen in a figure is content (its alt and proof chip); elsewhere the frame is decoration beside its text.
     const hidden = wide && el.tagName === "FIGURE" ? "" : ' aria-hidden="true"';
     let out = `<div class="dev dev-${kind}"${hidden}>${chrome}<div class="scr-box">${scr}${inner}</div></div></div>`;
@@ -2242,7 +2186,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   /* ---------- S7 route: waypoints and the travelling order ---------- */
   const routeBase = $("#route-base"), routeLit = $("#route-lit"), orderCard = $("#order-card"), wps = $("#wps");
   const routeLen = routeBase.getTotalLength();
-  const WP = [0, 0.25, 0.5, 0.75, 1];
+  const nJ = $$("#st-s7 .jstep").length, WP = Array.from({ length: nJ }, (_, i) => i / (nJ - 1));
   wps.innerHTML = WP.map((t) => { const p = routeBase.getPointAtLength(routeLen * t); return `<circle class="wp" cx="${p.x}" cy="${p.y}" r="9"/>`; }).join("");
   // The route is sampled once, so scrolling never asks the path for geometry.
   let routePts = null;
@@ -2429,12 +2373,12 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   }
 
   /* ---------- Hero intro (tier A only): the cursor moves over the sharp dashboard, rests on the biggest risk and
-     clicks it (on phones, a tap on its row); the screen goes out of focus and the card lifts out of it ---------- */
+     clicks it (on touch screens, a tap on it); the screen goes out of focus and the card lifts out of it ---------- */
   // data-from is where the card's crop sits on the screen behind it (% of that screen), so it rises from that spot;
   // data-card is the whole card there (and its corner radius, % of the screen's width), for the hover ring.
   const lifted = $$(".risk-lift").find((el) => el.offsetParent);
   if (!tierC && lifted) {
-    const web = lifted.classList.contains("web-only"), host = $(web ? ".slab-web .scr" : ".slab-phone .scr");
+    const host = $(".slab-web .scr"), mouse = matchMedia("(hover: hover) and (pointer: fine)").matches;
     const [x, y, w, h] = lifted.dataset.from.split(" ").map(Number);
     // Measure both at rest: seek their entrance animations to the end, then put them back.
     const anims = [lifted, host.closest(".slab")].flatMap((el) => el.getAnimations());
@@ -2457,7 +2401,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     lifted.style.setProperty("--pop-s", (s.width / (c.width / k)).toFixed(3));
     const pos = `left:${(x + w * 0.3).toFixed(2)}%;top:${(y + h / 2).toFixed(2)}%`;
     const card = (lifted.dataset.card || "").split(" ").map(Number);
-    host.insertAdjacentHTML("beforeend", (web
+    host.insertAdjacentHTML("beforeend", (mouse
       ? `<span class="hv-hover" style="left:${card[0]}%;top:${card[1]}%;width:${card[2]}%;height:${card[3]}%;--fr:${card[4]}cqw"></span>`
         + `<span class="hv-cursor" style="${pos}"><svg viewBox="0 0 14 20"><path d="M1 1v15.6l4.1-3.9 2.7 6.2 2.7-1.2-2.6-6.1h5.7z"/></svg></span>`
       : `<span class="hv-touch" style="${pos}"></span>`) + `<span class="hv-ripple" style="${pos}"></span>`);
@@ -2491,14 +2435,15 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     });
     return select;
   }
-  const roleCf = $("#role-cf"), roleTag = $("#role-tag"), flip = $(".role-phone .flip");
+  const roleCf = $("#role-cf"), flip = $(".role-phone .flip");
   // Tab change: the phone turns 180° in 500 ms (06 S9), away with an ease-in and back with a strong ease-out.
   // A new tab mid-turn retargets the turn instead of stacking another. Keyboard changes are instant.
   let roleShown = $('.role-tabs [aria-selected="true"]'), roleWant = roleShown, turning = null;
   function swapRole(t) {
     roleShown = t;
-    roleCf.dataset.cap = t.dataset.cap; roleCf.dataset.sil = t.dataset.sil; renderFrame(roleCf);
-    roleTag.textContent = "Placeholder · " + t.dataset.cap + " · " + CAPTURES[t.dataset.cap].tag;
+    roleCf.dataset.cap = t.dataset.cap; roleCf.dataset.sil = t.dataset.sil;
+    if (t.dataset.shot) roleCf.dataset.shot = t.dataset.shot; else delete roleCf.dataset.shot;
+    renderFrame(roleCf);
   }
   function showRole(t, keyboard) {
     roleWant = t;
@@ -2523,7 +2468,6 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     };
   }
   const selectRole = tabs($(".role-tabs"), showRole);
-  roleTag.textContent = "Placeholder · C02 · " + CAPTURES.C02.tag;
   tabs($(".calc-tabs"));
   $$("[data-role]").forEach((a) => a.addEventListener("click", () => selectRole($("#" + a.dataset.role))));
 
