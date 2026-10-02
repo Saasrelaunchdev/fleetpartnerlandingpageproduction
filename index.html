@@ -2113,8 +2113,11 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     const hidden = wide && el.tagName === "FIGURE" ? "" : ' aria-hidden="true"';
     let out = `<div class="dev dev-${kind}"${hidden}>${chrome}<div class="scr-box">${scr}${inner}</div></div></div>`;
     if (el.tagName === "FIGURE") {
-      // A no-break space before each dot keeps a wrapped chip from starting its second line with one.
-      const label = (wide ? cap.proof : `Placeholder · ${id} · ${el.dataset.crop || cap.tag}`).replace(/ · /g, "\u00a0· ");
+      // No-break spaces: a proof chip (short parts) wraps only after a dot; a longer placeholder tag
+      // may wrap inside a part, but never starts a line with a dot.
+      const label = wide
+        ? cap.proof.split(" · ").map((part) => part.replace(/ /g, "\u00a0")).join("\u00a0· ")
+        : `Placeholder · ${id} · ${el.dataset.crop || cap.tag}`.replace(/ · /g, "\u00a0· ");
       out += `<figcaption class="${wide ? "proof-chip" : "ph-tag"}">${label}</figcaption>`;
     }
     el.innerHTML = out;
