@@ -421,8 +421,18 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
 .slab{position:relative;transform-style:preserve-3d}
 .slab-web{display:none}
 .slab-phone{width:min(62%,250px);margin:0 auto;transform:rotateX(calc(4deg + var(--rx))) rotateY(calc(-8deg + var(--ry)))}
-.risk-lift{position:absolute;z-index:4;left:50%;width:min(76%,300px);top:26%;transform:translateX(-50%)}
+.risk-lift{position:absolute;z-index:4;left:50%;width:min(76%,300px);top:26%;transform:translateX(-50%);--lift-z:0px}
 .risk-lift .dev-crop{border-radius:12px}
+/* Rack focus under the pointer: on the screen, it comes nearer focus (still unreadable) and the card goes soft; on the card, the card leads */
+.scr picture.alt{position:absolute;inset:0;opacity:0;transition:opacity var(--t-reveal) var(--ease-out)}
+.risk-lift .cf{transition:filter var(--t-reveal) var(--ease-out),opacity var(--t-reveal) var(--ease-out),scale var(--t-reveal) var(--ease-out)}
+.tier-c .scr picture.alt,.tier-c .risk-lift .cf{transition-duration:var(--t-ui)}
+@media (hover:hover) and (pointer:fine){
+  .slab-web:hover picture.alt{opacity:1}
+  .slab-web:hover ~ .risk-lift .cf{filter:blur(4px);opacity:.75}
+  .js:not(.tier-c) .slab-web:hover ~ .risk-lift .cf{scale:.97}
+  .js:not(.tier-c) .risk-lift:hover .cf{scale:1.025}
+}
 .risk-lift.web-only{display:none}
 .drift{position:absolute;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--fp-surface);border:1px solid var(--fp-line-strong);color:var(--fp-text-2);opacity:0}
 .drift.d1{left:4%;top:12%}
@@ -432,9 +442,24 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
 @keyframes drift{0%{opacity:0;transform:none}25%{opacity:.9}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.8)}}
 .drift.d1{--dx:-60px;--dy:-40px}.drift.d2{--dx:70px;--dy:-20px}.drift.d3{--dx:-50px;--dy:50px}
 .js:not(.tier-c) .hv-3d .slab-phone,.js:not(.tier-c) .hv-3d .slab-web{animation:rise .9s var(--ease-out) both}
-.js:not(.tier-c) .risk-lift{animation:lift var(--t-enter) var(--ease-out) .9s both}
+/* The intro (tier A): a tap on the phone, or the cursor's click on the screen, lifts the card out of the
+   spot it sits in (--pop-x, --pop-y, --pop-s measured by the script; without them it simply rises) */
+.js:not(.tier-c) .risk-lift{animation:pop var(--t-enter) var(--ease-out) var(--pop-at,1.15s) both}
+.js:not(.tier-c) .hv-3d .run.fire-glow::after{animation-delay:2s}
+.js:not(.tier-c) .slab-web picture.alt{animation:near 1.5s var(--ease-in-out) .7s}
+.hv-cursor,.hv-touch,.hv-ripple{position:absolute;z-index:3;pointer-events:none;opacity:0}
+.hv-cursor{width:18px;transform-origin:0 0;animation:cursor 1.9s .6s both}
+.hv-cursor svg{display:block;width:18px;height:26px;overflow:visible}
+.hv-cursor path{fill:var(--fp-slate-950);stroke:var(--fp-slate-25);stroke-width:1.4;stroke-linejoin:round}
+.hv-touch{width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:color-mix(in srgb,var(--fp-slate-950) 16%,transparent);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--fp-slate-25) 85%,transparent);animation:touch .7s var(--ease-out) .95s both}
+.hv-ripple{width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;border:2px solid var(--fp-accent);animation:ripple .6s var(--ease-out) 1.08s forwards}
+.slab-web .hv-ripple{animation-delay:1.55s}
 @keyframes rise{from{opacity:0;translate:0 40px}to{opacity:1;translate:0 0}}
-@keyframes lift{from{opacity:0;translate:0 14px;scale:.96}to{opacity:1;translate:0 0;scale:1}}
+@keyframes pop{from{opacity:0;translate:var(--pop-x,0) var(--pop-y,14px) calc(-1 * var(--lift-z));scale:var(--pop-s,.96)}to{opacity:1;translate:0 0 0;scale:1}}
+@keyframes near{0%{opacity:0}45%{opacity:1}62%{opacity:1}100%{opacity:0}}
+@keyframes cursor{0%{opacity:0;translate:28cqw -20.6cqw}10%{opacity:1;translate:28cqw -20.6cqw;animation-timing-function:var(--ease-in-out)}47%{translate:0 0;scale:1;animation-timing-function:var(--ease-out)}52%{scale:.82}60%{scale:1}80%{opacity:1}100%{opacity:0;translate:0 0;scale:1}}
+@keyframes touch{0%{opacity:0;scale:1.3}20%{opacity:1;scale:1}65%{opacity:1;scale:1}100%{opacity:0;scale:.9}}
+@keyframes ripple{from{opacity:.9;scale:.35}to{opacity:0;scale:1.6}}
 .hero .ph-tag{text-align:center}
 @media (min-width:900px){
   .hero{padding:calc(var(--header-h) + 40px) 0 48px;min-height:min(100vh,980px)}
@@ -444,7 +469,8 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
   .hv-3d{height:460px}
   .slab-web{display:block;position:absolute;left:-6%;top:40px;width:118%;transform:rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform var(--t-reveal) var(--ease-out)}
   .slab-phone{position:absolute;right:-4%;bottom:0;width:32%;margin:0;transform:translateZ(90px) rotateX(calc(6deg + var(--rx))) rotateY(calc(-12deg + var(--ry)));transition:transform var(--t-reveal) var(--ease-out)}
-  .risk-lift{left:2%;top:190px;width:78%;transform:translateZ(140px) rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform var(--t-reveal) var(--ease-out)}
+  .risk-lift{left:2%;top:190px;width:78%;--lift-z:140px;transform:translateZ(var(--lift-z)) rotateX(calc(9deg + var(--rx))) rotateY(calc(-17deg + var(--ry))) rotateZ(1.5deg);transition:transform var(--t-reveal) var(--ease-out)}
+  .risk-lift.web-only{--pop-at:1.6s}
   .risk-lift.phone-only{display:none}
   .risk-lift.web-only{display:block}
   .hero .ph-tag{text-align:left;margin-top:24px}
@@ -1134,10 +1160,10 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </div>
     <figure class="hero-vis" data-anim>
       <div class="hv-3d" aria-hidden="true">
-        <div class="slab slab-web"><div class="cf cf-web" data-cap="C01" data-shot="backdrop" data-sil="dash"></div></div>
-        <div class="slab risk-lift web-only"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-shot="biggestRisk" data-sil="crop-risk" style="--ar:6/1"></div></div>
+        <div class="slab slab-web"><div class="cf cf-web" data-cap="C01" data-shot="backdrop" data-shot-alt="backdropNear" data-sil="dash"></div></div>
+        <div class="slab risk-lift web-only" data-from="17.85 56.78 46.81 12.48"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-shot="biggestRisk" data-sil="crop-risk" style="--ar:6/1"></div></div>
         <div class="slab slab-phone"><div class="cf cf-phone" data-cap="C02" data-sil="pdash"></div></div>
-        <div class="slab risk-lift phone-only"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-shot="biggestRisk" data-sil="crop-risk" style="--ar:6/1"></div></div>
+        <div class="slab risk-lift phone-only" data-from="6 29 88 10"><div class="cf cf-crop fire-glow-host" data-cap="C01" data-shot="biggestRisk" data-sil="crop-risk" style="--ar:6/1"></div></div>
         <span class="drift d1"><svg class="ic"><use href="#i-msg"/></svg></span>
         <span class="drift d2"><svg class="ic"><use href="#i-sheet"/></svg></span>
         <span class="drift d3"><svg class="ic"><use href="#i-phone"/></svg></span>
@@ -1957,7 +1983,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   };
   // Processed crops of the reviewed captures (sizes, widths, placeholder, focus ring). Do not edit by hand.
   /* shots:start (generated by tools/process_captures.py from assets-src/captures/crops.json) */
-  const SHOTS = {"C01":{"biggestRisk":{"w":2022,"h":337,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADwAgCdASoYAAQAPu1iqU2ppaOiMAgBMB2JaQDLLDBsAAD+7/M0DUpSrMa82dRaIvAAAA=="},"backdrop":{"w":4320,"h":2700,"ws":[320,480,640,800,960,1280],"lq":"data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADwAwCdASoYAA8APu1oqk6ppiQiMAgBMB2JZSzAAS3+2/wK0C44BacAAP7v9bKGQYRbol7YNzIFWFUqsVHTys3RcR82N4//4lTeLpQRsJDWC3BlO5uBX4ggAAA="}},"C12":{"difference":{"w":3523,"h":1101,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACQAwCdASoYAAgAPu1kqk4ppaQiMAgBMB2JZQDG9CHUoXZq3DkAAP7qgy3pxRzUOBqa0AUywy1D9Skl0y5GvhElW5JjBdLAAAA=","focus":[75.05,40.33,23.9,14.62,0.681]},"differenceTight":{"w":1744,"h":872,"ws":[320,480,640,800,960,1280,1600,1744],"lq":"data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAQAwCdASoYAAwALrV2u12jqampiYC0SzgABc6MQlB454AA/vYFSP5Uv9UC3bzRp6WSqBSZFTVFZnNXaz3oYXElhgAAAA==","focus":[49.14,49.2,48.28,18.46,1.376]}},"C13":{"overNorm":{"w":1525,"h":508,"ws":[320,480,640,800,960,1280,1525],"lq":"data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAgCdASoYAAgAPu1iqU2ppaOiMAgBMB2JaQDLLC0kAAD+8BYIqeGTken8zxyioSKncAGfbNfHyeyAAAA="}},"C14":{"countdown":{"w":2415,"h":805,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAwCdASoYAAgAPu1iqU2ppaOiMAgBMB2JYwC/c/7AwNPkG3WMAAD+5yyOhVKJMgt+6hb7a2sTSqhIIaztQ0AA"},"warning":{"w":600,"h":300,"ws":[320,480],"lq":"data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACQAwCdASoYAAwAPu1iqU2ppaQiMAgBMB2JZwAAW+sa4+3aevIAAP7xxL6UgZLI0Z3w8YKsAAA="}},"C09":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwBACdASoYAA8APu1krU2ppaSiMAgBMB2JaACsAGtt05PfvNRhxTHddhAA/vwktEx8A1y/tLOZzox/RVc/AfC1r9r9UnxfeRbLImD0WMwWKMaIbGkA63cFnAb82CAA"},"hours":{"w":1100,"h":550,"ws":[320,480],"lq":"data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAwCdASoYAAwAPu1iqU2ppaOiMAgBMB2JZwDG9CGgXBKgAP7wR/9Vsas9eNwUF015i/EW3DnOqfTPBWScTr4zjAA="}},"C10":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABQAwCdASoYAA8APu1mq04ppaQiMAgBMB2JaQAAetHPk4wkAAD+8IBqgS+AZH27nGug7te4GHJ9DjcQi6sNZ+tcwi3mBNToQAA="}}};
+  const SHOTS = {"C01":{"biggestRisk":{"w":2022,"h":337,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADwAgCdASoYAAQAPu1iqU2ppaOiMAgBMB2JaQDLLDBsAAD+7/M0DUpSrMa82dRaIvAAAA=="},"backdrop":{"w":4320,"h":2700,"ws":[320,480,640,800,960,1280],"lq":"data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADwAwCdASoYAA8APu1oqk6ppiQiMAgBMB2JZSzAAS3+2/wK0C44BacAAP7v9bKGQYRbol7YNzIFWFUqsVHTys3RcR82N4//4lTeLpQRsJDWC3BlO5uBX4ggAAA="},"backdropNear":{"w":4320,"h":2700,"ws":[320,480,640,800,960,1280],"lq":"data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAwCdASoYAA8APu1iqk2ppaQiMAgBMB2JZQAu/8B5H1bkP9kVtgaMAP7vz2Mg06YE3Z6QjBEehGEETq/2+A1iEDOdErZPTIomKqYyeKOTHgc12AEgAAAA"}},"C12":{"difference":{"w":3523,"h":1101,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACQAwCdASoYAAgAPu1kqk4ppaQiMAgBMB2JZQDG9CHUoXZq3DkAAP7qgy3pxRzUOBqa0AUywy1D9Skl0y5GvhElW5JjBdLAAAA=","focus":[75.05,40.33,23.9,14.62,0.681]},"differenceTight":{"w":1744,"h":872,"ws":[320,480,640,800,960,1280,1600,1744],"lq":"data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAQAwCdASoYAAwALrV2u12jqampiYC0SzgABc6MQlB454AA/vYFSP5Uv9UC3bzRp6WSqBSZFTVFZnNXaz3oYXElhgAAAA==","focus":[49.14,49.2,48.28,18.46,1.376]}},"C13":{"overNorm":{"w":1525,"h":508,"ws":[320,480,640,800,960,1280,1525],"lq":"data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAgCdASoYAAgAPu1iqU2ppaOiMAgBMB2JaQDLLC0kAAD+8BYIqeGTken8zxyioSKncAGfbNfHyeyAAAA="}},"C14":{"countdown":{"w":2415,"h":805,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAwCdASoYAAgAPu1iqU2ppaOiMAgBMB2JYwC/c/7AwNPkG3WMAAD+5yyOhVKJMgt+6hb7a2sTSqhIIaztQ0AA"},"warning":{"w":600,"h":300,"ws":[320,480],"lq":"data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACQAwCdASoYAAwAPu1iqU2ppaQiMAgBMB2JZwAAW+sa4+3aevIAAP7xxL6UgZLI0Z3w8YKsAAA="}},"C09":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwBACdASoYAA8APu1krU2ppaSiMAgBMB2JaACsAGtt05PfvNRhxTHddhAA/vwktEx8A1y/tLOZzox/RVc/AfC1r9r9UnxfeRbLImD0WMwWKMaIbGkA63cFnAb82CAA"},"hours":{"w":1100,"h":550,"ws":[320,480],"lq":"data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAwCdASoYAAwAPu1iqU2ppaOiMAgBMB2JZwDG9CGgXBKgAP7wR/9Vsas9eNwUF015i/EW3DnOqfTPBWScTr4zjAA="}},"C10":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABQAwCdASoYAA8APu1mq04ppaQiMAgBMB2JaQAAetHPk4wkAAD+8IBqgS+AZH27nGug7te4GHJ9DjcQi6sNZ+tcwi3mBNToQAA="}}};
   /* shots:end */
 
   /* ---------- View flags ---------- */
@@ -2078,7 +2104,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   };
 
   // A real capture: a <picture> of its processed crop (AVIF, then WebP), sized by the frame it sits in.
-  // data-shot names the crop; data-shot-narrow an art-directed closer crop for narrow screens.
+  // data-shot names the crop; data-shot-narrow an art-directed closer crop for narrow screens;
+  // data-shot-alt a second state of the same frame, stacked and hidden until CSS shows it.
   const NARROW = "(max-width: 699px)";
   const shotFile = (id, name, w, ext) => `media/${id.toLowerCase()}-${name.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}-${w}.${ext}`;
   const srcset = (id, name, s, ext) => s.ws.map((w) => `${shotFile(id, name, w, ext)} ${w}w`).join(", ");
@@ -2086,14 +2113,16 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     ? `<span class="focus ${cls}" style="left:${s.focus[0]}%;top:${s.focus[1]}%;width:${s.focus[2]}%;height:${s.focus[3]}%;--fr:${s.focus[4]}cqw"></span>`
     : "";
   function shotHTML(el, id, cap, wide, narrow) {
-    const name = el.dataset.shot, nName = el.dataset.shotNarrow;
+    const name = el.dataset.shot, nName = el.dataset.shotNarrow, aName = el.dataset.shotAlt;
     const sizes = `auto, ${Math.round(el.clientWidth) || 360}px`;
     const sources = (n, s, media) => ["avif", "webp"]
       .map((t) => `<source type="image/${t}"${media ? ` media="${media}"` : ""} srcset="${srcset(id, n, s, t)}" sizes="${sizes}">`).join("");
+    const img = (n, s, alt, more) => `<img src="${shotFile(id, n, s.ws[Math.min(3, s.ws.length - 1)], "webp")}" srcset="${srcset(id, n, s, "webp")}"`
+      + ` sizes="${sizes}" width="${s.w}" height="${s.h}" alt="${alt}" loading="lazy" decoding="async"${more || ""}>`;
     const alt = el.tagName === "FIGURE" ? (cap.alt && cap.alt[name]) || cap.tag : "";
-    const fallback = shotFile(id, name, wide.ws[Math.min(3, wide.ws.length - 1)], "webp");
-    return `<picture>${narrow ? sources(nName, narrow, NARROW) : ""}${sources(name, wide)}`
-      + `<img src="${fallback}" srcset="${srcset(id, name, wide, "webp")}" sizes="${sizes}" width="${wide.w}" height="${wide.h}" alt="${alt}" loading="lazy" decoding="async"></picture>`
+    const second = aName && SHOTS[id][aName];
+    return `<picture>${narrow ? sources(nName, narrow, NARROW) : ""}${sources(name, wide)}${img(name, wide, alt)}</picture>`
+      + (second ? `<picture class="alt">${sources(aName, second)}${img(aName, second, "", ' fetchpriority="low"')}</picture>` : "")
       + (narrow ? ring(wide, "f-wide") + ring(narrow, "f-narrow") : ring(wide, ""));
   }
 
@@ -2382,6 +2411,38 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       hv.style.setProperty("--rx", (-dy * 6).toFixed(2) + "deg");
     });
     hero.addEventListener("pointerleave", () => { hv.style.setProperty("--ry", "0deg"); hv.style.setProperty("--rx", "0deg"); });
+  }
+
+  /* ---------- Hero intro: a click on the screen (a tap on the phone) lifts the biggest risk out of it (tier A only) ---------- */
+  // data-from is where the card sits on the screen behind it (% of that screen), so it rises from that spot.
+  const lifted = $$(".risk-lift").find((el) => el.offsetParent);
+  if (!tierC && lifted) {
+    const web = lifted.classList.contains("web-only"), host = $(web ? ".slab-web .scr" : ".slab-phone .scr");
+    const [x, y, w, h] = lifted.dataset.from.split(" ").map(Number);
+    // Measure both at rest: seek their entrance animations to the end, then put them back.
+    const anims = [lifted, host.closest(".slab")].flatMap((el) => el.getAnimations());
+    const at = anims.map((a) => a.currentTime);
+    anims.forEach((a) => { a.currentTime = a.effect.getComputedTiming().endTime; });
+    const probe = document.createElement("i");
+    probe.style.cssText = `position:absolute;left:${x}%;top:${y}%;width:${w}%;height:${h}%`;
+    host.append(probe);
+    const s = probe.getBoundingClientRect(), c = lifted.getBoundingClientRect(), o = hv.getBoundingClientRect();
+    probe.remove();
+    anims.forEach((a, i) => { a.currentTime = at[i]; });
+    // At rest the card floats --lift-z in front of the screen, magnified about the perspective origin;
+    // the pop starts it back on the screen's plane, at the spot's centre and size.
+    const z = parseFloat(getComputedStyle(lifted).getPropertyValue("--lift-z")) || 0, d = parseFloat(getComputedStyle(hv).perspective);
+    const k = d > z ? d / (d - z) : 1;
+    const ox = o.left + o.width / 2, oy = o.top + o.height / 2;
+    const lx = ox + (c.left + c.width / 2 - ox) / k, ly = oy + (c.top + c.height / 2 - oy) / k;
+    lifted.style.setProperty("--pop-x", (s.left + s.width / 2 - lx).toFixed(1) + "px");
+    lifted.style.setProperty("--pop-y", (s.top + s.height / 2 - ly).toFixed(1) + "px");
+    lifted.style.setProperty("--pop-s", (s.width / (c.width / k)).toFixed(3));
+    const pos = `left:${(x + w * 0.3).toFixed(2)}%;top:${(y + h / 2).toFixed(2)}%`;
+    host.insertAdjacentHTML("beforeend", (web
+      ? `<span class="hv-cursor" style="${pos}"><svg viewBox="0 0 14 20"><path d="M1 1v15.6l4.1-3.9 2.7 6.2 2.7-1.2-2.6-6.1h5.7z"/></svg></span>`
+      : `<span class="hv-touch" style="${pos}"></span>`) + `<span class="hv-ripple" style="${pos}"></span>`);
+    host.addEventListener("animationend", (e) => { if (e.target.matches(".hv-cursor, .hv-touch, .hv-ripple")) e.target.remove(); });
   }
 
   /* ---------- Tabs (roles and calculator): arrows, Home, End ---------- */
