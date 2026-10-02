@@ -2474,13 +2474,16 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     void zl.offsetWidth;
     zl.style.transition = "";
     if (!w.width || !s.width) return;
-    const W = w.width, H = w.height, sx = s.left - w.left, sy = s.top - w.top;
+    // A phone screen's rounded corners would show the phone behind them: the view keeps clear of them.
+    const rad = parseFloat(getComputedStyle(scr.closest(".scr-box")).borderTopLeftRadius) || 0;
+    const W = w.width, H = w.height, sx = s.left - w.left, sy = s.top - w.top + rad, sh = s.height - 2 * rad;
     const cx = r.left - w.left + r.width / 2, cy = r.top - w.top + r.height / 2;
-    const z = Math.min(W / ((s.width * f.dataset.zoomW) / 100), (W * 0.97) / r.width, (H * 0.85) / r.height);
-    const fit = (t, lo, hi) => (lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, t)));
+    // 2 px of overscan, so a screen zoomed to the window's full width never leaves a sub-pixel sliver of its frame.
+    const z = Math.min((W + 2) / ((s.width * f.dataset.zoomW) / 100), (W * 0.97) / r.width, (H * 0.85) / r.height);
+    const fit = (t, lo, hi) => (lo > hi - 4 ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, t)));
     f.style.setProperty("--z", z.toFixed(3));
     f.style.setProperty("--zx", fit(W / 2 - z * cx, W - z * (sx + s.width), -z * sx).toFixed(1) + "px");
-    f.style.setProperty("--zy", fit(H / 2 - z * cy, H - z * (sy + s.height), -z * sy).toFixed(1) + "px");
+    f.style.setProperty("--zy", fit(H / 2 - z * cy, H - z * (sy + sh), -z * sy).toFixed(1) + "px");
     f.style.setProperty("--cx", ((cx / W) * 100).toFixed(2) + "%");
     f.style.setProperty("--cy", ((cy / H) * 100).toFixed(2) + "%");
   }
