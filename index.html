@@ -248,6 +248,9 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
 /* Placeholder tag: where a proof chip will sit once the capture is real (05 §6) */
 .ph-tag{display:block;margin-top:10px;font:500 13px/1.4 var(--f-text);color:var(--tag)}
 .ph-tag::before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:2px;background:var(--fp-fire);vertical-align:1px}
+/* Under a real capture, the proof chip in the same place says what it is (05 §6) */
+.proof-chip{display:block;margin-top:10px;font:500 13px/1.4 var(--f-text);color:var(--fp-text-2);text-wrap:balance}
+.proof-chip::before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:var(--fp-accent);vertical-align:1px}
 
 /* ============================================================
    Logo: one set of paths, recoloured by the theme (reversed in dark mode)
@@ -283,6 +286,21 @@ h1,h2,h3{margin:0;font-family:var(--f-display);color:var(--fp-heading);letter-sp
 .dev-crop .scr-box{position:relative;aspect-ratio:var(--ar,2/1)}
 .scr{position:absolute;inset:0;overflow:hidden;background:var(--fp-screen);container-type:inline-size}
 .scr img{width:100%;height:100%;object-fit:cover;object-position:top}
+/* A real capture fades in over a blurred placeholder of itself. A focus crop rings the one region
+   that matters and dims the rest (05 §6); the crop's own aspect is the frame's, so nothing is cut. */
+.scr picture{display:block;width:100%;height:100%}
+.scr.shot{background:var(--lq) center/cover no-repeat}
+.scr.shot img{opacity:0;transition:opacity var(--t-ui) var(--ease-out)}
+.scr.shot.loaded img{opacity:1}
+.focus{position:absolute;border-radius:var(--fr);box-shadow:0 0 0 2px var(--fp-fire),0 0 0 7px color-mix(in srgb,var(--fp-fire) 22%,transparent),0 0 0 100vmax color-mix(in srgb,var(--fp-screen) 22%,transparent);pointer-events:none}
+.js:not(.tier-c) .focus{opacity:0;transition:opacity var(--t-reveal) var(--ease-out) var(--t-ui)}
+.js:not(.tier-c) .scr.loaded .focus{opacity:1}
+.f-narrow{display:none}
+@media (max-width:699px){
+  .scr.shot.narrow{background-image:var(--lqn)}
+  .f-wide{display:none}
+  .f-narrow{display:block}
+}
 .s{position:absolute;display:block;background:var(--fp-slate-50);border:1px solid var(--fp-slate-200);border-radius:.7cqw}
 .s.side{border-width:0 1px 0 0;border-radius:0}
 .s.topbar{border-width:0 0 1px;border-radius:0;background:var(--fp-screen)}
@@ -554,12 +572,14 @@ html:not(.stages) .s4-frame .cv{max-width:760px}
 .flow li .st{margin-left:4px;opacity:.75}
 .v2 .cf{width:min(100%,360px)}
 @media (max-width:599px){
+  /* the planes sit far enough apart that their labels never touch; the records travel just past the second one */
   .plane{width:40px}
   .plane.p1{left:4%}
-  .plane.p2{left:calc(4% + 50px)}
+  .plane.p2{left:calc(4% + 66px)}
+  .plane span{font-size:12px;top:-22px}
   .flow li{font-size:11.5px;padding:6px 8px}
   .flow li:not(.fire) .st{display:none}
-  .js:not(.tier-c) .play .flow li,.tier-c .flow li,.no-js .flow li{transform:translateX(96px)}
+  .js:not(.tier-c) .play .flow li,.tier-c .flow li,.no-js .flow li{transform:translateX(min(112px,calc(100vw - 266px)))}
 }
 /* beat 3 */
 .v3{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:16px;width:100%;max-width:560px;align-items:center}
@@ -706,6 +726,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .js:not(.tier-c) .mm .fill{transform:scaleX(0)}
 .js:not(.tier-c) .play .mm .fill{transform:none}
 .tile .cf-crop{width:100%}
+/* Tile 1 shows the whole report card from 700 px; narrower, the frame turns 2:1 for a closer crop of the difference */
+@media (max-width:699px){.tile.wide .cf-crop{--ar:2/1!important}}
 .approve{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;justify-items:center}
 .approve .cf{width:100%;max-width:120px}
 .approve .ic{color:var(--fp-text-2)}
@@ -1230,7 +1252,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
                   <li class="rec">Invoice from order <span class="st">· checked</span></li>
                 </ul>
               </div>
-              <figure class="cf cf-crop" data-cap="C12" data-sil="crop-diff" data-crop="the difference" style="--ar:2/1"></figure>
+              <figure class="cf cf-crop" data-cap="C12" data-shot="differenceTight" data-sil="crop-diff" data-crop="the difference" style="--ar:2/1"></figure>
             </div>
           </div>
           <div class="beat-text">
@@ -1349,8 +1371,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </div>
   </div>
   <div class="wrap s7-cards" id="s7-cards">
-    <article class="fcard"><figure class="cf cf-web" data-cap="C09" data-sil="bars"></figure><h3 class="h3">Legal hours where you assign</h3><p>Each driver's remaining driving time, next to the load.</p></article>
-    <article class="fcard"><figure class="cf cf-web" data-cap="C10" data-sil="table"></figure><h3 class="h3">Road cards that fill themselves</h3><p>Generated from the orders you already have.</p></article>
+    <article class="fcard"><figure class="cf cf-web" data-cap="C09" data-shot="screen" data-sil="bars"></figure><h3 class="h3">Legal hours where you assign</h3><p>Each driver's remaining driving time, next to the load.</p></article>
+    <article class="fcard"><figure class="cf cf-web" data-cap="C10" data-shot="screen" data-sil="table"></figure><h3 class="h3">Road cards that fill themselves</h3><p>Generated from the orders you already have.</p></article>
     <article class="fcard"><figure class="cf cf-phone" data-cap="C11" data-sil="portal"></figure><h3 class="h3">Clients follow their own loads</h3><p>Give access once. They see where their load is.</p></article>
   </div>
 </section>
@@ -1375,15 +1397,15 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         </div>
         <h3 class="h3">The tachograph checks the app</h3>
         <p>A gap becomes a report, not a surprise.</p>
-        <figure class="cf cf-crop" data-cap="C12" data-sil="crop-diff" data-crop="the difference" style="--ar:3/1"></figure>
+        <figure class="cf cf-crop" data-cap="C12" data-shot="difference" data-shot-narrow="differenceTight" data-sil="crop-diff" data-crop="the difference" style="--ar:16/5"></figure>
       </article>
       <article class="tile" data-play>
         <div class="mm" aria-hidden="true">
-          <svg viewBox="0 0 300 120"><path class="norm" d="M20 64 H280"/><text class="lbl" x="226" y="56">Norm</text><path class="cons draw" pathLength="1" d="M20 96 L70 88 L120 84 L170 74 L210 60 L250 44 L280 38"/><circle class="cross" cx="199" cy="64" r="6"/></svg>
+          <svg viewBox="0 0 300 120"><path class="norm" d="M20 64 H280"/><text class="lbl" x="20" y="54">Norm</text><path class="cons draw" pathLength="1" d="M20 96 L70 88 L120 84 L170 74 L210 60 L250 44 L280 38"/><circle class="cross" cx="199" cy="64" r="6"/></svg>
         </div>
         <h3 class="h3">Fuel against each truck's norm</h3>
         <p>A refuelling with no price is flagged.</p>
-        <figure class="cf cf-crop" data-cap="C13" data-sil="crop-rows" data-crop="over norm" style="--ar:3/1"></figure>
+        <figure class="cf cf-crop" data-cap="C13" data-shot="overNorm" data-sil="crop-rows" data-crop="over norm" style="--ar:3/1"></figure>
       </article>
       <article class="tile" data-play>
         <div class="mm" aria-hidden="true">
@@ -1396,7 +1418,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         </div>
         <h3 class="h3">Every expiry, counted down</h3>
         <p>Warning at 30 days. Alert at 7.</p>
-        <figure class="cf cf-crop" data-cap="C14" data-sil="crop-counters" data-crop="counters" style="--ar:3/1"></figure>
+        <figure class="cf cf-crop" data-cap="C14" data-shot="countdown" data-sil="crop-counters" data-crop="counters" style="--ar:3/1"></figure>
       </article>
       <article class="tile" data-play>
         <div class="mm" aria-hidden="true">
@@ -1506,8 +1528,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span><span><span class="sr-only">Today: </span>One order, typed three times</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C04" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C04 · lane filled</span></div><span><span class="sr-only">With FleetPartner: </span>Created once, read by all</span></div></li>
       <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-sheet"/></svg></span><span><span class="sr-only">Today: </span>Excel at night</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C05" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C05 · the order</span></div><span><span class="sr-only">With FleetPartner: </span>Recorded during the day</span></div></li>
       <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></span><span><span class="sr-only">Today: </span>The call about the fire</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C01" data-sil="crop-risk" style="--ar:2/1"></div><span class="ph-tag">C01 · top</span></div><span><span class="sr-only">With FleetPartner: </span>Top of your screen</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span><span class="sr-only">Today: </span>Who can still drive? Call round</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C09" data-sil="crop-bars" style="--ar:2/1"></div><span class="ph-tag">C09 · hours next to load</span></div><span><span class="sr-only">With FleetPartner: </span>Hours next to the load</span></div></li>
-      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg></span><span><span class="sr-only">Today: </span>Dates in your head</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C14" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C14 · OC row</span></div><span><span class="sr-only">With FleetPartner: </span>Warned 30 days ahead</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span><span class="sr-only">Today: </span>Who can still drive? Call round</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C09" data-shot="hours" data-sil="crop-bars" style="--ar:2/1"></div><span class="ph-tag">C09 · hours next to load</span></div><span><span class="sr-only">With FleetPartner: </span>Hours next to the load</span></div></li>
+      <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg></span><span><span class="sr-only">Today: </span>Dates in your head</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C14" data-shot="warning" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C14 · OC row</span></div><span><span class="sr-only">With FleetPartner: </span>Warned 30 days ahead</span></div></li>
       <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg></span><span><span class="sr-only">Today: </span>Monthly news of who hasn't paid</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C15" data-sil="crop-limit" style="--ar:2/1"></div><span class="ph-tag">C15 · over the limit</span></div><span><span class="sr-only">With FleetPartner: </span>Today, against their limit</span></div></li>
       <li class="ba-row" data-reveal><div class="ba-today"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-note"/></svg></span><span><span class="sr-only">Today: </span>The CMR, somewhere in WhatsApp</span></div><svg class="ic ba-arrow" aria-hidden="true"><use href="#i-arrow"/></svg><div class="ba-with"><div><div class="cf cf-crop" data-cap="C07" data-sil="crop-rows" style="--ar:2/1"></div><span class="ph-tag">C07 · CMR attached</span></div><span><span class="sr-only">With FleetPartner: </span>Attached to order and invoice</span></div></li>
     </ul>
@@ -1914,12 +1936,18 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     C06: { tag: "Driver confirms unloading", proof: "Real screen · demo company · Android app · driver" },
     C07: { tag: "Invoice from the order", proof: "Real screen · demo company · web panel · the boss" },
     C08: { tag: "Order paid and closed", proof: "Real screen · demo company · web panel · the boss" },
-    C09: { tag: "Legal hours while assigning", proof: "Real screen · demo company · web panel · the boss" },
-    C10: { tag: "Road cards from orders", proof: "Real screen · demo company · web panel · the boss" },
+    C09: { tag: "Legal hours while assigning", proof: "Real screen · demo company · web panel · the boss",
+      alt: { screen: "Driver driving hours in the web panel: each driver's remaining driving time, with Assign order beside it." } },
+    C10: { tag: "Road cards from orders", proof: "Real screen · demo company · web panel · the boss",
+      alt: { screen: "Road cards in the web panel: one card per driver and vehicle, with its period and starting kilometres." } },
     C11: { tag: "What the shipper sees", proof: "Real screen · demo company · client portal · client" },
-    C12: { tag: "Tachograph against the app", proof: "Real screen · demo company · web panel · the boss" },
-    C13: { tag: "Fuel against the norm", proof: "Real screen · demo company · web panel · the boss" },
-    C14: { tag: "Every expiry, counted down", proof: "Real screen · demo company · web panel · the boss" },
+    C12: { tag: "Tachograph against the app", proof: "Real screen · demo company · web panel · the boss",
+      alt: { difference: "A tachograph report marked as a discrepancy: the driver log is 9% below the tachograph.",
+        differenceTight: "A tachograph report marked as a discrepancy: the driver log is 9% below the tachograph." } },
+    C13: { tag: "Fuel against the norm", proof: "Real screen · demo company · web panel · the boss",
+      alt: { overNorm: "A fuel anomaly: one truck at 34.5 L/100 km, 21% above its own norm." } },
+    C14: { tag: "Every expiry, counted down", proof: "Real screen · demo company · web panel · the boss",
+      alt: { countdown: "Expiry dates: an OC policy due in 3 days in red, the next one in 16 days in amber." } },
     C15: { tag: "A client over its limit", proof: "Real screen · demo company · web panel · the boss" },
     C16: { tag: "Mechanic asks for approval", proof: "Real screen · demo company · Android app · mechanic" },
     C17: { tag: "The boss approves the repair", proof: "Real screen · demo company · Android app · the boss" },
@@ -1927,6 +1955,10 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     C21: { tag: "Office: not invoiced, not paid", proof: "Real screen · demo company · Android app · office" },
     C23: { tag: "A driver's whole day", proof: "Every step from the real app" }
   };
+  // Processed crops of the reviewed captures (sizes, widths, placeholder, focus ring). Do not edit by hand.
+  /* shots:start (generated by tools/process_captures.py from assets-src/captures/crops.json) */
+  const SHOTS = {"C12":{"difference":{"w":3523,"h":1101,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACQAwCdASoYAAgAPu1kqk4ppaQiMAgBMB2JZQDG9CHUoXZq3DkAAP7qgy3pxRzUOBqa0AUywy1D9Skl0y5GvhElW5JjBdLAAAA=","focus":[75.05,40.33,23.9,14.62,0.681]},"differenceTight":{"w":1744,"h":872,"ws":[320,480,640,800,960,1280,1600,1744],"lq":"data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAQAwCdASoYAAwALrV2u12jqampiYC0SzgABc6MQlB454AA/vYFSP5Uv9UC3bzRp6WSqBSZFTVFZnNXaz3oYXElhgAAAA==","focus":[49.14,49.2,48.28,18.46,1.376]}},"C13":{"overNorm":{"w":1525,"h":508,"ws":[320,480,640,800,960,1280,1525],"lq":"data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAgCdASoYAAgAPu1iqU2ppaOiMAgBMB2JaQDLLC0kAAD+8BYIqeGTken8zxyioSKncAGfbNfHyeyAAAA="}},"C14":{"countdown":{"w":2415,"h":805,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAwCdASoYAAgAPu1iqU2ppaOiMAgBMB2JYwC/c/7AwNPkG3WMAAD+5yyOhVKJMgt+6hb7a2sTSqhIIaztQ0AA"},"warning":{"w":600,"h":300,"ws":[320,480],"lq":"data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACQAwCdASoYAAwAPu1iqU2ppaQiMAgBMB2JZwAAW+sa4+3aevIAAP7xxL6UgZLI0Z3w8YKsAAA="}},"C09":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwBACdASoYAA8APu1krU2ppaSiMAgBMB2JaACsAGtt05PfvNRhxTHddhAA/vwktEx8A1y/tLOZzox/RVc/AfC1r9r9UnxfeRbLImD0WMwWKMaIbGkA63cFnAb82CAA"},"hours":{"w":1100,"h":550,"ws":[320,480],"lq":"data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAwCdASoYAAwAPu1iqU2ppaOiMAgBMB2JZwDG9CGgXBKgAP7wR/9Vsas9eNwUF015i/EW3DnOqfTPBWScTr4zjAA="}},"C10":{"screen":{"w":3600,"h":2250,"ws":[320,480,640,800,960,1280,1600,1920],"lq":"data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABQAwCdASoYAA8APu1mq04ppaQiMAgBMB2JaQAAetHPk4wkAAD+8IBqgS+AZH27nGug7te4GHJ9DjcQi6sNZ+tcwi3mBNToQAA="}}};
+  /* shots:end */
 
   /* ---------- View flags ---------- */
   if (params.get("view") === "launch") html.classList.add("is-launch");
@@ -2045,21 +2077,54 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     "crop-bars": () => [70, 55, 40, 22].map((w, i) => R(3, 10 + i * 22, 18, 10, "t") + R(26, 8 + i * 22, w, 14, "meter")).join("")
   };
 
+  // A real capture: a <picture> of its processed crop (AVIF, then WebP), sized by the frame it sits in.
+  // data-shot names the crop; data-shot-narrow an art-directed closer crop for narrow screens.
+  const NARROW = "(max-width: 699px)";
+  const shotFile = (id, name, w, ext) => `media/${id.toLowerCase()}-${name.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}-${w}.${ext}`;
+  const srcset = (id, name, s, ext) => s.ws.map((w) => `${shotFile(id, name, w, ext)} ${w}w`).join(", ");
+  const ring = (s, cls) => s.focus
+    ? `<span class="focus ${cls}" style="left:${s.focus[0]}%;top:${s.focus[1]}%;width:${s.focus[2]}%;height:${s.focus[3]}%;--fr:${s.focus[4]}cqw"></span>`
+    : "";
+  function shotHTML(el, id, cap, wide, narrow) {
+    const name = el.dataset.shot, nName = el.dataset.shotNarrow;
+    const sizes = `auto, ${Math.round(el.clientWidth) || 360}px`;
+    const sources = (n, s, media) => ["avif", "webp"]
+      .map((t) => `<source type="image/${t}"${media ? ` media="${media}"` : ""} srcset="${srcset(id, n, s, t)}" sizes="${sizes}">`).join("");
+    const alt = el.tagName === "FIGURE" ? (cap.alt && cap.alt[name]) || cap.tag : "";
+    const fallback = shotFile(id, name, wide.ws[Math.min(3, wide.ws.length - 1)], "webp");
+    return `<picture>${narrow ? sources(nName, narrow, NARROW) : ""}${sources(name, wide)}`
+      + `<img src="${fallback}" srcset="${srcset(id, name, wide, "webp")}" sizes="${sizes}" width="${wide.w}" height="${wide.h}" alt="${alt}" loading="lazy" decoding="async"></picture>`
+      + (narrow ? ring(wide, "f-wide") + ring(narrow, "f-narrow") : ring(wide, ""));
+  }
+
   function renderFrame(el) {
     const id = el.dataset.cap;
     const cap = CAPTURES[id] || { tag: id };
     const kind = el.classList.contains("cf-phone") ? "phone" : el.classList.contains("cf-crop") ? "crop" : "web";
+    const wide = el.dataset.shot && SHOTS[id] && SHOTS[id][el.dataset.shot];
+    const narrow = wide && el.dataset.shotNarrow && SHOTS[id][el.dataset.shotNarrow];
     const sil = SIL[el.dataset.sil] ? SIL[el.dataset.sil]() : "";
-    const inner = cap.src
-      ? `<img src="${cap.src}" alt="${cap.alt || cap.tag}" loading="lazy" decoding="async">`
-      : sil + ("rec" in el.dataset ? '<span class="shim"></span>' : "");
+    const inner = wide ? shotHTML(el, id, cap, wide, narrow) : sil + ("rec" in el.dataset ? '<span class="shim"></span>' : "");
+    const scr = wide
+      ? `<div class="scr shot${narrow ? " narrow" : ""}" style="--lq:url('${wide.lq}')${narrow ? `;--lqn:url('${narrow.lq}')` : ""}">`
+      : '<div class="scr">';
     const chrome = kind === "web" ? '<div class="bar"><i></i><i></i><i></i></div>' : kind === "phone" ? '<span class="cam"></span>' : "";
-    let out = `<div class="dev dev-${kind}" aria-hidden="true">${chrome}<div class="scr-box"><div class="scr">${inner}</div></div></div>`;
+    // A real screen in a figure is content (its alt and proof chip); elsewhere the frame is decoration beside its text.
+    const hidden = wide && el.tagName === "FIGURE" ? "" : ' aria-hidden="true"';
+    let out = `<div class="dev dev-${kind}"${hidden}>${chrome}<div class="scr-box">${scr}${inner}</div></div></div>`;
     if (el.tagName === "FIGURE") {
-      const label = cap.src ? cap.proof : `Placeholder · ${id} · ${el.dataset.crop || cap.tag}`;
-      out += `<figcaption class="ph-tag">${label}</figcaption>`;
+      // A no-break space before each dot keeps a wrapped chip from starting its second line with one.
+      const label = (wide ? cap.proof : `Placeholder · ${id} · ${el.dataset.crop || cap.tag}`).replace(/ · /g, "\u00a0· ");
+      out += `<figcaption class="${wide ? "proof-chip" : "ph-tag"}">${label}</figcaption>`;
     }
     el.innerHTML = out;
+    if (!wide) return;
+    // The before-and-after rows carry a placeholder tag beside the frame; a real screen needs none.
+    const tag = el.nextElementSibling;
+    if (tag && tag.classList.contains("ph-tag")) tag.remove();
+    const img = el.querySelector("img"), box = img.closest(".scr");
+    const shown = () => box.classList.add("loaded");
+    if (img.complete && img.naturalWidth) shown(); else img.addEventListener("load", shown, { once: true });
   }
   $$(".cf[data-cap]").forEach(renderFrame);
   // The biggest-risk crops carry the fire (on the frame, outside the screen's clipping).
