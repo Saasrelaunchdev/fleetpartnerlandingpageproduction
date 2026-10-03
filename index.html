@@ -419,9 +419,8 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar){
 .kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--fp-accent);box-shadow:0 0 12px var(--fp-accent)}
 .kicker:empty{display:none}
 .hero .display{font-size:clamp(42px,5.4vw,88px);font-stretch:112%}
-.cta-row{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:flex-start;margin-top:8px}
-.cta-main{display:grid;gap:10px}
-.cta-main .btn{justify-self:start}
+.cta-row{display:grid;gap:10px;justify-items:start;margin-top:8px}
+.cta-btns{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center}
 .under{color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .hero-links{font-size:15px;color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .hero-vis{position:relative}
@@ -1284,11 +1283,11 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <h1 id="hero-h" class="display">The TMS built for carriers.</h1>
       <p class="lead">For fleets of 10-50 trucks. No phoning around: problems come to you, biggest first.</p>
       <div class="cta-row">
-        <div class="cta-main">
+        <div class="cta-btns">
           <a class="btn btn-primary" data-cta="try" href="#form">Try for free</a>
-          <p class="label under">A demo of about 20 minutes, then 30 days free.</p>
+          <a class="btn btn-line" href="https://fleetpartner.pro/login">Sign in</a>
         </div>
-        <a class="btn btn-line" href="https://fleetpartner.pro/login">Sign in</a>
+        <p class="label under">A demo of about 20 minutes, then 30 days free.</p>
       </div>
       <p class="hero-links">Call directly: <a href="tel:+48788804777">+48 788 804 777</a></p>
     </div>
