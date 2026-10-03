@@ -911,14 +911,36 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .cmp td.fp{background:color-mix(in srgb,var(--fp-accent) 12%,var(--fp-bg));font-weight:600;color:var(--fp-heading)}
 .cmp thead th.fp{color:var(--fp-accent-text)}
 .cmp tr.proof-row th,.cmp tr.proof-row td{font-weight:700}
+.cmp-hint{display:none}
+/* Phones and tablets: the same table, never restacked. The row labels stay put and the columns scroll sideways
+   where they do not fit; the fade and the hint show only while there is more to see (set by the script). */
 @media (max-width:899px){
-  .cmp thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  .cmp,.cmp tbody,.cmp tr,.cmp th,.cmp td{display:block}
-  .cmp tr{margin-bottom:12px;border-radius:16px;border:1px solid var(--fp-line);background:var(--fp-surface);overflow:hidden}
-  .cmp tbody th{padding:14px 16px 8px;border:0;font-size:17px}
-  .cmp td{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:8px 16px;border:0}
-  .cmp td::before{content:attr(data-col);font:600 12.5px/1.5 var(--f-text);color:var(--fp-text-2)}
-  .cmp td.fp{padding-bottom:14px}
+  .cmp-hint:not([hidden]){display:flex;align-items:center;justify-content:flex-end;gap:6px;margin:0 0 10px;font:600 13px/1.3 var(--f-text);color:var(--fp-text-2)}
+  .cmp-hint .ic{width:16px;height:16px;color:var(--fp-accent-text)}
+  .cmp-box{position:relative;border:1px solid var(--fp-line);border-radius:16px;overflow:hidden;background:var(--fp-bg)}
+  .cmp-box::after{content:"";position:absolute;top:0;right:0;bottom:0;width:40px;pointer-events:none;background:linear-gradient(to right,transparent,var(--fp-bg) 85%);opacity:0;transition:opacity .2s var(--ease-out)}
+  .cmp-box.more-right::after{opacity:1}
+  .cmp-scroll{overflow-x:auto;overscroll-behavior-x:contain}
+  .cmp-scroll:focus-visible{outline-offset:-3px;border-radius:15px}
+  @supports selector(:has(*)){
+    /* the ring goes round the whole box, so the pinned labels never cover it */
+    .cmp-scroll:focus-visible{outline:none}
+    .cmp-box:has(.cmp-scroll:focus-visible){outline:2px solid var(--focus);outline-offset:3px}
+  }
+  .cmp{min-width:560px;table-layout:fixed}
+  .cmp th,.cmp td{padding:12px 14px;font-size:14.5px;line-height:1.4}
+  .cmp thead th{font-size:13px}
+  .cmp thead th:first-child{width:128px}
+  .cmp th:first-child{position:sticky;left:0;z-index:1;background:var(--fp-surface);transition:box-shadow .2s var(--ease-out)}
+  .cmp-box.more-left .cmp th:first-child{box-shadow:8px 0 10px -8px color-mix(in srgb,var(--fp-shadow) 38%,transparent)}
+  .cmp tbody tr:last-child > *{border-bottom:0}
+}
+@media (max-width:359px){
+  .cmp th,.cmp td{padding:11px 12px}
+  .cmp thead th:first-child{width:112px}
+}
+@media (min-width:600px) and (max-width:899px){
+  .cmp thead th:first-child{width:180px}
 }
 @media (min-width:900px){
   .stacks{overflow:visible;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
@@ -1685,21 +1707,26 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       </div>
     </div>
 
+    <p class="cmp-hint" aria-hidden="true" hidden>Swipe to compare<svg class="ic"><use href="#i-arrow"/></svg></p>
+    <div class="cmp-box">
+    <div class="cmp-scroll">
     <table class="cmp">
-      <caption class="sr-only">Excel, phone and WhatsApp, separate tools, and FleetPartner, compared</caption>
+      <caption id="cmp-cap" class="sr-only">Excel, phone and WhatsApp, separate tools, and FleetPartner, compared</caption>
       <thead><tr><th scope="col"><span class="sr-only">Compared</span></th><th scope="col">Excel, phone, WhatsApp</th><th scope="col">Separate tools</th><th scope="col" class="fp">FleetPartner</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Your information</th><td data-col="Excel, phone">Six places</td><td data-col="Separate tools">Three or four systems</td><td class="fp" data-col="FleetPartner">One record</td></tr>
-        <tr><th scope="row">Who joins it</th><td data-col="Excel, phone">You</td><td data-col="Separate tools">You, or the office</td><td class="fp" data-col="FleetPartner">Nobody has to</td></tr>
-        <tr><th scope="row">Ranked for you</th><td data-col="Excel, phone">Nothing</td><td data-col="Separate tools">Each tool's own alerts</td><td class="fp" data-col="FleetPartner">The whole company, risk first</td></tr>
-        <tr><th scope="row">Hours when assigning</th><td data-col="Excel, phone">Call the driver</td><td data-col="Separate tools">A separate tool</td><td class="fp" data-col="FleetPartner">Next to the load</td></tr>
-        <tr><th scope="row">In the trucks</th><td data-col="Excel, phone">Nothing</td><td data-col="Separate tools">A device, sometimes a 2-year contract</td><td class="fp" data-col="FleetPartner">The phones they carry</td></tr>
-        <tr><th scope="row">Tachograph against records</th><td data-col="Excel, phone">No</td><td data-col="Separate tools">The bureau checks the files</td><td class="fp" data-col="FleetPartner">Every report compares</td></tr>
-        <tr><th scope="row">How you pay</th><td data-col="Excel, phone">Your evenings</td><td data-col="Separate tools">Per truck, per driver, per month</td><td class="fp" data-col="FleetPartner">Per truck, the whole system</td></tr>
-        <tr class="proof-row"><th scope="row">Engine and fuel data</th><td data-col="Excel, phone">No</td><td data-col="Separate tools">Yes, with hardware</td><td class="fp" data-col="FleetPartner">No. Keep your hardware</td></tr>
-        <tr class="proof-row"><th scope="row">Drivers' pay settled</th><td data-col="Excel, phone">No</td><td data-col="Separate tools">Yes, by the bureau</td><td class="fp" data-col="FleetPartner">Keep your bureau</td></tr>
+        <tr><th scope="row">Your information</th><td>Six places</td><td>Three or four systems</td><td class="fp">One record</td></tr>
+        <tr><th scope="row">Who joins it</th><td>You</td><td>You, or the office</td><td class="fp">Nobody has to</td></tr>
+        <tr><th scope="row">Ranked for you</th><td>Nothing</td><td>Each tool's own alerts</td><td class="fp">The whole company, risk first</td></tr>
+        <tr><th scope="row">Hours when assigning</th><td>Call the driver</td><td>A separate tool</td><td class="fp">Next to the load</td></tr>
+        <tr><th scope="row">In the trucks</th><td>Nothing</td><td>A device, sometimes a 2-year contract</td><td class="fp">The phones they carry</td></tr>
+        <tr><th scope="row">Tachograph against records</th><td>No</td><td>The bureau checks the files</td><td class="fp">Every report compares</td></tr>
+        <tr><th scope="row">How you pay</th><td>Your evenings</td><td>Per truck, per driver, per month</td><td class="fp">Per truck, the whole system</td></tr>
+        <tr class="proof-row"><th scope="row">Engine and fuel data</th><td>No</td><td>Yes, with hardware</td><td class="fp">No. Keep your hardware</td></tr>
+        <tr class="proof-row"><th scope="row">Drivers' pay settled</th><td>No</td><td>Yes, by the bureau</td><td class="fp">Keep your bureau</td></tr>
       </tbody>
     </table>
+    </div>
+    </div>
 
     <div class="never">
       <div class="callout-box"><b>Never sold in pieces.</b>A partial picture misleads. Every plan is the whole system.</div>
@@ -2744,6 +2771,31 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   const selectRole = tabs($(".role-tabs"), showRole);
   tabs($(".calc-tabs"));
   $$("[data-role]").forEach((a) => a.addEventListener("click", () => selectRole($("#" + a.dataset.role))));
+
+  /* ---------- S11 comparison: where the columns do not fit, the table scrolls sideways ---------- */
+  // Only while it scrolls is it a labelled region the keyboard can reach (Tab, then the arrow keys);
+  // the fades mark the side with more to see, and the hint shows above it.
+  {
+    const box = $(".cmp-box"), sc = box && $(".cmp-scroll", box), hint = $(".cmp-hint");
+    if (sc) {
+      let scrolls = null, queued = false;
+      const edges = () => {
+        queued = false;
+        const max = sc.scrollWidth - sc.clientWidth, x = sc.scrollLeft;
+        const now = max > 4;
+        if (now !== scrolls) {
+          scrolls = now;
+          if (hint) hint.hidden = !now;
+          if (now) { sc.tabIndex = 0; sc.setAttribute("role", "region"); sc.setAttribute("aria-labelledby", "cmp-cap"); }
+          else { sc.removeAttribute("tabindex"); sc.removeAttribute("role"); sc.removeAttribute("aria-labelledby"); }
+        }
+        box.classList.toggle("more-left", now && x > 2);
+        box.classList.toggle("more-right", now && x < max - 2);
+      };
+      sc.addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(edges); } }, { passive: true });
+      new ResizeObserver(edges).observe(sc);
+    }
+  }
 
   /* ---------- S12 calculator (formulas as in the pricing dashboard's Anchor 2 calculator) ---------- */
   const num = (id) => { const v = parseFloat(($("#" + id).value || "").replace(",", ".")); return Number.isFinite(v) && v >= 0 ? v : null; };
