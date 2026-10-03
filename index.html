@@ -1117,6 +1117,67 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   *,*::before,*::after{animation:none!important;transition-property:opacity,visibility,color,background-color,border-color,fill,stroke!important;transition-duration:.2s!important;transition-delay:0s!important;transition-timing-function:ease!important}
   .js [data-reveal]:not(.in){opacity:0}
 }
+
+/* ============================================================
+   Phones and tablets: fixes from the mobile QA (3 Oct 2026). Every rule here sits under
+   max-width:899px (or a width range below it), so the PC layout is untouched.
+   ============================================================ */
+@media (max-width:899px){
+  /* The open menu shows its own call to action, and the page under it dims (a tap there closes it) */
+  .menu .btn-primary{display:flex}
+  .menu::after{content:"";position:absolute;top:100%;left:0;right:0;height:100vh;background:color-mix(in srgb,var(--fp-navy-975) 45%,transparent)}
+  /* All five value tabs in view: two to a row (three on tablets), never hidden off the edge */
+  .calc-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}
+  .calc-tabs button{flex:initial;min-width:0;justify-content:flex-start;text-align:left;line-height:1.25;padding:8px 10px;font-size:14px}
+  .calc-tabs button:last-child:nth-child(odd){grid-column:1 / -1}
+  /* Consent boxes at the 24 px touch minimum */
+  .consent input{width:24px;height:24px;margin:0}
+  /* The six-places diagrams never outgrow the screen: narrower on tablets, shorter than the screen on its side */
+  html:not(.stages) .s4-frame .cv{display:block;margin-inline:auto;max-height:calc(100svh - 120px)}
+}
+@media (max-width:899px) and (orientation:portrait){
+  html:not(.stages) .s4-frame .cv{max-width:min(100%,520px)}
+}
+/* A phone on its side: the hero's screens no taller than the screen */
+@media (max-width:899px) and (orientation:landscape){
+  .hero-vis{width:min(100%,calc((100svh - 40px) * 1.1));margin-inline:auto}
+}
+/* Small phones: buttons keep their label on one line */
+@media (max-width:399px){
+  .btn:not(.btn-sm){padding-inline:16px;font-size:16px}
+}
+/* The smallest phones: the four role tabs as two rows of two */
+@media (max-width:359px){
+  .role-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .role-tabs button{padding:0 8px}
+  .calc-tabs button .ic{display:none}
+}
+/* A big phone on its side (900 px wide or more, touch, short): the stacked page, its diagrams shorter than the screen.
+   A PC never matches (it has hover and a fine pointer). */
+@media (hover:none) and (pointer:coarse) and (max-height:599px){
+  html:not(.stages) .s4-frame .cv{display:block;margin-inline:auto;max-height:calc(100svh - 120px)}
+}
+/* Any touch screen with the PC layout (tablets and big phones on their side): touch-sized nav links and boxes */
+@media (hover:none) and (pointer:coarse){
+  .nav a{padding-block:10px}
+  .consent input{width:24px;height:24px;margin:0}
+}
+/* Touch screens from 900 to 1023 px (big phones on their side, small tablets): the value tabs in three columns and the
+   plans two by two, as on tablets, instead of the PC row that does not fit. A PC never matches. */
+@media (hover:none) and (pointer:coarse) and (min-width:900px) and (max-width:1023px){
+  .calc-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}
+  .calc-tabs button{flex:initial;min-width:0;justify-content:flex-start;text-align:left;line-height:1.25;padding:8px 10px;font-size:14px}
+  .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .plan.rec-plan{transform:none}
+}
+/* Tablets and phones on their side: two columns where one column stretched the content */
+@media (min-width:600px) and (max-width:899px){
+  .calc-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .calc-tabs button:last-child:nth-child(odd){grid-column:auto}
+  .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tile.wide{grid-column:1 / -1}
+  .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style>
 </head>
 <body>
@@ -2003,7 +2064,9 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   if (tierC) html.classList.add("tier-c");
   const mqWide = matchMedia("(min-width: 900px)");
   const stagesOn = () => html.classList.contains("stages");
-  const setStages = () => html.classList.toggle("stages", mqWide.matches && !tierC);
+  // A phone on its side can be 900 px wide but too short for a pinned stage: it gets the stacked page.
+  const mqShortTouch = matchMedia("(hover: none) and (pointer: coarse) and (max-height: 599px)");
+  const setStages = () => html.classList.toggle("stages", mqWide.matches && !mqShortTouch.matches && !tierC);
   setStages();
 
   /* ---------- Theme: light and dark, the logo reversed with it ---------- */
@@ -2253,8 +2316,10 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     svg.setAttribute("viewBox", L.vb);
     svg.innerHTML = s;
   }
+  // The wide drawing on PCs, and on phones and tablets on their side; the tall one in portrait.
+  const mqConvWide = matchMedia("(min-width: 900px), (min-width: 600px) and (orientation: landscape)");
   function buildAllConverge() {
-    const L = convergeLayout(mqWide.matches);
+    const L = convergeLayout(mqConvWide.matches);
     $$(".s4-frame").forEach((f) => buildConverge($("svg", f), +f.dataset.frame, L));
   }
   buildAllConverge();
@@ -2368,6 +2433,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     headerUpdate();
   });
   $$("a", menu).forEach((a) => a.addEventListener("click", () => { menu.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); }));
+  // The dimmed page under the open menu is the menu's own backdrop: a tap there closes it.
+  menu.addEventListener("click", (e) => { if (e.target === menu) { menu.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); headerUpdate(); } });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { menuBtn.click(); menuBtn.focus(); } });
 
   /* ---------- The menu marks the part of the page you are in ---------- */
@@ -2432,7 +2499,10 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   watch(finalSec, "0px", (v) => { finalIn = v; });
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll);
-  mqWide.addEventListener("change", () => { setStages(); buildAllConverge(); if (!stagesOn()) resetStacked(); onScroll(); });
+  const onLayout = () => { setStages(); buildAllConverge(); if (!stagesOn()) resetStacked(); onScroll(); };
+  mqWide.addEventListener("change", onLayout);
+  mqShortTouch.addEventListener("change", onLayout);
+  mqConvWide.addEventListener("change", buildAllConverge);
   if (!stagesOn()) resetStacked();
   frame();
 
