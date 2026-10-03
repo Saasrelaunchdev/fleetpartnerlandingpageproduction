@@ -1018,24 +1018,6 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .keep .chip{color:var(--fp-accent-text);border-color:color-mix(in srgb,var(--fp-accent) 55%,transparent);background:color-mix(in srgb,var(--fp-accent) 8%,var(--fp-bg))}
 @media (min-width:900px){.gates{grid-template-columns:repeat(4,1fr)}.gates li{grid-template-columns:1fr}}
 
-/* S14 Pricing */
-.plans{display:grid;gap:16px;align-items:stretch}
-.plan{display:grid;gap:16px;align-content:start;padding:24px;border-radius:var(--r-card);background:var(--fp-surface);border:1px solid var(--fp-line);position:relative}
-.plan.rec-plan{background:var(--fp-bg);border:2px solid var(--fp-accent);box-shadow:0 30px 60px -30px color-mix(in srgb,var(--fp-accent) 45%,transparent)}
-.plan .rtag{position:absolute;top:-13px;left:22px;padding:5px 10px;border-radius:999px;background:var(--fp-grad-forward);color:var(--fp-on-accent);font:600 12.5px/1 var(--f-text)}
-.plan h3{font-size:26px}
-.trucks{display:flex;flex-wrap:wrap;gap:3px;color:var(--fp-heading);min-height:22px;align-items:center}
-.trucks .ic{width:20px;height:20px}
-.trucks b{font:600 13px var(--f-text);margin-left:4px;font-variant-numeric:tabular-nums}
-.band-l{font-weight:600;color:var(--fp-heading)}
-.plan p{color:var(--fp-text-2)}
-.price{display:grid;gap:4px;padding-top:12px;border-top:1px solid var(--fp-line);color:var(--fp-text);font-size:15px}
-.plan .btn{margin-top:auto}
-.price .tbd{justify-self:start}
-.incl{margin-top:28px;display:grid;gap:14px}
-.facts{display:grid;gap:6px;color:var(--fp-text-2);font-size:15px}
-@media (min-width:900px){.plans{grid-template-columns:repeat(4,1fr)}.plan.rec-plan{transform:translateY(-12px)}}
-
 /* S15 Trust */
 .answers{display:grid;gap:16px}
 .answer{display:grid;gap:18px;align-content:space-between;min-height:220px;padding:26px;border-radius:var(--r-card);background:var(--fp-grad-ink);color:var(--fp-slate-200);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--fp-teal-400) 16%,transparent)}
@@ -1198,13 +1180,11 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   /* The phone, Sign in and store links outside sentences get a full touch height */
   .hero-links a,.foot dd a,.foot-cta a:not(.btn){display:inline-flex;align-items:center;min-height:44px}
 }
-/* Touch screens from 900 to 1023 px (big phones on their side, small tablets): the value tabs in three columns and the
-   plans two by two, as on tablets, instead of the PC row that does not fit. A PC never matches. */
+/* Touch screens from 900 to 1023 px (big phones on their side, small tablets): the value tabs in three columns, as on
+   tablets, instead of the PC row that does not fit. A PC never matches. */
 @media (hover:none) and (pointer:coarse) and (min-width:900px) and (max-width:1023px){
   .calc-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}
   .calc-tabs button{flex:initial;min-width:0;justify-content:flex-start;text-align:left;line-height:1.25;padding:8px 10px;font-size:14px}
-  .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .plan.rec-plan{transform:none}
 }
 /* Tablets and phones on their side: two columns where one column stretched the content */
 @media (min-width:600px) and (max-width:899px){
@@ -1212,7 +1192,6 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   .calc-tabs button:last-child:nth-child(odd){grid-column:auto}
   .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tile.wide{grid-column:1 / -1}
-  .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
 </head>
@@ -1269,7 +1248,6 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     <a class="brand-logo" href="#main" aria-label="FleetPartner, back to top"><svg viewBox="0 0 738.94 94.0" aria-hidden="true"><use href="#fp-logo-h"/></svg></a>
     <nav class="nav" aria-label="Main">
       <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
       <a href="#questions">Questions</a>
     </nav>
     <a class="hdr-call" href="tel:+48788804777">Call +48 788 804 777</a>
@@ -1281,7 +1259,6 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   </div>
   <nav class="menu" id="menu" aria-label="Menu" hidden>
     <a href="#how">How it works</a>
-    <a href="#pricing">Pricing</a>
     <a href="#questions">Questions</a>
     <a class="btn btn-primary" data-cta="try" href="#form">Try for free</a>
     <a class="btn btn-line" href="https://fleetpartner.pro/login">Sign in</a>
@@ -1860,55 +1837,6 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   </div>
 </section>
 
-<!-- ============ S14 Pricing ============ -->
-<section id="pricing" class="proof sec" aria-labelledby="s14-h">
-  <div class="wrap">
-    <header class="sec-head">
-      <h2 id="s14-h" class="h2">Per truck. The whole system.</h2>
-      <p class="lead">No modules to pick. Plans differ by fleet size and help starting.</p>
-    </header>
-    <div class="plans">
-      <article class="plan">
-        <h3>Start</h3>
-        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg></div>
-        <p class="band-l">Up to 9 trucks</p>
-        <p>Remote onboarding</p>
-        <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
-        <a class="btn btn-line btn-sm" data-cta="try" href="#form">Try for free</a>
-      </article>
-      <article class="plan rec-plan">
-        <span class="rtag">Recommended</span>
-        <h3>Company</h3>
-        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg></div>
-        <p class="band-l">10 to 24 trucks</p>
-        <p>Guided onboarding, plus a day with your drivers</p>
-        <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
-        <a class="btn btn-primary btn-sm" data-cta="try" href="#form">Try for free</a>
-      </article>
-      <article class="plan">
-        <h3>Fleet</h3>
-        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg></div>
-        <p class="band-l">25 to 50 trucks</p>
-        <p>Rollout team by team, reviews at 30 and 90 days</p>
-        <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
-        <a class="btn btn-line btn-sm" data-cta="try" href="#form">Try for free</a>
-      </article>
-      <article class="plan">
-        <h3>Group</h3>
-        <div class="trucks" aria-hidden="true"><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><svg class="ic"><use href="#i-truck"/></svg><b>+</b></div>
-        <p class="band-l">More than 50 trucks, or several companies</p>
-        <p>A rollout plan per company</p>
-        <p class="price"><span>Price on request</span></p>
-        <a class="btn btn-line btn-sm" href="#form">Talk to us</a>
-      </article>
-    </div>
-    <div class="incl">
-      <ul class="chips" aria-label="Included in every plan"><li class="chip">All of FleetPartner</li><li class="chip">Web for you, app for everyone</li><li class="chip">Load tracking for your clients</li><li class="chip">Support</li></ul>
-      <div class="facts"><p>Bought on the web, not in the app.</p><p>Connections to your systems are quoted separately.</p><p data-tbd><span class="tbd">{TBD · OD1 · OD5}</span> Contract terms, billing, plan bands and onboarding, to confirm.</p></div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ S15 Trust ============ -->
 <section id="trust" class="proof sec" aria-labelledby="s15-h" data-tbd><!-- every block waits on OD3, OD7, OD8, OD9 or A2: remove data-tbd once one is set -->
   <div class="wrap">
@@ -1949,7 +1877,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <details data-tbd><summary>Are my drivers tracked all the time?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD9}</span></p></details>
       <details data-tbd><summary>How long does it take to start?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD5}</span></p></details>
       <details><summary>Can I try it first?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes. The demo takes about 20 minutes. After that you get 30 days to test FleetPartner free of charge. No commitment.</p></details>
-      <details><summary>What does it cost?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Per truck per month, net, the whole system. <a href="#pricing">See the plans.</a></p></details>
+      <details><summary>What does it cost?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Per truck per month, net, the whole system.</p></details>
       <details data-tbd><summary>What if you go down, or go away?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD7}</span></p></details>
       <details data-tbd><summary>Which languages?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD10}</span></p></details>
     </div>
