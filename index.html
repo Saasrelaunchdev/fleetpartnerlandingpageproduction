@@ -23,7 +23,7 @@
 <link rel="preload" href="fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script>(function(){var d=document.documentElement,t=null;d.classList.replace("no-js","js");try{t=new URLSearchParams(location.search).get("theme")||localStorage.getItem("fp-theme")}catch(e){}if(t!=="dark"&&t!=="light")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.dataset.theme=t;if(t==="dark")document.querySelector('meta[name="theme-color"]').content="#021A31"})();</script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FleetPartner","applicationCategory":"BusinessApplication","operatingSystem":"Web, Android"}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FleetPartner","applicationCategory":"BusinessApplication","operatingSystem":"Web, Android, iOS","publisher":{"@type":"Organization","name":"OPUS Technologies s.r.o.","telephone":"+48788804777","address":{"@type":"PostalAddress","streetAddress":"Soukenická 877/9","addressLocality":"Ostrava","postalCode":"702 00","addressCountry":"CZ"}}}
 </script>
 <style>
 /* Self-hosted fonts (OFL-1.1), built by brand/src/build_fonts.py. Polish letters live in the latin-ext files. */
@@ -352,6 +352,7 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar){
 .hdr.hide{transform:translateY(-100%)}
 .nav{display:none}
 .hdr-call{display:none}
+.hdr-signin{display:none}
 .hdr .btn-primary{display:none}
 .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:0;background:transparent;cursor:pointer;text-decoration:none;color:var(--fp-heading);transition:transform var(--t-press) var(--ease-out)}
 .icon-btn:active:not([aria-disabled="true"]){transform:scale(.95)}
@@ -367,12 +368,19 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar){
 .menu a:not(.btn){display:block;padding:12px 4px;color:var(--fp-heading);text-decoration:none;font-size:18px;border-bottom:1px solid var(--fp-line)}
 .menu .btn{margin-top:12px}
 .menu a[aria-current]:not(.btn){text-decoration:underline 2px var(--fp-accent);text-underline-offset:8px}
+@media (min-width:900px) and (max-width:1179px){
+  .hdr-call{display:none!important}
+  .nav{gap:20px!important}
+}
 @media (min-width:900px){
   .nav{display:flex;gap:26px;margin-right:auto}
   .nav a{text-decoration:none;font-size:15px;color:var(--fp-text-2)}
   .nav a{transition:color var(--t-ui) ease,text-decoration-color var(--t-ui) ease;text-decoration:underline 2px transparent;text-underline-offset:8px}
   .nav a[aria-current]{color:var(--fp-heading);text-decoration-color:var(--fp-accent)}
   .hdr-call{display:inline-flex;align-items:center;gap:8px;font:500 14px/1 var(--f-text);color:var(--fp-text-2)}
+  .hdr-signin{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font:600 15px/1 var(--f-text);color:var(--fp-heading);text-decoration:underline 2px transparent;text-underline-offset:8px;transition:text-decoration-color var(--t-ui) ease}
+  .hdr-signin:hover{text-decoration-color:var(--fp-accent)}
+  .hdr .nav a,.hdr-call,.hdr-signin,.hdr .btn{white-space:nowrap}
   .hdr .btn-primary{display:inline-flex}
   .hdr .icon-btn,.menu{display:none!important}
   .hdr-in{gap:16px}
@@ -413,6 +421,7 @@ html:not(.is-preview) :is([data-tbd],[data-internal],.tbd,.ph-tag,.preview-bar){
 .hero .display{font-size:clamp(42px,5.4vw,88px);font-stretch:112%}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:flex-start;margin-top:8px}
 .cta-main{display:grid;gap:10px}
+.cta-main .btn{justify-self:start}
 .under{color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .hero-links{font-size:15px;color:var(--fp-text-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .hero-vis{position:relative}
@@ -1089,6 +1098,9 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 .foot dt{font:600 13px/1.3 var(--f-text);color:var(--fp-slate-400)}
 .foot dd{margin:2px 0 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .foot a{color:#fff}
+.foot-cta{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.foot-cta a:not(.btn){font-weight:600}
+.foot-co{grid-column:1 / -1}
 .foot-note{margin-top:40px;padding-top:20px;border-top:1px solid var(--fp-line);color:var(--fp-slate-400);font:400 13px/1.5 var(--f-text)}
 @media (min-width:900px){.foot{padding-bottom:64px}.foot-grid{grid-template-columns:4fr 8fr}.foot dl{grid-template-columns:repeat(3,1fr);gap:24px}}
 
@@ -1161,6 +1173,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 @media (hover:none) and (pointer:coarse){
   .nav a{padding-block:10px}
   .consent input{width:24px;height:24px;margin:0}
+  /* The phone, Sign in and store links outside sentences get a full touch height */
+  .hero-links a,.foot dd a,.foot-cta a:not(.btn){display:inline-flex;align-items:center;min-height:44px}
 }
 /* Touch screens from 900 to 1023 px (big phones on their side, small tablets): the value tabs in three columns and the
    plans two by two, as on tablets, instead of the PC row that does not fit. A PC never matches. */
@@ -1236,17 +1250,19 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <a href="#pricing">Pricing</a>
       <a href="#questions">Questions</a>
     </nav>
-    <a class="hdr-call" data-cta="call" aria-disabled="true" data-tbd>Call <span class="tbd" data-fact="phone">[number] · OD8</span></a>
+    <a class="hdr-call" href="tel:+48788804777">Call +48 788 804 777</a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg><span class="knob"></span></button>
-    <a class="btn btn-primary btn-sm" data-cta="check" href="#check-tbd">Check where your fire is</a>
-    <a class="icon-btn" data-cta="call" aria-disabled="true" aria-label="Call us (number to come)" data-tbd><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
+    <a class="hdr-signin" href="https://fleetpartner.pro/login">Sign in</a>
+    <a class="btn btn-primary btn-sm" data-cta="try" href="#form">Try for free</a>
+    <a class="icon-btn" href="tel:+48788804777" aria-label="Call +48 788 804 777"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
     <button class="icon-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg class="ic burger" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button>
   </div>
   <nav class="menu" id="menu" aria-label="Menu" hidden>
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
     <a href="#questions">Questions</a>
-    <a class="btn btn-primary" data-cta="check" href="#check-tbd">Check where your fire is</a>
+    <a class="btn btn-primary" data-cta="try" href="#form">Try for free</a>
+    <a class="btn btn-line" href="https://fleetpartner.pro/login">Sign in</a>
   </nav>
 </header>
 
@@ -1270,12 +1286,12 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
       <p class="lead">For fleets of 10-50 trucks. No phoning around: problems come to you, biggest first.</p>
       <div class="cta-row">
         <div class="cta-main">
-          <a class="btn btn-primary" data-cta="check" href="#check-tbd">Check where your fire is</a>
-          <p class="label under">7 questions, 5 minutes, no call. <span class="tbd" data-tbd>{TBD · OD6}</span></p>
+          <a class="btn btn-primary" data-cta="try" href="#form">Try for free</a>
+          <p class="label under">A demo of about 20 minutes, then 30 days free.</p>
         </div>
-        <a class="btn btn-line" href="#form">Show me on my phone</a>
+        <a class="btn btn-line" href="https://fleetpartner.pro/login">Sign in</a>
       </div>
-      <p class="hero-links" data-tbd><a data-cta="call" aria-disabled="true">Call <span class="tbd" data-fact="phone">[number] · OD8</span></a></p>
+      <p class="hero-links">Call directly: <a href="tel:+48788804777">+48 788 804 777</a></p>
     </div>
     <figure class="hero-vis" data-anim>
       <div class="hv-3d" aria-hidden="true">
@@ -1352,8 +1368,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   </div>
   <div class="wrap s4-after">
     <div class="band" id="s4-band">
-      <p>Which of the six is your fire? Find out in 5 minutes.</p>
-      <a class="btn btn-primary" data-cta="check" href="#check-tbd">Check where your fire is</a>
+      <p>Which of the six is your fire? Try FleetPartner free for 30 days.</p>
+      <a class="btn btn-primary" data-cta="try" href="#form">Try for free</a>
     </div>
   </div>
 </section>
@@ -1831,7 +1847,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <p class="band-l">Up to 9 trucks</p>
         <p>Remote onboarding</p>
         <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
-        <a class="btn btn-line btn-sm" href="#form">Show me on my phone</a>
+        <a class="btn btn-line btn-sm" data-cta="try" href="#form">Try for free</a>
       </article>
       <article class="plan rec-plan">
         <span class="rtag">Recommended</span>
@@ -1840,7 +1856,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <p class="band-l">10 to 24 trucks</p>
         <p>Guided onboarding, plus a day with your drivers</p>
         <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
-        <a class="btn btn-primary btn-sm" href="#form">Show me on my phone</a>
+        <a class="btn btn-primary btn-sm" data-cta="try" href="#form">Try for free</a>
       </article>
       <article class="plan">
         <h3>Fleet</h3>
@@ -1848,7 +1864,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
         <p class="band-l">25 to 50 trucks</p>
         <p>Rollout team by team, reviews at 30 and 90 days</p>
         <p class="price" data-tbd><span class="tbd">{TBD · OD1}</span><span>zł per truck per month, net</span></p>
-        <a class="btn btn-line btn-sm" href="#form">Show me on my phone</a>
+        <a class="btn btn-line btn-sm" data-cta="try" href="#form">Try for free</a>
       </article>
       <article class="plan">
         <h3>Group</h3>
@@ -1882,8 +1898,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     <div class="tfacts">
       <div class="tfact" data-tbd><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></span><div><b>Your data and your drivers</b><p>What is recorded and when · who sees what · where data is stored · GDPR. <span class="tbd">{TBD · OD9}</span></p></div></div>
       <div class="tfact" data-tbd><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-handshake"/></svg></span><div><b>Our commitment</b><p><span class="tbd">{TBD · OD7}</span></p></div></div>
-      <div class="tfact"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone-dev"/></svg></span><div><b>The apps</b><p>Android, on Google Play <span class="tbd" data-fact="play" data-lead=": ">link · A2</span></p><p data-tbd>iPhone: <span class="tbd">{TBD · A2}</span></p></div></div>
-      <div class="tfact" data-tbd><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-building"/></svg></span><div><b>Who we are</b><p>Company name, address, tax number, phone, the people. <span class="tbd">{TBD · OD8}</span></p></div></div>
+      <div class="tfact"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-phone-dev"/></svg></span><div><b>The apps</b><p>Android, on <a href="https://play.google.com/store/apps/details?id=pro.fleetpartner.app">Google Play</a></p><p data-ios>FleetPartner works on iPhone: <a href="https://apps.apple.com/pl/app/fleetpartner/id6814750763">App Store</a></p></div></div>
+      <div class="tfact"><span class="ic-box"><svg class="ic" aria-hidden="true"><use href="#i-building"/></svg></span><div><b>Who we are</b><p>OPUS Technologies s.r.o., Ostrava, Czech Republic. Call directly: <a href="tel:+48788804777">+48 788 804 777</a>. The people: <span class="tbd">{TBD · OD8}</span></p></div></div>
     </div>
   </div>
 </section>
@@ -1895,15 +1911,17 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     <div class="faq">
       <details><summary>Is this going to be another job for me?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. We set it up with you, show your drivers the app, and check every week for the first 30 days that everyone is recording.</p></details>
       <details><summary>What do my drivers have to do?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Record their working day in the app as it happens: their orders, refuelling, border crossings and costs.</p></details>
-      <details><summary>Do I need GPS devices in the trucks?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Most carriers don't: position comes from the driver's phone. Need engine, fuel-level or temperature data? Keep your GPS hardware.</p></details>
+      <details><summary>Do I need GPS devices in the trucks?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Most carriers don't: position comes from the driver's phone. Real-time GPS and the full driver and vehicle route history are available within FleetPartner. Need engine, fuel-level or temperature data? Keep your GPS hardware.</p></details>
       <details><summary>Can I keep my accountant or bureau?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes. FleetPartner doesn't replace them. They work from one record instead of a box of files.</p></details>
       <details><summary>Can I buy just part of it, like the map?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. A system that sees part of your company can show you the wrong picture. Every plan is the whole system.</p></details>
-      <details><summary>Does it work on my phone? On an iPhone?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes on Android, from Google Play: the same system as the web.<span data-tbd> iPhone: <span class="tbd">{TBD · A2}</span></span></p></details>
+      <details><summary>Does it work on my phone? On an iPhone?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes on Android, from <a href="https://play.google.com/store/apps/details?id=pro.fleetpartner.app">Google Play</a>: the same system as the web.<span data-ios> FleetPartner works on iPhone: <a href="https://apps.apple.com/pl/app/fleetpartner/id6814750763">App Store</a>.</span></p></details>
+      <details><summary>Can my customers follow their shipment?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Your customer can receive a secure link to track their shipment and check the current vehicle location, order status and estimated delivery time.</p></details>
       <details><summary>Does it find loads or plan routes?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">No. It doesn't connect to freight exchanges and doesn't plan routes.</p></details>
       <details><summary>Can it connect to my fuel card or accounting program?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes, built for your company as a quoted job, with your partner's consent and your own access.</p></details>
       <details data-tbd><summary>What about KSeF?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD2}</span> Meanwhile you can keep invoicing where you do now and mark it in FleetPartner.</p></details><!-- claim-lint-disable-line ksef FAQ question, hidden until OD2 -->
       <details data-tbd><summary>Are my drivers tracked all the time?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD9}</span></p></details>
       <details data-tbd><summary>How long does it take to start?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD5}</span></p></details>
+      <details><summary>Can I try it first?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Yes. The demo takes about 20 minutes. After that you get 30 days to test FleetPartner free of charge. No commitment.</p></details>
       <details><summary>What does it cost?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans">Per truck per month, net, the whole system. <a href="#pricing">See the plans.</a></p></details>
       <details data-tbd><summary>What if you go down, or go away?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD7}</span></p></details>
       <details data-tbd><summary>Which languages?<svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></summary><p class="ans"><span class="tbd">{TBD · OD10}</span></p></details>
@@ -1917,7 +1935,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     <div class="final-top">
       <div class="final-copy">
         <h2 id="s17-h" class="display">Find out where your fire is.</h2>
-        <p class="lead">Seven questions, five minutes. Or see it on your own phone.</p>
+        <p class="lead">Try it free: a demo of about 20 minutes, then 30 days on your own fleet.</p>
       </div>
       <figure class="calm-vis" data-anim>
         <div class="slab"><div class="cf cf-phone" data-cap="C19" data-shot="orders" data-sil="pcalm" data-zoom="2.41 85.58 95.09 6.97 2.6" data-zoom-w="100"></div></div>
@@ -1926,15 +1944,15 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </div>
 
     <div class="panels">
-      <div class="panel" id="check-tbd">
-        <h3>Check where your fire is</h3>
-        <p class="label eyebrow">7 questions, 5 minutes, no call.</p>
-        <a class="btn btn-primary" data-cta="check" href="#check-tbd">Check where your fire is</a>
-        <p class="pill-note" data-tbd><span class="tbd">{TBD · OD6}</span> The control check link is set once it is live.</p>
+      <div class="panel" id="try">
+        <h3>Try for free</h3>
+        <p>The demo takes about 20 minutes. After that you get 30 days to test FleetPartner free of charge.</p>
+        <a class="btn btn-primary" data-cta="try" href="#form">Try for free</a>
       </div>
 
       <div class="panel">
         <h3 id="form-h">Show me on my phone</h3>
+        <p class="label eyebrow">No commitment. Online. We'll answer your questions.</p>
         <form class="form" id="form" novalidate aria-labelledby="form-h">
           <div class="row">
             <div class="field"><label for="l-name">First name</label><input id="l-name" name="firstName" autocomplete="given-name" required aria-describedby="e-name"><p class="err" id="e-name"></p></div>
@@ -1968,7 +1986,7 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     </div>
 
     <div class="final-foot">
-      <p class="hero-links" data-tbd>Or call us: <a data-cta="call" aria-disabled="true"><span class="tbd" data-fact="phone">[number] · OD8</span></a></p>
+      <p class="hero-links">Call directly: <a href="tel:+48788804777">+48 788 804 777</a></p>
       <blockquote data-tbd>
         <q>Control, peace of mind.</q>
         <cite class="label">One owner of a 12-truck fleet <span class="tbd">{TBD · OD3}</span></cite>
@@ -1985,12 +2003,12 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     <div class="foot-grid">
       <div style="display:grid;gap:18px;align-content:start">
         <h2 class="foot-logo"><svg viewBox="0 0 499.59 401.65" role="img" aria-label="FleetPartner"><use href="#fp-logo-stacked"/></svg></h2>
-        <a class="btn btn-primary btn-sm" data-cta="check" href="#check-tbd" style="justify-self:start">Check where your fire is</a>
+        <div class="foot-cta"><a class="btn btn-primary btn-sm" data-cta="try" href="#form">Try for free</a><a href="https://fleetpartner.pro/login">Sign in</a></div>
       </div>
       <dl>
-        <div data-tbd><dt>Company</dt><dd>Name, address, tax number <span class="tbd">{TBD · OD8}</span></dd></div>
-        <div data-tbd><dt>Phone and email</dt><dd><span class="tbd" data-fact="phone">[number] · OD8</span></dd></div>
-        <div><dt>The app</dt><dd>Google Play <span class="tbd" data-fact="play">link · A2</span></dd></div>
+        <div class="foot-co"><dt>Company</dt><dd>OPUS Technologies s.r.o. · registered office: Soukenická 877/9, Moravská Ostrava, 702 00 Ostrava, Czech Republic, IČO: 299 32 564</dd></div>
+        <div><dt>Phone</dt><dd><a href="tel:+48788804777">Call directly: +48 788 804 777</a></dd></div>
+        <div><dt>The app</dt><dd><a href="https://play.google.com/store/apps/details?id=pro.fleetpartner.app">Google Play</a><span data-ios>· <a href="https://apps.apple.com/pl/app/fleetpartner/id6814750763">App Store</a></span></dd></div>
         <div data-tbd><dt>Privacy and cookies</dt><dd>Privacy notice, cookie notice <span class="tbd">{TBD · OD9}</span></dd></div>
         <div data-tbd><dt>Consent</dt><dd>How we use what you send us <span class="tbd">{TBD · OD12}</span></dd></div>
         <div data-tbd><dt>Language</dt><dd>PL <span class="tbd">{TBD · OD16}</span> · EN working copy</dd></div>
@@ -2001,8 +2019,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
 </footer>
 
 <div class="sticky-bar" id="sticky-bar" aria-hidden="true">
-  <a class="btn btn-primary" data-cta="check" href="#check-tbd" tabindex="-1">Check where your fire is</a>
-  <a class="icon-btn" data-cta="call" aria-disabled="true" aria-label="Call us (number to come)" data-tbd><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
+  <a class="btn btn-primary" data-cta="try" href="#form" tabindex="-1">Try for free</a>
+  <a class="icon-btn" href="tel:+48788804777" aria-label="Call +48 788 804 777" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg></a>
 </div>
 
 <script>
@@ -2014,10 +2032,10 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
   const params = new URLSearchParams(location.search);
 
   /* ---------- Facts. null means still open: hidden in the production view, {TBD} in the preview view (07 §4, 09) ---------- */
+  // The phone, the company, the store links and Sign in are in the markup (owner, 3 Oct 2026).
   const FACTS = {
-    checkUrl: null,      // OD6: the control check (ScoreApp)
-    phone: null,         // OD8: for example "+48 000 000 000"
-    googlePlayUrl: null  // A2
+    trialUrl: null,      // "Try for free": the founder sets where it goes; until then it opens the demo form on this page
+    iphoneLive: true     // OD18: "FleetPartner works on iPhone." and the App Store links show only while the iPhone app is live
   };
   // S2 message match: names come from these whitelists, never from the URL text (07 §7).
   const PARTNERS = {};   // code -> partner name, only with the partner's written approval
@@ -2110,17 +2128,8 @@ html:not(.stages) .s7 .stage-pin{padding-top:0}
     passThrough.forEach((k) => { if (params.has(k)) u.searchParams.set(k, params.get(k)); });
     return u.toString();
   }
-  if (FACTS.checkUrl) $$('[data-cta="check"]').forEach((a) => { a.href = withParams(FACTS.checkUrl); });
-  if (FACTS.phone) {
-    $$('[data-cta="call"]').forEach((a) => {
-      a.href = "tel:" + FACTS.phone.replace(/\s/g, ""); a.removeAttribute("aria-disabled"); a.removeAttribute("data-tbd");
-      if (a.hasAttribute("aria-label")) a.setAttribute("aria-label", "Call us");
-    });
-    $$('[data-fact="phone"]').forEach((el) => { el.textContent = FACTS.phone; el.className = ""; el.closest("[data-tbd]")?.removeAttribute("data-tbd"); });
-  }
-  if (FACTS.googlePlayUrl) {
-    $$('[data-fact="play"]').forEach((el) => { const a = document.createElement("a"); a.href = FACTS.googlePlayUrl; a.textContent = "Get it on Google Play"; el.replaceWith(el.dataset.lead || "", a); });
-  }
+  if (FACTS.trialUrl) $$('[data-cta="try"]').forEach((a) => { a.href = withParams(FACTS.trialUrl); });
+  if (!FACTS.iphoneLive) $$("[data-ios]").forEach((el) => el.remove());
 
   /* ---------- S2 message-match kicker ---------- */
   const kicker = $("#kicker");
